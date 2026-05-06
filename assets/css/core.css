@@ -1,0 +1,264 @@
+﻿:root {
+	--eap-accent: #ff6b2c;
+	--eap-border: rgba(15, 23, 42, 0.12);
+	--eap-surface: #ffffff;
+	--eap-surface-alt: #fff7f2;
+	--eap-text: #0f172a;
+	--eap-muted: #64748b;
+	--eap-radius: 22px;
+}
+
+body.eap-offcanvas-open {
+	overflow: hidden;
+}
+
+.eap-theme-part {
+	position: relative;
+	z-index: 20;
+	width: 100%;
+}
+
+.eap-widget {
+	color: var(--eap-text);
+}
+
+.eap-icon-box-card,
+.eap-image-box-card,
+.eap-testimonial-card,
+.eap-pricing-card,
+.eap-counter-card {
+	display: block;
+	padding: 28px;
+	border: 1px solid var(--eap-border);
+	border-radius: var(--eap-radius);
+	background: var(--eap-surface);
+	box-shadow: 0 18px 55px rgba(15, 23, 42, 0.08);
+	text-decoration: none;
+	color: inherit;
+}
+
+
+.eap-preview-floating,
+.eap-cursor-follower {
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+	z-index: 99999;
+	opacity: 0;
+	transform: translate3d(-9999px, -9999px, 0) scale(0.9);
+	transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.eap-preview-floating.is-visible,
+.eap-cursor-follower.is-visible {
+	opacity: 1;
+}
+
+.eap-preview-floating img,
+.eap-cursor-follower img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 18px;
+	box-shadow: 0 18px 60px rgba(15, 23, 42, 0.2);
+}
+
+.eap-cursor-follower {
+	background: rgba(15, 23, 42, 0.92);
+	color: #fff;
+	border-radius: 999px;
+	box-shadow: 0 18px 50px rgba(15, 23, 42, 0.2);
+}
+
+.eap-cursor-follower i,
+.eap-cursor-follower span {
+	font-size: 20px;
+}
+
+.eap-pin {
+	position: sticky;
+	top: var(--eap-pin-offset, 24px);
+}
+
+.eap-scroll-transform {
+	will-change: transform, opacity;
+}
+
+.eap-curve-swipe {
+	position: relative;
+	overflow: hidden;
+}
+
+.eap-curve-swipe svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+	transform: translateY(12%);
+	will-change: transform;
+}
+
+.eap-accordion {
+	border: 1px solid var(--eap-border);
+	border-radius: 20px;
+	overflow: hidden;
+	background: #fff;
+}
+
+.eap-accordion-item + .eap-accordion-item {
+	border-top: 1px solid var(--eap-border);
+}
+
+.eap-accordion-trigger {
+	width: 100%;
+	padding: 18px 20px;
+	border: 0;
+	background: #fff;
+	text-align: left;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.eap-accordion-panel {
+	display: none;
+}
+
+.eap-accordion-item.is-open .eap-accordion-panel {
+	display: block;
+}
+
+.eap-accordion-panel-inner {
+	padding: 0 20px 20px;
+}
+
+.eap-toc {
+	padding: 22px;
+	border: 1px solid var(--eap-border);
+	border-radius: 20px;
+	background: #fff;
+}
+
+.eap-toc-list {
+	margin: 14px 0 0;
+	padding-left: 18px;
+}
+
+.eap-toc-list a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-motion {
+	opacity: 0;
+	transform: translate3d(0, 30px, 0);
+	transition: opacity var(--eap-duration, 700ms) ease, transform var(--eap-duration, 700ms) ease;
+	transition-delay: var(--eap-delay, 0ms);
+}
+
+.eap-motion.is-visible {
+	opacity: 1;
+	transform: translate3d(0, 0, 0);
+}
+
+.eap-motion-slide-left {
+	transform: translate3d(-30px, 0, 0);
+}
+
+.eap-motion-slide-right {
+	transform: translate3d(30px, 0, 0);
+}
+
+.eap-motion-slide-down {
+	transform: translate3d(0, -30px, 0);
+}
+
+.eap-motion-fade-in {
+	transform: none;
+}
+
+.eap-motion-zoom-in {
+	transform: scale(0.92);
+}
+
+.eap-hover {
+	transition: transform 240ms ease, box-shadow 240ms ease, filter 240ms ease;
+}
+
+.eap-hover-lift:hover {
+	transform: translateY(-6px);
+}
+
+.eap-hover-grow:hover {
+	transform: scale(1.02);
+}
+
+.eap-hover-tilt:hover {
+	transform: rotate(-1deg) scale(1.01);
+}
+
+.eap-hover-glow:hover {
+	box-shadow: 0 18px 65px rgba(255, 107, 44, 0.18);
+}
+
+@keyframes eapUnderline {
+	to {
+		transform: scaleX(1);
+	}
+}
+
+@keyframes eapSlideUp {
+	from {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes eapBlink {
+	50% {
+		opacity: 0;
+	}
+}
+
+@keyframes eapMarquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@media (max-width: 767px) {
+	.eap-icon-box-card,
+	.eap-image-box-card,
+	.eap-testimonial-card,
+	.eap-pricing-card,
+	.eap-counter-card {
+		padding: 22px;
+	}
+
+	.eap-image-box-media {
+		margin: -22px -22px 18px;
+	}
+
+	.eap-horizontal-gallery-item {
+		width: 72vw;
+	}
+
+	.eap-preview-item a {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.eap-portfolio-items {
+		grid-template-columns: 1fr;
+	}
+}
+

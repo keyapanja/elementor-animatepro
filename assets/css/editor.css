@@ -1,0 +1,63 @@
+.elementor-panel .elementor-element.eap-widget-badge-ready,
+.elementor-panel .elementor-element[data-widget_type*="eap-"],
+.elementor-panel .elementor-element-wrapper.eap-widget-badge-ready,
+.elementor-panel .elementor-element-wrapper[data-widget_type*="eap-"] {
+	position: relative;
+}
+
+.elementor-panel .elementor-element.eap-widget-badge-ready .eap-widget-badge,
+.elementor-panel .elementor-element[data-widget_type*="eap-"] .eap-widget-badge,
+.elementor-panel .elementor-element-wrapper.eap-widget-badge-ready .eap-widget-badge,
+.elementor-panel .elementor-element-wrapper[data-widget_type*="eap-"] .eap-widget-badge {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 18px;
+	padding: 0 5px;
+	border: 1px solid rgba(154, 165, 177, 0.75);
+	border-radius: 2px;
+	background: rgba(45, 49, 56, 0.9);
+	color: #eef2f7;
+	font-size: 9px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	pointer-events: none;
+	box-sizing: border-box;
+}
+
+.elementor-navigator__item.eap-structure-badge-ready {
+	position: relative;
+	padding-right: 36px;
+}
+
+.elementor-navigator__item.eap-structure-badge-ready .eap-widget-badge {
+	position: absolute;
+	top: 50%;
+	right: 8px;
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 24px;
+	height: 15px;
+	padding: 0 4px;
+	border: 1px solid rgba(154, 165, 177, 0.72);
+	border-radius: 2px;
+	background: rgba(45, 49, 56, 0.92);
+	color: #eef2f7;
+	font-size: 8px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	pointer-events: none;
+	transform: translateY(-50%);
+	box-sizing: border-box;
+}

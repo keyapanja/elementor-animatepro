@@ -1,0 +1,65 @@
+﻿.eap-social-icons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	--eap-social-hover-scale: 1;
+	--eap-social-hover-rotate: 0deg;
+	--eap-social-hover-offset-x: 0px;
+	--eap-social-hover-offset-y: 0px;
+	--eap-social-hover-skew-x: 0deg;
+	--eap-social-hover-skew-y: 0deg;
+	--eap-social-hover-duration: 260ms;
+}
+
+.eap-social-icons--stacked {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.eap-social-icons__item {
+	display: inline-flex;
+}
+
+.eap-social-icons__link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 999px;
+	color: #0f172a;
+	background: rgba(15, 23, 42, 0.04);
+	text-decoration: none;
+	transition:
+		transform var(--eap-social-hover-duration) ease,
+		color var(--eap-social-hover-duration) ease,
+		background-color var(--eap-social-hover-duration) ease,
+		border-color var(--eap-social-hover-duration) ease,
+		box-shadow var(--eap-social-hover-duration) ease;
+}
+
+.eap-social-icons__link:hover,
+.eap-social-icons__item.is-active .eap-social-icons__link {
+	transform:
+		translate3d(var(--eap-social-hover-offset-x), var(--eap-social-hover-offset-y), 0)
+		rotate(var(--eap-social-hover-rotate))
+		skewX(var(--eap-social-hover-skew-x))
+		skewY(var(--eap-social-hover-skew-y))
+		scale(var(--eap-social-hover-scale));
+}
+
+.eap-social-icons__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+	line-height: 1;
+}
+
+.eap-social-icons__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+

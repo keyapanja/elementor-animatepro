@@ -1,0 +1,961 @@
+<?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class EAP_Admin {
+
+	/**
+	 * Option key for widget states.
+	 *
+	 * @var string
+	 */
+	const WIDGETS_OPTION = 'eap_widget_states';
+
+	/**
+	 * Option key for extension states.
+	 *
+	 * @var string
+	 */
+	const EXTENSIONS_OPTION = 'eap_extension_states';
+
+	/**
+	 * Menu slug.
+	 *
+	 * @var string
+	 */
+	const MENU_SLUG = 'elementor-animatepro';
+
+	/**
+	 * Widgets page slug.
+	 *
+	 * @var string
+	 */
+	const WIDGETS_SLUG = 'elementor-animatepro-widgets';
+
+	/**
+	 * Extensions page slug.
+	 *
+	 * @var string
+	 */
+	const EXTENSIONS_SLUG = 'elementor-animatepro-extensions';
+
+	/**
+	 * Theme builder page slug.
+	 *
+	 * @var string
+	 */
+	const THEME_BUILDER_SLUG = 'elementor-animatepro-theme-builder';
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		add_action( 'admin_menu', array( $this, 'register_menu' ) );
+		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_init', array( $this, 'handle_form_submission' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( EAP_FILE ), array( $this, 'add_plugin_action_links' ) );
+	}
+
+	/**
+	 * Register options for widgets and extensions.
+	 *
+	 * @return void
+	 */
+	public function register_settings() {
+		if ( false === get_option( self::WIDGETS_OPTION, false ) ) {
+			add_option( self::WIDGETS_OPTION, $this->get_default_widget_states(), '', false );
+		} else {
+			$this->activate_newly_built_widgets();
+		}
+
+		if ( false === get_option( self::EXTENSIONS_OPTION, false ) ) {
+			add_option( self::EXTENSIONS_OPTION, $this->get_default_extension_states(), '', false );
+		}
+	}
+
+	/**
+	 * Enable widgets that moved from coming soon to built in this release.
+	 *
+	 * @return void
+	 */
+	private function activate_newly_built_widgets() {
+		$states = get_option( self::WIDGETS_OPTION, array() );
+		$states = is_array( $states ) ? $states : array();
+		$done   = get_option( 'eap_widget_migrations', array() );
+		$done   = is_array( $done ) ? $done : array();
+
+		if ( empty( $done['animated-text-built'] ) ) {
+			$states['animated-text'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['animated-text-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['advanced-animated-text-built'] ) ) {
+			$states['advanced-animated-text'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['advanced-animated-text-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['testimonial-box-built'] ) ) {
+			$states['testimonial-box'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['testimonial-box-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['testimonial-slider-built'] ) ) {
+			$states['testimonial-slider'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['testimonial-slider-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+	}
+
+	/**
+	 * Handle widgets/extensions form submissions.
+	 *
+	 * @return void
+	 */
+	public function handle_form_submission() {
+		if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( empty( $_POST['eap_admin_action'] ) ) {
+			return;
+		}
+
+		$action = sanitize_key( wp_unslash( $_POST['eap_admin_action'] ) );
+		if ( ! in_array( $action, array( 'save_widgets', 'save_extensions' ), true ) ) {
+			return;
+		}
+
+		check_admin_referer( 'eap_save_admin_settings', 'eap_admin_nonce' );
+
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+		if ( 'save_widgets' === $action ) {
+			$input = isset( $_POST[ self::WIDGETS_OPTION ] ) ? (array) wp_unslash( $_POST[ self::WIDGETS_OPTION ] ) : array();
+			update_option( self::WIDGETS_OPTION, $this->sanitize_widget_states( $input ), false );
+			$target = admin_url( 'admin.php?page=' . self::WIDGETS_SLUG . '&eap-updated=1' );
+		} else {
+			$input = isset( $_POST[ self::EXTENSIONS_OPTION ] ) ? (array) wp_unslash( $_POST[ self::EXTENSIONS_OPTION ] ) : array();
+			update_option( self::EXTENSIONS_OPTION, $this->sanitize_extension_states( $input ), false );
+			$target = admin_url( 'admin.php?page=' . self::EXTENSIONS_SLUG . '&eap-updated=1' );
+		}
+
+		if ( self::WIDGETS_SLUG !== $page && self::EXTENSIONS_SLUG !== $page ) {
+			$target = admin_url( 'admin.php?page=' . self::MENU_SLUG );
+		}
+
+		wp_safe_redirect( $target );
+		exit;
+	}
+
+	/**
+	 * Register admin menu pages.
+	 *
+	 * @return void
+	 */
+	public function register_menu() {
+		add_menu_page(
+			__( 'Elementor AnimatePro', 'elementor-animatepro' ),
+			__( 'AnimatePro', 'elementor-animatepro' ),
+			'manage_options',
+			self::MENU_SLUG,
+			array( $this, 'render_dashboard_page' ),
+			'dashicons-format-image',
+			58
+		);
+
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Dashboard', 'elementor-animatepro' ),
+			__( 'Dashboard', 'elementor-animatepro' ),
+			'manage_options',
+			self::MENU_SLUG,
+			array( $this, 'render_dashboard_page' )
+		);
+
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Widgets', 'elementor-animatepro' ),
+			__( 'Widgets', 'elementor-animatepro' ),
+			'manage_options',
+			self::WIDGETS_SLUG,
+			array( $this, 'render_widgets_page' )
+		);
+
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Extensions', 'elementor-animatepro' ),
+			__( 'Extensions', 'elementor-animatepro' ),
+			'manage_options',
+			self::EXTENSIONS_SLUG,
+			array( $this, 'render_extensions_page' )
+		);
+
+		add_submenu_page(
+			self::MENU_SLUG,
+			__( 'Theme Builder', 'elementor-animatepro' ),
+			__( 'Theme Builder', 'elementor-animatepro' ),
+			'manage_options',
+			self::THEME_BUILDER_SLUG,
+			array( $this, 'render_theme_builder_page' )
+		);
+	}
+
+	/**
+	 * Enqueue admin assets on AnimatePro pages.
+	 *
+	 * @param string $hook_suffix Current admin page hook.
+	 * @return void
+	 */
+	public function enqueue_assets( $hook_suffix ) {
+		$allowed_pages = array(
+			self::MENU_SLUG,
+			self::WIDGETS_SLUG,
+			self::EXTENSIONS_SLUG,
+			self::THEME_BUILDER_SLUG,
+		);
+
+		$current_page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+		$screen       = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$is_eap_page  = in_array( $current_page, $allowed_pages, true );
+
+		if ( ! $is_eap_page && $screen && isset( $screen->base ) ) {
+			$is_eap_page = false !== strpos( (string) $screen->base, self::MENU_SLUG );
+		}
+
+		if ( ! $is_eap_page && 'toplevel_page_' . self::MENU_SLUG !== $hook_suffix ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'eap-admin-fonts',
+			'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap',
+			array(),
+			EAP_VERSION
+		);
+
+		wp_enqueue_style(
+			'eap-admin',
+			EAP_URL . 'assets/css/admin.css',
+			array( 'eap-admin-fonts' ),
+			EAP_VERSION
+		);
+
+		wp_enqueue_script(
+			'eap-admin',
+			EAP_URL . 'assets/js/admin.js',
+			array(),
+			EAP_VERSION,
+			true
+		);
+	}
+
+	/**
+	 * Add a Settings link on the plugins screen.
+	 *
+	 * @param array $links Existing action links.
+	 * @return array
+	 */
+	public function add_plugin_action_links( $links ) {
+		$settings_link = sprintf(
+			'<a href="%1$s">%2$s</a>',
+			esc_url( admin_url( 'admin.php?page=' . self::MENU_SLUG ) ),
+			esc_html__( 'Settings', 'elementor-animatepro' )
+		);
+
+		array_unshift( $links, $settings_link );
+
+		return $links;
+	}
+
+	/**
+	 * Render dashboard page.
+	 *
+	 * @return void
+	 */
+	public function render_dashboard_page() {
+		$cards = $this->get_admin_cards();
+		?>
+		<div class="wrap eap-admin">
+			<?php $this->render_topbar( self::MENU_SLUG ); ?>
+			<?php $this->render_page_header( __( 'Dashboard', 'elementor-animatepro' ), __( 'A clean control center for rebuilding Elementor AnimatePro one module at a time.', 'elementor-animatepro' ) ); ?>
+			<div class="eap-admin-grid eap-admin-grid--cards">
+				<?php foreach ( $cards as $card ) : ?>
+					<a class="eap-admin-card" href="<?php echo esc_url( $card['url'] ); ?>">
+						<span class="eap-admin-card__eyebrow"><?php echo esc_html( $card['eyebrow'] ); ?></span>
+						<h2><?php echo esc_html( $card['title'] ); ?></h2>
+						<p><?php echo esc_html( $card['description'] ); ?></p>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render widgets page.
+	 *
+	 * @return void
+	 */
+	public function render_widgets_page() {
+		$categories = $this->get_widget_categories();
+		$states     = $this->get_widget_states();
+		$total      = 0;
+		foreach ( $categories as $category ) {
+			$total += count( $category['widgets'] );
+		}
+		?>
+		<div class="wrap eap-admin">
+			<?php $this->render_topbar( self::WIDGETS_SLUG, __( 'Search for Widgets', 'elementor-animatepro' ) ); ?>
+			<?php $this->render_update_notice(); ?>
+			<form class="eap-widgets-shell" method="post" action="" data-eap-settings-form>
+				<?php wp_nonce_field( 'eap_save_admin_settings', 'eap_admin_nonce' ); ?>
+				<input type="hidden" name="eap_admin_action" value="save_widgets" />
+				<div class="eap-widgets-head">
+					<div>
+						<h1><?php esc_html_e( 'Widgets', 'elementor-animatepro' ); ?></h1>
+						<p><?php echo esc_html( sprintf( __( '%d Total Widgets', 'elementor-animatepro' ), $total ) ); ?></p>
+					</div>
+					<div class="eap-widgets-actions">
+						<button type="button" class="eap-btn eap-btn--ghost eap-bulk-toggle" data-eap-scope="all" data-eap-toggle="enable"><?php esc_html_e( 'Enable All', 'elementor-animatepro' ); ?></button>
+						<button type="button" class="eap-btn eap-btn--ghost eap-bulk-toggle" data-eap-scope="all" data-eap-toggle="disable"><?php esc_html_e( 'Disable All', 'elementor-animatepro' ); ?></button>
+						<label class="eap-autosave">
+							<input type="checkbox" data-eap-autosave />
+							<span><?php esc_html_e( 'Auto Save', 'elementor-animatepro' ); ?></span>
+						</label>
+						<button type="submit" class="eap-btn eap-btn--primary"><?php esc_html_e( 'Save Changes', 'elementor-animatepro' ); ?></button>
+					</div>
+				</div>
+
+				<div class="eap-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Widget Categories', 'elementor-animatepro' ); ?>">
+					<button type="button" class="eap-tab is-active" data-eap-tab="all"><?php esc_html_e( 'All', 'elementor-animatepro' ); ?></button>
+					<?php foreach ( $categories as $slug => $category ) : ?>
+						<button type="button" class="eap-tab" data-eap-tab="<?php echo esc_attr( $slug ); ?>"><?php echo esc_html( $category['tab'] ); ?></button>
+					<?php endforeach; ?>
+				</div>
+
+				<div class="eap-widget-groups">
+					<?php foreach ( $categories as $slug => $category ) : ?>
+						<section class="eap-widget-group" data-eap-panel="<?php echo esc_attr( $slug ); ?>">
+							<div class="eap-widget-group__header">
+								<h2><?php echo esc_html( $category['title'] ); ?></h2>
+								<button type="button" class="eap-inline-toggle eap-group-toggle" data-eap-scope="<?php echo esc_attr( $slug ); ?>" data-eap-state="enabled">
+									<span class="eap-inline-toggle__switch" aria-hidden="true"></span>
+									<span class="eap-inline-toggle__label"><?php esc_html_e( 'Disable All', 'elementor-animatepro' ); ?></span>
+								</button>
+							</div>
+							<div class="eap-widget-grid">
+								<?php foreach ( $category['widgets'] as $widget ) : ?>
+									<?php
+									$widget_key = $this->get_widget_key( $widget );
+									$is_built   = $this->is_built_widget( $widget );
+									?>
+									<label class="eap-widget-card<?php echo $is_built ? '' : ' is-coming-soon'; ?>" data-eap-widget-card data-eap-widget-name="<?php echo esc_attr( strtolower( $widget ) ); ?>" data-eap-widget-group="<?php echo esc_attr( $slug ); ?>" data-eap-available="<?php echo $is_built ? 'yes' : 'no'; ?>">
+										<span class="eap-widget-card__icon dashicons <?php echo esc_attr( $this->get_widget_icon_class( $widget ) ); ?>" aria-hidden="true"></span>
+										<span class="eap-widget-card__content">
+											<strong><span><?php echo esc_html( $widget ); ?></span><?php if ( ! $is_built ) : ?><span class="eap-widget-card__tag"><?php esc_html_e( 'Coming Soon', 'elementor-animatepro' ); ?></span><?php endif; ?></strong>
+											<small><?php esc_html_e( 'Documentation • Preview', 'elementor-animatepro' ); ?></small>
+										</span>
+										<span class="eap-switch">
+											<input type="checkbox" name="<?php echo esc_attr( self::WIDGETS_OPTION . '[' . $widget_key . ']' ); ?>" value="1" data-eap-toggle-input data-eap-group="<?php echo esc_attr( $slug ); ?>" <?php checked( $is_built && ! empty( $states[ $widget_key ] ) ); ?> <?php disabled( ! $is_built ); ?> />
+											<span class="eap-switch__slider" aria-hidden="true"></span>
+										</span>
+									</label>
+								<?php endforeach; ?>
+							</div>
+						</section>
+					<?php endforeach; ?>
+				</div>
+			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render extensions page.
+	 *
+	 * @return void
+	 */
+	public function render_extensions_page() {
+		$extensions = $this->get_extensions();
+		$states     = $this->get_extension_states();
+		?>
+		<div class="wrap eap-admin">
+			<?php $this->render_topbar( self::EXTENSIONS_SLUG, __( 'Search for Extensions', 'elementor-animatepro' ) ); ?>
+			<?php $this->render_update_notice(); ?>
+			<form class="eap-widgets-shell" method="post" action="" data-eap-settings-form>
+				<?php wp_nonce_field( 'eap_save_admin_settings', 'eap_admin_nonce' ); ?>
+				<input type="hidden" name="eap_admin_action" value="save_extensions" />
+				<div class="eap-widgets-head">
+					<div>
+						<h1><?php esc_html_e( 'Extensions', 'elementor-animatepro' ); ?></h1>
+						<p><?php echo esc_html( sprintf( __( '%d Total Extensions', 'elementor-animatepro' ), count( $extensions ) ) ); ?></p>
+					</div>
+					<div class="eap-widgets-actions">
+						<button type="button" class="eap-btn eap-btn--ghost eap-bulk-toggle" data-eap-scope="all" data-eap-toggle="enable"><?php esc_html_e( 'Enable All', 'elementor-animatepro' ); ?></button>
+						<button type="button" class="eap-btn eap-btn--ghost eap-bulk-toggle" data-eap-scope="all" data-eap-toggle="disable"><?php esc_html_e( 'Disable All', 'elementor-animatepro' ); ?></button>
+						<label class="eap-autosave">
+							<input type="checkbox" data-eap-autosave />
+							<span><?php esc_html_e( 'Auto Save', 'elementor-animatepro' ); ?></span>
+						</label>
+						<button type="submit" class="eap-btn eap-btn--primary"><?php esc_html_e( 'Save Changes', 'elementor-animatepro' ); ?></button>
+					</div>
+				</div>
+				<div class="eap-widget-groups">
+					<section class="eap-widget-group" data-eap-panel="extensions">
+						<div class="eap-widget-group__header">
+							<h2><?php esc_html_e( 'Extensions', 'elementor-animatepro' ); ?></h2>
+							<button type="button" class="eap-inline-toggle eap-group-toggle" data-eap-scope="extensions" data-eap-state="enabled">
+								<span class="eap-inline-toggle__switch" aria-hidden="true"></span>
+								<span class="eap-inline-toggle__label"><?php esc_html_e( 'Disable All', 'elementor-animatepro' ); ?></span>
+							</button>
+						</div>
+						<div class="eap-widget-grid">
+							<?php foreach ( $extensions as $extension ) : ?>
+								<label class="eap-widget-card" data-eap-widget-card data-eap-widget-name="<?php echo esc_attr( strtolower( $extension['label'] ) ); ?>" data-eap-widget-group="extensions">
+									<span class="eap-widget-card__icon dashicons <?php echo esc_attr( $extension['icon'] ); ?>" aria-hidden="true"></span>
+									<span class="eap-widget-card__content">
+										<strong><?php echo esc_html( $extension['label'] ); ?></strong>
+										<small><?php echo esc_html( $extension['description'] ); ?></small>
+									</span>
+									<span class="eap-switch">
+										<input type="checkbox" name="<?php echo esc_attr( self::EXTENSIONS_OPTION . '[' . $extension['key'] . ']' ); ?>" value="1" data-eap-toggle-input data-eap-group="extensions" <?php checked( ! empty( $states[ $extension['key'] ] ) ); ?> />
+										<span class="eap-switch__slider" aria-hidden="true"></span>
+									</span>
+								</label>
+							<?php endforeach; ?>
+						</div>
+					</section>
+				</div>
+			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render theme builder page.
+	 *
+	 * @return void
+	 */
+	public function render_theme_builder_page() {
+		?>
+		<div class="wrap eap-admin">
+			<?php $this->render_topbar( self::THEME_BUILDER_SLUG ); ?>
+			<?php $this->render_page_header( __( 'Theme Builder', 'elementor-animatepro' ), __( 'This page will manage headers, footers, display conditions, and template assignment.', 'elementor-animatepro' ) ); ?>
+			<div class="eap-admin-panel">
+				<h3><?php esc_html_e( 'Theme Builder', 'elementor-animatepro' ); ?></h3>
+				<p><?php esc_html_e( 'This section will be designed next using the same control-shell and AnimatePro admin system.', 'elementor-animatepro' ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render top navigation bar.
+	 *
+	 * @param string $current_slug Current page slug.
+	 * @param string $search_placeholder Search placeholder.
+	 * @return void
+	 */
+	private function render_topbar( $current_slug, $search_placeholder = '' ) {
+		$items = array(
+			self::MENU_SLUG          => __( 'Dashboard', 'elementor-animatepro' ),
+			self::WIDGETS_SLUG       => __( 'Widgets', 'elementor-animatepro' ),
+			self::EXTENSIONS_SLUG    => __( 'Extensions', 'elementor-animatepro' ),
+			self::THEME_BUILDER_SLUG => __( 'Theme Builder', 'elementor-animatepro' ),
+		);
+		?>
+		<div class="eap-topbar">
+			<div class="eap-topbar__brand">
+				<span class="eap-topbar__logo">AP</span>
+			</div>
+			<nav class="eap-topbar__nav" aria-label="<?php esc_attr_e( 'AnimatePro Admin Navigation', 'elementor-animatepro' ); ?>">
+				<?php foreach ( $items as $slug => $label ) : ?>
+					<a class="eap-topbar__link<?php echo $current_slug === $slug ? ' is-active' : ''; ?>" href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>">
+						<?php echo esc_html( $label ); ?>
+					</a>
+				<?php endforeach; ?>
+			</nav>
+			<?php if ( ! empty( $search_placeholder ) ) : ?>
+				<div class="eap-topbar__searchwrap">
+					<button type="button" class="eap-topbar__search" data-eap-search-toggle aria-label="<?php esc_attr_e( 'Open search', 'elementor-animatepro' ); ?>" aria-expanded="false">
+						<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+							<path d="M10.5 4a6.5 6.5 0 1 0 4.03 11.6l4.43 4.42 1.06-1.06-4.42-4.43A6.5 6.5 0 0 0 10.5 4Zm0 1.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"></path>
+						</svg>
+					</button>
+					<label class="eap-topbar__searchpanel" data-eap-search-panel>
+						<span class="screen-reader-text"><?php echo esc_html( $search_placeholder ); ?></span>
+						<input type="search" id="eap-global-search" data-eap-global-search placeholder="<?php echo esc_attr( $search_placeholder ); ?>" />
+					</label>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render shared page header.
+	 *
+	 * @param string $title Title.
+	 * @param string $description Description.
+	 * @return void
+	 */
+	private function render_page_header( $title, $description ) {
+		?>
+		<div class="eap-admin-hero">
+			<div>
+				<span class="eap-admin-hero__eyebrow"><?php esc_html_e( 'Elementor AnimatePro', 'elementor-animatepro' ); ?></span>
+				<h1><?php echo esc_html( $title ); ?></h1>
+				<p><?php echo esc_html( $description ); ?></p>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render a simple update notice after save.
+	 *
+	 * @return void
+	 */
+	private function render_update_notice() {
+		$updated = isset( $_GET['eap-updated'] ) ? sanitize_text_field( wp_unslash( $_GET['eap-updated'] ) ) : '';
+		if ( '1' !== $updated ) {
+			return;
+		}
+		?>
+		<div class="eap-admin-notice" data-eap-admin-notice>
+			<span class="eap-admin-notice__icon" aria-hidden="true">✓</span>
+			<div class="eap-admin-notice__content">
+				<strong><?php esc_html_e( 'Settings saved', 'elementor-animatepro' ); ?></strong>
+				<p><?php esc_html_e( 'Your module settings have been updated successfully.', 'elementor-animatepro' ); ?></p>
+			</div>
+			<button type="button" class="eap-admin-notice__dismiss" data-eap-notice-dismiss aria-label="<?php esc_attr_e( 'Dismiss notice', 'elementor-animatepro' ); ?>">×</button>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get dashboard cards.
+	 *
+	 * @return array<int, array<string, string>>
+	 */
+	private function get_admin_cards() {
+		return array(
+			array(
+				'eyebrow'     => __( 'Modules', 'elementor-animatepro' ),
+				'title'       => __( 'Widgets', 'elementor-animatepro' ),
+				'description' => __( 'Browse widget groups, categories, and future activation controls.', 'elementor-animatepro' ),
+				'url'         => admin_url( 'admin.php?page=' . self::WIDGETS_SLUG ),
+			),
+			array(
+				'eyebrow'     => __( 'Effects', 'elementor-animatepro' ),
+				'title'       => __( 'Extensions', 'elementor-animatepro' ),
+				'description' => __( 'Configure animation systems, utility controls, and editor extensions.', 'elementor-animatepro' ),
+				'url'         => admin_url( 'admin.php?page=' . self::EXTENSIONS_SLUG ),
+			),
+			array(
+				'eyebrow'     => __( 'Templates', 'elementor-animatepro' ),
+				'title'       => __( 'Theme Builder', 'elementor-animatepro' ),
+				'description' => __( 'Manage header, footer, and display-assignment templates from one place.', 'elementor-animatepro' ),
+				'url'         => admin_url( 'admin.php?page=' . self::THEME_BUILDER_SLUG ),
+			),
+		);
+	}
+
+	/**
+	 * Get widget category data.
+	 *
+	 * @return array<string, array<string, mixed>>
+	 */
+	private function get_widget_categories() {
+		return array(
+			'general'       => array(
+				'tab'     => __( 'General', 'elementor-animatepro' ),
+				'title'   => __( 'General Widgets', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Image Box',
+					'Image Box Slider',
+					'Image Hotspot',
+					'Social Icons',
+					'Image',
+					'Image Gallery',
+					'Text Hover Image',
+					'Brand Slider',
+					'Icon Box',
+					'Testimonial Box',
+					'Testimonial Slider',
+					'Advanced Testimonial Slider',
+					'Advanced Button',
+					'Image Comparison',
+					'Parallax Sections',
+					'Progress Bar',
+					'Team',
+					'Notification',
+					'One Page Nav',
+					'Timeline',
+					'Tabs',
+					'Services Tabs',
+					'Floating Elements',
+					'Event Slider',
+					'Content Slider',
+					'Countdown',
+					'Clicktop',
+				),
+			),
+			'animations'    => array(
+				'tab'     => __( 'Animations', 'elementor-animatepro' ),
+				'title'   => __( 'Animations', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Typewriter',
+					'Animated Heading',
+					'Animated Title',
+					'Animated Text',
+					'Advanced Animated Text',
+					'Lottie',
+					'GSAP DrawSvg',
+					'Cube Scroll Reveal',
+				),
+			),
+			'header-footer' => array(
+				'tab'     => __( 'Header & Footer', 'elementor-animatepro' ),
+				'title'   => __( 'Header & Footer Widgets', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Animated Off-Canvas',
+					'Site Logo',
+					'Nav Menu',
+					'Mega Menu',
+				),
+			),
+			'slider'        => array(
+				'tab'     => __( 'Slider', 'elementor-animatepro' ),
+				'title'   => __( 'Slider', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Posts Slider',
+					'Breaking News Slider',
+					'Category Slider',
+					'Video Box Slider',
+					'Filterable Slider',
+				),
+			),
+			'dynamic'       => array(
+				'tab'     => __( 'Dynamic', 'elementor-animatepro' ),
+				'title'   => __( 'Dynamic Widgets', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Post Title',
+					'Post Featured Image',
+					'Post Excerpt',
+					'Post Content',
+					'Post Comments',
+					'Post Reactions',
+					'Post Meta Info',
+					'Post Pagination',
+					'Social Share',
+					'Posts',
+					'Advanced Posts',
+					'Posts Timeline',
+					'Posts Read Later',
+					'Video Story',
+					'Video Posts Tab',
+					'Filterable Posts',
+					'Post Rating Form',
+					'Post Rating',
+					'Grid Hover Posts',
+					'Category Showcase',
+					'Banner Posts',
+					'Current Date',
+					'Featured Posts',
+					'Archive Title',
+					'Portfolio',
+					'Search Form',
+					'Search Query',
+					'Search No Result',
+					'Live Events',
+				),
+			),
+			'form'          => array(
+				'tab'     => __( 'Form', 'elementor-animatepro' ),
+				'title'   => __( 'Form Widgets', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Contact Form 7',
+					'Mailchimp',
+					'Advanced Mailchimp',
+				),
+			),
+			'video'         => array(
+				'tab'     => __( 'Video', 'elementor-animatepro' ),
+				'title'   => __( 'Video Widgets', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Video Popup',
+					'Video Box',
+					'Video Mask',
+					'Youtube Video',
+					'Scrollable Video',
+				),
+			),
+			'advanced'      => array(
+				'tab'     => __( 'Advanced', 'elementor-animatepro' ),
+				'title'   => __( 'Advanced Widgets', 'elementor-animatepro' ),
+				'widgets' => array(
+					'Loop Grid',
+					'Loop Carousel',
+					'Toggle Switch',
+					'Advanced Pricing Table',
+					'Scroll Elements',
+					'Advanced Portfolio',
+					'Filterable Gallery',
+					'Breadcrumbs',
+					'Table Of Content',
+					'Image Accordion',
+					'Author Box',
+					'Flip Box',
+					'Advanced Accordion',
+					'Nested Slider',
+					'Weather',
+					'TikTok Feed',
+					'Stacked Cards',
+					'Scrollmotion Cards',
+					'Nested Motion Card',
+					'Vertical Marquee',
+				),
+			),
+		);
+	}
+
+	/**
+	 * Sanitize widget option values.
+	 *
+	 * @param mixed $input Submitted input.
+	 * @return array<string, int>
+	 */
+	public function sanitize_widget_states( $input ) {
+		$defaults = $this->get_default_widget_states();
+		$clean    = array();
+
+		foreach ( $defaults as $key => $value ) {
+			$clean[ $key ] = isset( $input[ $key ] ) ? 1 : 0;
+
+			if ( ! $this->is_built_widget_key( $key ) ) {
+				$clean[ $key ] = 0;
+			}
+		}
+
+		return $clean;
+	}
+
+	/**
+	 * Sanitize extension option values.
+	 *
+	 * @param mixed $input Submitted input.
+	 * @return array<string, int>
+	 */
+	public function sanitize_extension_states( $input ) {
+		$defaults = $this->get_default_extension_states();
+		$clean    = array();
+
+		foreach ( $defaults as $key => $value ) {
+			$clean[ $key ] = isset( $input[ $key ] ) ? 1 : 0;
+		}
+
+		return $clean;
+	}
+
+	/**
+	 * Get stored widget states.
+	 *
+	 * @return array<string, int>
+	 */
+	private function get_widget_states() {
+		return wp_parse_args( get_option( self::WIDGETS_OPTION, array() ), $this->get_default_widget_states() );
+	}
+
+	/**
+	 * Get stored extension states.
+	 *
+	 * @return array<string, int>
+	 */
+	private function get_extension_states() {
+		return wp_parse_args( get_option( self::EXTENSIONS_OPTION, array() ), $this->get_default_extension_states() );
+	}
+
+	/**
+	 * Get default widget states.
+	 *
+	 * @return array<string, int>
+	 */
+	private function get_default_widget_states() {
+		$defaults = array();
+
+		foreach ( $this->get_widget_categories() as $category ) {
+			foreach ( $category['widgets'] as $widget ) {
+				$key              = $this->get_widget_key( $widget );
+				$defaults[ $key ] = $this->is_built_widget( $widget ) ? 1 : 0;
+			}
+		}
+
+		return $defaults;
+	}
+
+	/**
+	 * Determine whether a widget is currently implemented.
+	 *
+	 * @param string $widget Widget label.
+	 * @return bool
+	 */
+	private function is_built_widget( $widget ) {
+		return $this->is_built_widget_key( $this->get_widget_key( $widget ) );
+	}
+
+	/**
+	 * Determine whether a widget key is currently implemented.
+	 *
+	 * @param string $widget_key Widget key.
+	 * @return bool
+	 */
+	private function is_built_widget_key( $widget_key ) {
+		$built = array(
+			'image-box',
+			'image-box-slider',
+			'image-hotspot',
+			'social-icons',
+			'image',
+			'image-gallery',
+			'image-comparison',
+			'parallax-sections',
+			'text-hover-image',
+			'brand-slider',
+			'icon-box',
+			'testimonial-box',
+			'testimonial-slider',
+			'advanced-button',
+			'animated-text',
+			'advanced-animated-text',
+		);
+
+		return in_array( $widget_key, $built, true );
+	}
+
+	/**
+	 * Get default extension states.
+	 *
+	 * @return array<string, int>
+	 */
+	private function get_default_extension_states() {
+		$defaults = array();
+
+		foreach ( $this->get_extensions() as $extension ) {
+			$defaults[ $extension['key'] ] = 1;
+		}
+
+		return $defaults;
+	}
+
+	/**
+	 * Get widget key.
+	 *
+	 * @param string $widget Widget label.
+	 * @return string
+	 */
+	private function get_widget_key( $widget ) {
+		return sanitize_title( $widget );
+	}
+
+	/**
+	 * Get icon class for a widget label.
+	 *
+	 * @param string $widget Widget label.
+	 * @return string
+	 */
+	private function get_widget_icon_class( $widget ) {
+		$widget_name = strtolower( $widget );
+
+		$map = array(
+			'image'        => 'dashicons-format-image',
+			'gallery'      => 'dashicons-format-gallery',
+			'slider'       => 'dashicons-images-alt2',
+			'video'        => 'dashicons-video-alt3',
+			'button'       => 'dashicons-button',
+			'testimonial'  => 'dashicons-format-quote',
+			'tabs'         => 'dashicons-index-card',
+			'timeline'     => 'dashicons-backup',
+			'menu'         => 'dashicons-menu',
+			'logo'         => 'dashicons-admin-site-alt3',
+			'portfolio'    => 'dashicons-portfolio',
+			'parallax'     => 'dashicons-align-wide',
+			'search'       => 'dashicons-search',
+			'form'         => 'dashicons-feedback',
+			'post'         => 'dashicons-media-document',
+			'share'        => 'dashicons-share',
+			'accordion'    => 'dashicons-editor-ol',
+			'team'         => 'dashicons-groups',
+			'notification' => 'dashicons-bell',
+			'weather'      => 'dashicons-cloud',
+			'lottie'       => 'dashicons-format-status',
+			'tiktok'       => 'dashicons-format-video',
+			'mailchimp'    => 'dashicons-email',
+			'breadcrumbs'  => 'dashicons-arrow-right-alt2',
+			'countdown'    => 'dashicons-clock',
+			'author'       => 'dashicons-admin-users',
+			'pricing'      => 'dashicons-money-alt',
+			'text'         => 'dashicons-editor-textcolor',
+			'icon'         => 'dashicons-star-filled',
+			'brand'        => 'dashicons-megaphone',
+		);
+
+		foreach ( $map as $needle => $icon ) {
+			if ( false !== strpos( $widget_name, $needle ) ) {
+				return $icon;
+			}
+		}
+
+		return 'dashicons-screenoptions';
+	}
+
+	/**
+	 * Get extensions data.
+	 *
+	 * @return array<int, array<string, string>>
+	 */
+	private function get_extensions() {
+		return array(
+			array(
+				'key'         => 'motion-effects',
+				'label'       => __( 'Motion Effects', 'elementor-animatepro' ),
+				'description' => __( 'Entrance, scroll, and interactive motion controls.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-controls-repeat',
+			),
+			array(
+				'key'         => 'wrapper-link',
+				'label'       => __( 'Wrapper Link', 'elementor-animatepro' ),
+				'description' => __( 'Turn full containers or cards into clickable wrappers.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-admin-links',
+			),
+			array(
+				'key'         => 'custom-cursor',
+				'label'       => __( 'Custom Cursor', 'elementor-animatepro' ),
+				'description' => __( 'Attach cursor-followers and hover-aware pointer content.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-editor-customchar',
+			),
+			array(
+				'key'         => 'pin-elements',
+				'label'       => __( 'Pin Elements', 'elementor-animatepro' ),
+				'description' => __( 'Pin sections or inner elements during scroll interaction.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-admin-post',
+			),
+			array(
+				'key'         => 'scroll-transforms',
+				'label'       => __( 'Scroll Transforms', 'elementor-animatepro' ),
+				'description' => __( 'Translate, rotate, scale, and fade elements on scroll.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-image-rotate',
+			),
+		);
+	}
+}

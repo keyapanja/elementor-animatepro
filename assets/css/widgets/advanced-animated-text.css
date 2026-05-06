@@ -1,0 +1,172 @@
+﻿.eap-advanced-animated-text {
+	--eap-advanced-text-base: #0f172a;
+	--eap-advanced-text-accent: var(--eap-accent, #ff6b2c);
+	--eap-advanced-text-second: #00c2ff;
+	--eap-advanced-text-third: #8b5cf6;
+	--eap-advanced-text-duration: 4s;
+	display: block;
+}
+
+.eap-advanced-animated-text__line {
+	display: inline-block;
+	margin: 0;
+	position: relative;
+}
+
+.eap-advanced-animated-text__dynamic,
+.eap-advanced-animated-text__static {
+	display: inline-block;
+	position: relative;
+}
+
+.eap-advanced-animated-text__caret {
+	display: inline-block;
+	width: 0.08em;
+	height: 0.95em;
+	margin-left: 0.1em;
+	vertical-align: -0.08em;
+	animation: eap-advanced-text-caret 0.8s steps(1) infinite;
+}
+
+.eap-advanced-animated-text--rainbow .eap-advanced-animated-text__static {
+	animation: eap-advanced-text-rainbow var(--eap-advanced-text-duration) linear infinite;
+	background: linear-gradient(90deg, var(--eap-advanced-text-accent), var(--eap-advanced-text-second), var(--eap-advanced-text-third), var(--eap-advanced-text-accent));
+	background-size: 300% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.eap-advanced-animated-text--shadow .eap-advanced-animated-text__static {
+	animation: eap-advanced-text-shadow var(--eap-advanced-text-duration) ease-in-out infinite;
+}
+
+.eap-advanced-animated-text--changing .eap-advanced-animated-text__dynamic {
+	transition: opacity 280ms ease, transform 280ms ease, filter 280ms ease;
+}
+
+.eap-advanced-animated-text--changing .eap-advanced-animated-text__dynamic.is-changing {
+	animation: eap-advanced-text-change 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.eap-advanced-animated-text--neon .eap-advanced-animated-text__static {
+	animation: eap-advanced-text-neon var(--eap-advanced-text-duration) ease-in-out infinite alternate;
+	color: var(--eap-advanced-text-second);
+}
+
+.eap-advanced-animated-text--glitch .eap-advanced-animated-text__static::before,
+.eap-advanced-animated-text--glitch .eap-advanced-animated-text__static::after {
+	content: attr(data-text);
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+	position: absolute;
+}
+
+.eap-advanced-animated-text--glitch .eap-advanced-animated-text__static::before {
+	animation: eap-advanced-text-glitch-a 1.7s steps(2) infinite;
+	color: var(--eap-advanced-text-second);
+	transform: translateX(-2px);
+}
+
+.eap-advanced-animated-text--glitch .eap-advanced-animated-text__static::after {
+	animation: eap-advanced-text-glitch-b 1.35s steps(2) infinite;
+	color: var(--eap-advanced-text-accent);
+	transform: translateX(2px);
+}
+
+.eap-advanced-animated-text--shine .eap-advanced-animated-text__static {
+	background: linear-gradient(110deg, var(--eap-advanced-text-base) 0%, var(--eap-advanced-text-base) 35%, #fff 48%, var(--eap-advanced-text-base) 62%, var(--eap-advanced-text-base) 100%);
+	background-size: 260% 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	animation: eap-advanced-text-shine var(--eap-advanced-text-duration) ease-in-out infinite;
+}
+
+@keyframes eap-advanced-text-caret {
+	50% {
+		opacity: 0;
+	}
+}
+
+@keyframes eap-advanced-text-rainbow {
+	to {
+		background-position: 300% 0;
+	}
+}
+
+@keyframes eap-advanced-text-shadow {
+	0%,
+	100% {
+		text-shadow: 0 0 0 transparent;
+		transform: translate3d(0, 0, 0);
+	}
+	50% {
+		text-shadow: 0.12em 0.14em 0 var(--eap-advanced-text-accent), -0.08em -0.1em 0 var(--eap-advanced-text-second);
+		transform: translate3d(-0.02em, -0.02em, 0);
+	}
+}
+
+@keyframes eap-advanced-text-change {
+	0% {
+		opacity: 0;
+		transform: translate3d(0, 0.55em, 0);
+		filter: blur(8px);
+	}
+	100% {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+		filter: blur(0);
+	}
+}
+
+@keyframes eap-advanced-text-neon {
+	from {
+		text-shadow: 0 0 0.15em var(--eap-advanced-text-second), 0 0 0.35em var(--eap-advanced-text-second);
+	}
+	to {
+		text-shadow: 0 0 0.25em #fff, 0 0 0.55em var(--eap-advanced-text-accent), 0 0 1.2em var(--eap-advanced-text-second);
+	}
+}
+
+@keyframes eap-advanced-text-glitch-a {
+	0%,
+	100% {
+		clip-path: inset(0 0 85% 0);
+	}
+	35% {
+		clip-path: inset(18% 0 45% 0);
+		transform: translate(-0.06em, 0.02em);
+	}
+	70% {
+		clip-path: inset(62% 0 12% 0);
+		transform: translate(0.04em, -0.02em);
+	}
+}
+
+@keyframes eap-advanced-text-glitch-b {
+	0%,
+	100% {
+		clip-path: inset(82% 0 0 0);
+	}
+	30% {
+		clip-path: inset(8% 0 70% 0);
+		transform: translate(0.05em, -0.02em);
+	}
+	75% {
+		clip-path: inset(48% 0 28% 0);
+		transform: translate(-0.04em, 0.02em);
+	}
+}
+
+@keyframes eap-advanced-text-shine {
+	0% {
+		background-position: 180% 0;
+	}
+	100% {
+		background-position: -80% 0;
+	}
+}
+
+
