@@ -207,42 +207,159 @@
 	background: var(--eap-ab-bg);
 }
 
+/* ==========================================================================
+   Orbital Circle Button
+   --------------------------------------------------------------------------
+   Outer wrapper = the rotating text ring.
+   Inner disc    = the clickable icon target with its own hover behavior.
+   ========================================================================== */
+
 .eap-advanced-button--circle {
-	border-radius: 999px;
+	--eap-ab-orbit-speed: 14s;
+	--eap-ab-orbit-inner-size: 96px;
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 0;
+	border-radius: 50%;
+	overflow: visible;
+	padding: 0;
+	background-color: #ffffff;
+	transition: background-color 320ms ease;
+	min-width: 0;
 }
 
-.eap-advanced-button--circle::before {
-	width: 24px;
-	height: 24px;
-	border-radius: 999px;
-	background: var(--eap-ab-bg-hover);
-	z-index: 1;
-	transform: scale(0);
-	transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+/* Kill any leftover rules from the generic button (fill ::before etc.) */
+.eap-advanced-button--circle::before,
+.eap-advanced-button--circle::after {
+	content: none !important;
+	display: none !important;
 }
 
-.eap-advanced-button--circle[data-eap-origin="top-left"]::before {
-	top: 14px;
-	left: 14px;
+.eap-advanced-button--circle .eap-advanced-button__content {
+	display: none;
 }
 
-.eap-advanced-button--circle[data-eap-origin="top-right"]::before {
-	top: 14px;
-	right: 14px;
+/* Outer rotating ring (SVG with text on a path) */
+.eap-advanced-button__orbit-ring {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	animation: eap-ab-orbit-spin var(--eap-ab-orbit-speed) linear infinite;
 }
 
-.eap-advanced-button--circle[data-eap-origin="bottom-left"]::before {
-	bottom: 14px;
-	left: 14px;
+.eap-advanced-button--orbit-ccw .eap-advanced-button__orbit-ring {
+	animation-direction: reverse;
 }
 
-.eap-advanced-button--circle[data-eap-origin="bottom-right"]::before {
-	right: 14px;
-	bottom: 14px;
+.eap-advanced-button--orbit-pause:hover .eap-advanced-button__orbit-ring {
+	animation-play-state: paused;
 }
 
-.eap-advanced-button--circle:hover::before {
-	transform: scale(16);
+.eap-advanced-button__orbit-svg {
+	width: 100%;
+	height: 100%;
+	display: block;
+	overflow: visible;
+}
+
+.eap-advanced-button__orbit-text {
+	font-size: 14px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	fill: #111111;
+}
+
+/* Inner icon disc */
+.eap-advanced-button__orbit-inner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: var(--eap-ab-orbit-inner-size);
+	height: var(--eap-ab-orbit-inner-size);
+	border-radius: 50%;
+	background-color: #111111;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	z-index: 2;
+	transition: background-color 320ms ease;
+}
+
+.eap-advanced-button__orbit-icon {
+	position: relative;
+	color: #ffffff;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	transition:
+		transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 280ms ease,
+		color 280ms ease;
+}
+
+.eap-advanced-button__orbit-icon i,
+.eap-advanced-button__orbit-icon svg {
+	width: 1em;
+	height: 1em;
+	display: block;
+	fill: currentColor;
+}
+
+/* Ghost duplicate icon used by the Diagonal Slide effect — sits off-screen
+   bottom-left by default and slides in to center while the primary slides out
+   to top-right. */
+.eap-advanced-button__orbit-icon--ghost {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate3d(calc(-50% - 120%), calc(-50% + 120%), 0);
+	opacity: 0;
+}
+
+/* --- Icon hover effects -------------------------------------------------- */
+
+.eap-advanced-button--orbit-icon-rotate:hover .eap-advanced-button__orbit-icon:not(.eap-advanced-button__orbit-icon--ghost) {
+	transform: rotate(var(--eap-ab-orbit-icon-rotate, 45deg));
+}
+
+.eap-advanced-button--orbit-icon-scale:hover .eap-advanced-button__orbit-icon:not(.eap-advanced-button__orbit-icon--ghost) {
+	transform: scale(1.22);
+}
+
+.eap-advanced-button--orbit-icon-pulse:hover .eap-advanced-button__orbit-icon:not(.eap-advanced-button__orbit-icon--ghost) {
+	animation: eap-ab-orbit-pulse 0.6s ease;
+}
+
+.eap-advanced-button--orbit-icon-diagonal:hover .eap-advanced-button__orbit-icon:not(.eap-advanced-button__orbit-icon--ghost) {
+	transform: translate3d(120%, -120%, 0);
+	opacity: 0;
+}
+
+.eap-advanced-button--orbit-icon-diagonal:hover .eap-advanced-button__orbit-icon--ghost {
+	transform: translate3d(-50%, -50%, 0);
+	opacity: 1;
+}
+
+@keyframes eap-ab-orbit-spin {
+	from { transform: rotate(0deg); }
+	to   { transform: rotate(360deg); }
+}
+
+@keyframes eap-ab-orbit-pulse {
+	0%, 100% { transform: scale(1); }
+	50%      { transform: scale(1.2); }
+}
+
+/* Respect reduced motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+	.eap-advanced-button__orbit-ring {
+		animation: none;
+	}
 }
 
 .eap-advanced-button--underline {
@@ -438,7 +555,6 @@
 }
 
 .eap-advanced-button--classic:hover,
-.eap-advanced-button--circle:hover,
 .eap-advanced-button--surface-fill:hover {
 	background: var(--eap-ab-bg);
 }
@@ -457,6 +573,189 @@
 
 .eap-advanced-button--surface-fill:hover .eap-advanced-button__icon-shell {
 	background: var(--eap-ab-icon-hover-bg);
+}
+
+/* ==========================================================================
+   Combined: Icon Motion + Surface Fill
+   --------------------------------------------------------------------------
+   Inline icon-motion content + an expanding surface-fill cover anchored at
+   the wrapper corner. The cover lives behind the content (z-index: 1) so the
+   text + inline icon (z-index: 2) stay readable as the fill expands.
+   ========================================================================== */
+
+.eap-advanced-button--icon-motion-fill {
+	--eap-ab-surface-cover: var(--eap-ab-bg-hover);
+	position: relative;
+	overflow: hidden;
+}
+
+.eap-advanced-button--icon-motion-fill .eap-advanced-button__cover {
+	content: "";
+	position: absolute;
+	pointer-events: none;
+	z-index: 1;
+	width: var(--eap-ab-icon-box-size);
+	height: var(--eap-ab-icon-box-size);
+	border-radius: 999px;
+	background: var(--eap-ab-surface-cover);
+	transform: scale(0.001);
+	transform-origin: center;
+	will-change: transform;
+	transition: transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.eap-advanced-button--icon-motion-fill.eap-advanced-button--accent-top-left .eap-advanced-button__cover {
+	top: var(--eap-ab-accent-offset-y);
+	left: var(--eap-ab-accent-offset-x);
+}
+
+.eap-advanced-button--icon-motion-fill.eap-advanced-button--accent-top-right .eap-advanced-button__cover {
+	top: var(--eap-ab-accent-offset-y);
+	right: var(--eap-ab-accent-offset-x);
+}
+
+.eap-advanced-button--icon-motion-fill.eap-advanced-button--accent-bottom-left .eap-advanced-button__cover {
+	bottom: var(--eap-ab-accent-offset-y);
+	left: var(--eap-ab-accent-offset-x);
+}
+
+.eap-advanced-button--icon-motion-fill.eap-advanced-button--accent-bottom-right .eap-advanced-button__cover {
+	right: var(--eap-ab-accent-offset-x);
+	bottom: var(--eap-ab-accent-offset-y);
+}
+
+.eap-advanced-button--icon-motion-fill:hover .eap-advanced-button__cover {
+	transition-duration: 1850ms;
+	transition-timing-function: cubic-bezier(0.12, 0.9, 0.24, 1);
+	transform: scale(34);
+}
+
+/* Inline icon shell sits in flow next to text (icon-motion behavior). */
+.eap-advanced-button--icon-motion-fill .eap-advanced-button__icon-shell {
+	position: relative;
+	z-index: 2;
+}
+
+/* Content stays above the expanding cover. */
+.eap-advanced-button--icon-motion-fill .eap-advanced-button__content {
+	position: relative;
+	z-index: 2;
+}
+
+/* Keep base background stable on hover — the cover does the colour transition. */
+.eap-advanced-button--icon-motion-fill:hover {
+	background: var(--eap-ab-bg);
+}
+
+/* Icon hover background inside the inline shell still works through the
+   shared base :hover .__icon-shell rule. */
+
+/* ==========================================================================
+   Icon Expand Button
+   --------------------------------------------------------------------------
+   Pill button with a small icon container on the left. On hover the icon
+   container expands across the button width while the text translates out
+   and shrinks to zero font-size.
+   ========================================================================== */
+
+.eap-advanced-button--icon-expand {
+	--eap-ab-ie-pill-w: 30px;
+	--eap-ab-ie-pill-h: 30px;
+	--eap-ab-ie-pill-w-hover: 90px;
+	--eap-ab-ie-text-w: 60px;
+	--eap-ab-ie-duration: 300ms;
+	--eap-ab-ie-active-scale: 0.95;
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;     /* icon + text centered as a group */
+	gap: 0;
+	overflow: hidden;
+	background-color: #0c0c0c;
+	color: #ffffff;
+	cursor: pointer;
+	box-sizing: border-box;
+	/* Defeat the base button padding/min-width which would shrink the content
+	   area below icon + text combined width and force them to overlap. */
+	padding: 0 !important;
+	min-width: 0 !important;
+	transition:
+		background-color var(--eap-ab-ie-duration) ease,
+		border-color var(--eap-ab-ie-duration) ease,
+		transform var(--eap-ab-ie-duration) ease,
+		box-shadow var(--eap-ab-ie-duration) ease;
+}
+
+/* Icon container — fixed-size sibling next to text. */
+.eap-advanced-button--icon-expand .eap-advanced-button__icon-pill {
+	flex: 0 0 auto;
+	width: var(--eap-ab-ie-pill-w);
+	height: var(--eap-ab-ie-pill-h);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	z-index: 2;
+	border-radius: 50%;
+	background: linear-gradient(180deg, #ff88ff, #ac46ff);
+	transition: width var(--eap-ab-ie-duration) ease;
+}
+
+.eap-advanced-button--icon-expand .eap-advanced-button__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	color: #ffffff;
+	transition: color var(--eap-ab-ie-duration) ease;
+}
+
+.eap-advanced-button--icon-expand .eap-advanced-button__icon i,
+.eap-advanced-button--icon-expand .eap-advanced-button__icon svg {
+	display: block;
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+/* Text — fixed-width sibling, NOT a flex-grow filler. The icon pill + text
+   are centered as a unit inside the button (matches reference HTML). */
+.eap-advanced-button--icon-expand .eap-advanced-button__text {
+	flex: 0 0 auto;
+	width: var(--eap-ab-ie-text-w);
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: inherit;
+	z-index: 1;
+	white-space: nowrap;
+	overflow: hidden;
+	transition:
+		transform var(--eap-ab-ie-duration) ease,
+		width var(--eap-ab-ie-duration) ease,
+		font-size var(--eap-ab-ie-duration) ease,
+		color var(--eap-ab-ie-duration) ease;
+}
+
+.eap-advanced-button--icon-expand:hover .eap-advanced-button__icon-pill {
+	width: var(--eap-ab-ie-pill-w-hover);
+}
+
+.eap-advanced-button--icon-expand:hover .eap-advanced-button__text {
+	transform: translateX(10px);
+	width: 0;
+	font-size: 0;
+}
+
+.eap-advanced-button--icon-expand:active {
+	transform: scale(var(--eap-ab-ie-active-scale));
+}
+
+/* Hover bg uses dedicated CSS variable so it doesn't inherit the base layout's
+   bg-flip. If no hover bg is set, falls back to the normal bg (no change). */
+.eap-advanced-button--icon-expand:hover {
+	background-color: var(--eap-ab-ie-bg-hover, var(--eap-ab-ie-bg, #0c0c0c));
 }
 
 .eap-advanced-button-wrap:not(.is-visible) .eap-advanced-button {

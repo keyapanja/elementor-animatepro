@@ -1,0 +1,140 @@
+/* =========================================================================
+ * EAP Multi Buttons
+ * A row of buttons, each individually styled via per-repeater-item selectors
+ * ({{CURRENT_ITEM}}). Two group layouts: separate / joined.
+ *
+ * The root aligns the (shrink-wrapped) group; the group only spans the width of
+ * its buttons unless Equal Width is on.
+ * ====================================================================== */
+
+.eap-multi-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.eap-multi-buttons__group {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: stretch;
+	max-width: 100%;
+}
+
+.eap-multi-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin: 0;
+	padding: 14px 34px;
+	border: 0 solid transparent;
+	background-color: transparent;
+	color: #1f2937;
+	font-weight: 600;
+	line-height: 1.2;
+	text-decoration: none;
+	cursor: pointer;
+	box-sizing: border-box;
+	transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.eap-multi-button__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.eap-multi-button__icon i {
+	font-size: var(--eap-mb-icon-size, 1.05em);
+	color: currentColor;
+}
+
+.eap-multi-button__icon svg {
+	width: var(--eap-mb-icon-size, 1.05em);
+	height: var(--eap-mb-icon-size, 1.05em);
+	fill: currentColor;
+}
+
+/* -------------------------------------------------------------------------
+ * Joined — connected buttons, shared outer radius, divider between.
+ * ---------------------------------------------------------------------- */
+
+.eap-multi-buttons--joined .eap-multi-buttons__group {
+	--eap-mb-group-radius: 10px;
+	flex-wrap: nowrap;
+}
+
+.eap-multi-buttons--joined .eap-multi-button {
+	position: relative;
+	border-radius: 0 !important;
+}
+
+.eap-multi-buttons--joined .eap-multi-button:first-child {
+	border-top-left-radius: var(--eap-mb-group-radius) !important;
+	border-bottom-left-radius: var(--eap-mb-group-radius) !important;
+}
+
+.eap-multi-buttons--joined .eap-multi-button:last-child {
+	border-top-right-radius: var(--eap-mb-group-radius) !important;
+	border-bottom-right-radius: var(--eap-mb-group-radius) !important;
+}
+
+/*
+ * Divider as a pseudo-element on the seam, so it is independent of each
+ * button's own per-item border — the Divider Color/Width controls always take
+ * effect regardless of how the individual buttons are styled.
+ */
+.eap-multi-buttons--joined .eap-multi-button + .eap-multi-button::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: var(--eap-mb-divider-width, 1px);
+	background: var(--eap-mb-divider-color, rgba(0, 0, 0, 0.12));
+	transform: translateX(-50%);
+	z-index: 2;
+	pointer-events: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive stacking — vertical, divider flips to a horizontal seam line.
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+	.eap-multi-buttons--stack-tablet .eap-multi-buttons__group {
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+	}
+	.eap-multi-buttons--stack-tablet.eap-multi-buttons--joined .eap-multi-button + .eap-multi-button::before {
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: auto;
+		width: auto;
+		height: var(--eap-mb-divider-width, 1px);
+		transform: translateY(-50%);
+	}
+}
+
+@media (max-width: 767px) {
+	.eap-multi-buttons--stack-mobile .eap-multi-buttons__group {
+		flex-direction: column;
+		align-items: stretch;
+		width: 100%;
+	}
+	.eap-multi-buttons--stack-mobile.eap-multi-buttons--joined .eap-multi-button + .eap-multi-button::before {
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: auto;
+		width: auto;
+		height: var(--eap-mb-divider-width, 1px);
+		transform: translateY(-50%);
+	}
+}

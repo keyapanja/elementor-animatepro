@@ -1,0 +1,266 @@
+/* =========================================================================
+ * EAP Image Accordion
+ * Horizontal or vertical panels that expand on hover/click (flex-grow), with
+ * an overlay + revealed caption. Sizing/colors are CSS-variable driven so the
+ * Elementor controls stay fully editable.
+ * ====================================================================== */
+
+.eap-image-accordion {
+	--eap-ia-active-grow: 4;
+	--eap-ia-speed: 600ms;
+	--eap-ia-anim-duration: 700ms;
+	--eap-ia-stagger: 120ms;
+}
+
+.eap-image-accordion__list {
+	display: flex;
+	gap: var(--eap-ia-gap, 10px);
+	width: 100%;
+}
+
+.eap-image-accordion--horizontal .eap-image-accordion__list {
+	flex-direction: row;
+	height: var(--eap-ia-height, 440px);
+}
+
+.eap-image-accordion--vertical .eap-image-accordion__list {
+	flex-direction: column;
+	height: var(--eap-ia-height, 440px);
+}
+
+.eap-image-accordion__item {
+	position: relative;
+	flex: 1 1 0%;
+	min-width: 0;
+	min-height: 0;
+	overflow: hidden;
+	cursor: pointer;
+	transition: flex-grow var(--eap-ia-speed, 600ms) ease;
+}
+
+.eap-image-accordion__item.is-active {
+	flex-grow: var(--eap-ia-active-grow, 4);
+}
+
+.eap-image-accordion__item:focus-visible {
+	outline: 2px solid #ffffff;
+	outline-offset: -4px;
+}
+
+/* Media */
+.eap-image-accordion__media {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+}
+
+.eap-image-accordion__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform var(--eap-ia-speed, 600ms) ease, filter 0.4s ease;
+}
+
+.eap-image-accordion--zoom .eap-image-accordion__item.is-active .eap-image-accordion__media img {
+	transform: scale(1.06);
+}
+
+/* Overlay */
+.eap-image-accordion__overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: rgba(10, 12, 20, 0.25);
+	transition: background 0.4s ease, opacity 0.4s ease;
+	pointer-events: none;
+}
+
+.eap-image-accordion__item.is-active .eap-image-accordion__overlay {
+	background: linear-gradient(to top, rgba(6, 8, 16, 0.88) 0%, rgba(6, 8, 16, 0.25) 55%, rgba(6, 8, 16, 0) 100%);
+}
+
+/* Content */
+.eap-image-accordion__content {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 28px;
+	color: #ffffff;
+	pointer-events: none;
+}
+
+.eap-image-accordion__content > * {
+	max-width: 100%;
+}
+
+.eap-image-accordion__subtitle {
+	font-size: 13px;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.75);
+}
+
+.eap-image-accordion__title {
+	margin: 0 0 8px;
+	font-size: 24px;
+	font-weight: 700;
+	color: #ffffff;
+}
+
+.eap-image-accordion__desc {
+	font-size: 15px;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.82);
+}
+
+.eap-image-accordion__actions {
+	margin-top: 6px;
+}
+
+.eap-image-accordion__button {
+	display: inline-block;
+	padding: 10px 20px;
+	border-radius: 50px;
+	background-color: #ffffff;
+	color: #0f172a;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	pointer-events: none;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Only the open panel's button is interactive (collapsed buttons are hidden). */
+.eap-image-accordion__item.is-active .eap-image-accordion__button {
+	pointer-events: auto;
+}
+
+/* Caption reveal — hidden on collapsed panels, staggered in on the active one. */
+.eap-image-accordion__subtitle,
+.eap-image-accordion__title,
+.eap-image-accordion__desc,
+.eap-image-accordion__actions {
+	opacity: 0;
+	transform: translateY(16px);
+	transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* Description + button also collapse their HEIGHT on inactive panels, so their
+   (invisible) text never reserves space. On narrow collapsed panels that
+   wrapped text was pushing the visible caption up into the middle; collapsing
+   it keeps the title/subtitle bottom-anchored, matching the open panel. */
+.eap-image-accordion__desc,
+.eap-image-accordion__actions {
+	max-height: 0;
+	overflow: hidden;
+	transition: opacity 0.45s ease, transform 0.45s ease, max-height 0.5s ease;
+}
+
+.eap-image-accordion__item.is-active .eap-image-accordion__desc {
+	max-height: 24em;
+}
+
+.eap-image-accordion__item.is-active .eap-image-accordion__actions {
+	max-height: 10em;
+}
+
+.eap-image-accordion__item.is-active .eap-image-accordion__subtitle {
+	transition-delay: 0.1s;
+}
+.eap-image-accordion__item.is-active .eap-image-accordion__title {
+	transition-delay: 0.16s;
+}
+.eap-image-accordion__item.is-active .eap-image-accordion__desc {
+	transition-delay: 0.22s;
+}
+.eap-image-accordion__item.is-active .eap-image-accordion__actions {
+	transition-delay: 0.28s;
+}
+
+.eap-image-accordion__item.is-active .eap-image-accordion__subtitle,
+.eap-image-accordion__item.is-active .eap-image-accordion__title,
+.eap-image-accordion__item.is-active .eap-image-accordion__desc,
+.eap-image-accordion__item.is-active .eap-image-accordion__actions {
+	opacity: 1;
+	transform: none;
+}
+
+/* Keep the title and/or subtitle visible on collapsed panels when enabled. */
+.eap-image-accordion--closed-title .eap-image-accordion__item:not(.is-active) .eap-image-accordion__title,
+.eap-image-accordion--closed-both .eap-image-accordion__item:not(.is-active) .eap-image-accordion__title,
+.eap-image-accordion--closed-subtitle .eap-image-accordion__item:not(.is-active) .eap-image-accordion__subtitle,
+.eap-image-accordion--closed-both .eap-image-accordion__item:not(.is-active) .eap-image-accordion__subtitle {
+	opacity: 1;
+	transform: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Entrance animations (toggled via .is-visible by image-accordion.js).
+ * Each keeps its own flex-grow transition so hover/click expansion is never
+ * delayed by the entrance stagger.
+ * ---------------------------------------------------------------------- */
+
+.eap-image-accordion--anim-fade .eap-image-accordion__item {
+	opacity: 0;
+	transition: flex-grow var(--eap-ia-speed, 600ms) ease,
+		opacity var(--eap-ia-anim-duration, 700ms) ease calc(var(--eap-ia-i, 0) * var(--eap-ia-stagger, 120ms));
+}
+
+.eap-image-accordion--anim-slide .eap-image-accordion__item {
+	opacity: 0;
+	transform: translateY(40px);
+	transition: flex-grow var(--eap-ia-speed, 600ms) ease,
+		opacity var(--eap-ia-anim-duration, 700ms) ease calc(var(--eap-ia-i, 0) * var(--eap-ia-stagger, 120ms)),
+		transform var(--eap-ia-anim-duration, 700ms) ease calc(var(--eap-ia-i, 0) * var(--eap-ia-stagger, 120ms));
+}
+
+.eap-image-accordion--anim-zoom .eap-image-accordion__item {
+	opacity: 0;
+	transform: scale(0.9);
+	transition: flex-grow var(--eap-ia-speed, 600ms) ease,
+		opacity var(--eap-ia-anim-duration, 700ms) ease calc(var(--eap-ia-i, 0) * var(--eap-ia-stagger, 120ms)),
+		transform var(--eap-ia-anim-duration, 700ms) ease calc(var(--eap-ia-i, 0) * var(--eap-ia-stagger, 120ms));
+}
+
+.eap-image-accordion--anim-fade.is-visible .eap-image-accordion__item,
+.eap-image-accordion--anim-slide.is-visible .eap-image-accordion__item,
+.eap-image-accordion--anim-zoom.is-visible .eap-image-accordion__item {
+	opacity: 1;
+	transform: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive — stack horizontal accordions on small screens.
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+	.eap-image-accordion--horizontal .eap-image-accordion__list {
+		flex-direction: column;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Reduced motion
+ * ---------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-image-accordion__item,
+	.eap-image-accordion__media img,
+	.eap-image-accordion__overlay,
+	.eap-image-accordion__content > * {
+		transition: none !important;
+	}
+
+	.eap-image-accordion--anim-fade .eap-image-accordion__item,
+	.eap-image-accordion--anim-slide .eap-image-accordion__item,
+	.eap-image-accordion--anim-zoom .eap-image-accordion__item {
+		opacity: 1;
+		transform: none;
+	}
+}

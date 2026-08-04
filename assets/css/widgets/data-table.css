@@ -1,0 +1,280 @@
+/* =========================================================================
+ * EAP Data Table
+ * A styleable table with optional sort / search / pagination and two
+ * responsive modes (horizontal scroll or stacked cards). The interactive
+ * behaviour lives in data-table.js; this file is layout + skin only.
+ * ====================================================================== */
+
+.eap-data-table {
+	--eap-dt-divider-w: 1px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.eap-data-table * {
+	box-sizing: border-box;
+}
+
+.eap-data-table__scroll {
+	width: 100%;
+	max-width: 100%;
+}
+
+.eap-data-table--scroll .eap-data-table__scroll {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.eap-data-table__table {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin: 0;
+}
+
+/* Horizontal-scroll mode keeps cells on one line so the table can exceed the
+ * container width and scroll, instead of squishing / wrapping. */
+.eap-data-table--scroll .eap-data-table__th,
+.eap-data-table--scroll .eap-data-table__td {
+	white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------
+ * Header
+ * ---------------------------------------------------------------------- */
+
+.eap-data-table__th {
+	margin: 0;
+	border: 0;
+	text-align: left;
+	vertical-align: middle;
+	font-weight: 600;
+}
+
+.eap-data-table__th-inner {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	vertical-align: middle;
+}
+
+.eap-data-table__th-icon {
+	display: inline-flex;
+	align-items: center;
+	line-height: 1;
+}
+
+.eap-data-table__th-icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-data-table__th[data-eap-dt-th] {
+	cursor: pointer;
+	user-select: none;
+}
+
+/* Sort indicator — stacked up/down triangles; the active direction stays bold
+ * while the other dims. Colour comes from the Sort Icons controls. */
+.eap-data-table__sort {
+	position: relative;
+	display: inline-block;
+	flex: 0 0 auto;
+	width: 8px;
+	height: 14px;
+	margin-left: 2px;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.eap-data-table__sort::before,
+.eap-data-table__sort::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+}
+
+.eap-data-table__sort::before {
+	top: 1px;
+	border-bottom: 5px solid currentColor;
+}
+
+.eap-data-table__sort::after {
+	bottom: 1px;
+	border-top: 5px solid currentColor;
+}
+
+.eap-data-table__th[aria-sort="none"] .eap-data-table__sort {
+	opacity: 0.75;
+}
+
+.eap-data-table__th[aria-sort="ascending"] .eap-data-table__sort::after {
+	opacity: 0.25;
+}
+
+.eap-data-table__th[aria-sort="descending"] .eap-data-table__sort::before {
+	opacity: 0.25;
+}
+
+/* -------------------------------------------------------------------------
+ * Body
+ * ---------------------------------------------------------------------- */
+
+.eap-data-table__td {
+	margin: 0;
+	border: 0;
+	text-align: left;
+	vertical-align: middle;
+	background-clip: padding-box;
+}
+
+.eap-data-table__td a {
+	text-decoration: underline;
+}
+
+.eap-data-table__tr--link {
+	cursor: pointer;
+}
+
+.eap-data-table__empty {
+	padding: 22px 16px;
+	text-align: center;
+	color: #6b7280;
+}
+
+/* -------------------------------------------------------------------------
+ * Toolbar / search
+ * ---------------------------------------------------------------------- */
+
+.eap-data-table__toolbar {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.eap-data-table__search {
+	max-width: 100%;
+	outline: none;
+	box-sizing: border-box;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Pagination
+ * ---------------------------------------------------------------------- */
+
+.eap-data-table__pagination {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+}
+
+.eap-data-table__pagination:empty {
+	display: none;
+}
+
+.eap-data-table__page {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 34px;
+	height: 34px;
+	padding: 0 10px;
+	margin: 0;
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.eap-data-table__page[disabled] {
+	opacity: 0.45;
+	cursor: default;
+}
+
+.eap-data-table__page--ellipsis {
+	border-color: transparent !important;
+	background: transparent !important;
+	cursor: default;
+	min-width: 20px;
+	padding: 0 2px;
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive — stack into cards
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+	.eap-data-table--stack-tablet .eap-data-table__thead {
+		display: none;
+	}
+	.eap-data-table--stack-tablet .eap-data-table__table,
+	.eap-data-table--stack-tablet .eap-data-table__tbody,
+	.eap-data-table--stack-tablet .eap-data-table__tr,
+	.eap-data-table--stack-tablet .eap-data-table__td {
+		display: block;
+		width: 100%;
+	}
+	.eap-data-table--stack-tablet .eap-data-table__tr {
+		margin-bottom: 14px;
+	}
+	.eap-data-table--stack-tablet .eap-data-table__td {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 14px;
+		text-align: right;
+		white-space: normal;
+	}
+	.eap-data-table--stack-tablet .eap-data-table__td::before {
+		content: attr(data-label);
+		flex: 0 0 42%;
+		text-align: left;
+		font-weight: 600;
+		opacity: 0.85;
+	}
+	.eap-data-table--stack-tablet .eap-data-table__td[data-label=""]::before {
+		content: none;
+	}
+}
+
+@media (max-width: 767px) {
+	.eap-data-table--stack-mobile .eap-data-table__thead {
+		display: none;
+	}
+	.eap-data-table--stack-mobile .eap-data-table__table,
+	.eap-data-table--stack-mobile .eap-data-table__tbody,
+	.eap-data-table--stack-mobile .eap-data-table__tr,
+	.eap-data-table--stack-mobile .eap-data-table__td {
+		display: block;
+		width: 100%;
+	}
+	.eap-data-table--stack-mobile .eap-data-table__tr {
+		margin-bottom: 14px;
+	}
+	.eap-data-table--stack-mobile .eap-data-table__td {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 14px;
+		text-align: right;
+		white-space: normal;
+	}
+	.eap-data-table--stack-mobile .eap-data-table__td::before {
+		content: attr(data-label);
+		flex: 0 0 42%;
+		text-align: left;
+		font-weight: 600;
+		opacity: 0.85;
+	}
+	.eap-data-table--stack-mobile .eap-data-table__td[data-label=""]::before {
+		content: none;
+	}
+}

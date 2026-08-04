@@ -1,8 +1,14 @@
 (() => {
 	const badgeClass = 'eap-widget-badge';
-	const readyClass = 'eap-widget-badge-ready';
+	const panelReadyClass = 'eap-widget-badge-ready';
 	const structureReadyClass = 'eap-structure-badge-ready';
-	const eapWidgetTitles = new Set([
+
+	// Fallback list of this plugin's widget titles, used only for the structure
+	// (navigator) panel, which exposes titles but not widget types. The panel /
+	// search list does NOT rely on this — it matches the real widget type via
+	// data-library-element-type, so it can never tag a same-named Elementor
+	// default widget.
+	const fallbackEapTitles = new Set([
 		'image box',
 		'image box slider',
 		'icon box',
@@ -11,6 +17,8 @@
 		'image',
 		'image gallery',
 		'image comparison',
+		'progress bar',
+		'team',
 		'parallax sections',
 		'text hover image',
 		'brand slider',
@@ -18,18 +26,12 @@
 		'testimonial slider',
 		'advanced button',
 		'animated text',
-		'advanced animated text'
-	]);
-	const searchSafeEapWidgetTitles = new Set([
-		'image hotspot',
-		'image comparison',
-		'parallax sections',
-		'text hover image',
-		'brand slider',
-		'testimonial box',
-		'testimonial slider',
-		'advanced button',
-		'advanced animated text'
+		'advanced animated text',
+		'timeline',
+		'services tabs',
+		'one page nav',
+		'advanced testimonial slider',
+		'advanced slider'
 	]);
 
 	const normalizeText = (value) => String(value || '')
@@ -37,100 +39,55 @@
 		.trim()
 		.toLowerCase();
 
-	const getTitleText = (element) => {
-		if (!element) {
-			return '';
+	// Titles of registered eap-* widgets, read from Elementor's widget cache so
+	// the structure panel stays correct even if the widget set changes. Merged
+	// with the fallback above. Cached once Elementor has populated the data.
+	let eapTitleCache = null;
+	const getEapTitles = () => {
+		if (eapTitleCache) {
+			return eapTitleCache;
 		}
 
-		const selectors = [
-			'.title',
-			'.elementor-element-title',
-			'.elementor-panel-heading-title',
-			'.elementor-navigator__element__title',
-			'.elementor-navigator__element__title__text',
-			'.elementor-navigator__item__title',
-			'.elementor-navigator__title',
-			'.elementor-element-title-wrapper'
-		];
+		const titles = new Set(fallbackEapTitles);
+		const cache = window.elementor
+			&& (window.elementor.widgetsCache
+				|| (window.elementor.config && window.elementor.config.widgets));
 
-		for (const selector of selectors) {
-			const node = element.querySelector(selector);
-			if (node && normalizeText(node.textContent)) {
-				return normalizeText(node.textContent);
-			}
+		if (cache && typeof cache === 'object') {
+			Object.keys(cache).forEach((name) => {
+				if (name.indexOf('eap-') !== 0) {
+					return;
+				}
+				const widget = cache[name] || {};
+				if (widget.title) {
+					titles.add(normalizeText(widget.title));
+				}
+			});
+			eapTitleCache = titles;
 		}
 
-		return normalizeText(element.textContent);
+		return titles;
 	};
 
-	const isEapTypeNode = (element) => {
-		if (!element) {
+	const isEapPanelTile = (element) => {
+		if (!element || !element.getAttribute) {
 			return false;
 		}
-
-		const widgetType = normalizeText(element.getAttribute('data-widget_type'));
-		const elementType = normalizeText(element.getAttribute('data-element_type'));
-
-		return widgetType.includes('eap-') || elementType.includes('eap-');
+		const type = normalizeText(element.getAttribute('data-library-element-type'));
+		return type.indexOf('eap-') === 0;
 	};
 
-	const hasEapWidgetInTree = (element) => {
-		if (!element) {
-			return false;
-		}
-
-		if (isEapTypeNode(element)) {
-			return true;
-		}
-
-		return Boolean(element.querySelector('[data-widget_type*="eap-"], [data-element_type*="eap-"]'));
-	};
-
-	const isInAnimateProCategory = (element) => {
-		if (!element) {
-			return false;
-		}
-
-		const category = element.closest('.elementor-panel-category');
-		if (!category) {
-			return false;
-		}
-
-		const title = category.querySelector('.elementor-panel-category-title, .elementor-panel-heading-title, .title');
-		return normalizeText(title?.textContent) === 'animatepro';
-	};
-
-	const isKnownEapTitle = (element) => eapWidgetTitles.has(getTitleText(element));
-	const isSearchSafeEapTitle = (element) => searchSafeEapWidgetTitles.has(getTitleText(element));
-
-	const removeDirectBadge = (element, mode = 'panel') => {
+	const ensureBadge = (element, readyClass) => {
 		if (!element) {
 			return;
 		}
 
-		const className = mode === 'structure' ? structureReadyClass : readyClass;
-		element.classList.remove(className);
+		element.classList.add(readyClass);
 
-		Array.from(element.children).forEach((child) => {
-			if (child.classList && child.classList.contains(badgeClass)) {
-				child.remove();
-			}
-		});
-	};
-
-	const ensureBadge = (element, mode = 'panel') => {
-		if (!element) {
-			return;
-		}
-
-		const className = mode === 'structure' ? structureReadyClass : readyClass;
-		const directBadge = Array.from(element.children).find(
+		const existing = Array.from(element.children).find(
 			(child) => child.classList && child.classList.contains(badgeClass)
 		);
-
-		element.classList.add(className);
-
-		if (directBadge) {
+		if (existing) {
 			return;
 		}
 
@@ -140,40 +97,47 @@
 		element.appendChild(badge);
 	};
 
-	const markPanelWidgets = () => {
-		const panelNodes = document.querySelectorAll(
-			'.elementor-panel .elementor-element, .elementor-panel .elementor-element-wrapper'
-		);
+	const removeBadge = (element, readyClass) => {
+		if (!element) {
+			return;
+		}
 
-		panelNodes.forEach((element) => {
-			if (
-				hasEapWidgetInTree(element) ||
-				(isInAnimateProCategory(element) && isKnownEapTitle(element)) ||
-				isSearchSafeEapTitle(element)
-			) {
-				ensureBadge(element, 'panel');
-				return;
+		element.classList.remove(readyClass);
+
+		Array.from(element.children).forEach((child) => {
+			if (child.classList && child.classList.contains(badgeClass)) {
+				child.remove();
 			}
+		});
+	};
 
-			removeDirectBadge(element, 'panel');
+	// Widget list + search results share the same tile template:
+	//   <button class="elementor-element" data-library-element-type="eap-...">
+	// so this single pass covers both the normal category view and search.
+	const markPanelWidgets = () => {
+		document.querySelectorAll('.elementor-element[data-library-element-type]').forEach((element) => {
+			if (isEapPanelTile(element)) {
+				ensureBadge(element, panelReadyClass);
+			} else {
+				removeBadge(element, panelReadyClass);
+			}
 		});
 	};
 
 	const markStructureWidgets = () => {
-		const structureItems = document.querySelectorAll('.elementor-navigator__item');
+		const titles = getEapTitles();
 
-		structureItems.forEach((item) => {
+		document.querySelectorAll('.elementor-navigator__item').forEach((item) => {
 			const titleNode = item.querySelector(
-				'.elementor-navigator__element__title__text, .elementor-navigator__element__title, .elementor-navigator__item__title, .elementor-navigator__title'
+				'.elementor-navigator__element__title__text, .elementor-navigator__element__title'
 			);
-			const element = item.closest('.elementor-navigator__element') || item;
+			const title = normalizeText((titleNode || item).textContent);
 
-			if (isEapTypeNode(element) || isKnownEapTitle(titleNode || item)) {
-				ensureBadge(item, 'structure');
-				return;
+			if (title && titles.has(title)) {
+				ensureBadge(item, structureReadyClass);
+			} else {
+				removeBadge(item, structureReadyClass);
 			}
-
-			removeDirectBadge(item, 'structure');
 		});
 	};
 
@@ -211,11 +175,7 @@
 
 	const init = () => {
 		scheduleMarkWidgets();
-
 		observeRoot(document.body);
-		observeRoot(document.querySelector('#elementor-panel-elements'));
-		observeRoot(document.querySelector('.elementor-panel'));
-		observeRoot(document.querySelector('.elementor-navigator'));
 	};
 
 	if (document.readyState === 'loading') {

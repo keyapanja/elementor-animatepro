@@ -1,0 +1,110 @@
+/* =========================================================================
+ * EAP Content Toggle (nested)
+ * A segmented pill switcher with a sliding thumb; each condition maps to a
+ * droppable Elementor container. Only the active container is shown.
+ * ====================================================================== */
+
+.eap-content-toggle {
+	--eap-ct-align: center;
+	--eap-ct-gap: 28px;
+	--eap-ct-pad: 5px;
+	--eap-ct-radius: 100px;
+	--eap-ct-track-bg: #eef1f6;
+	--eap-ct-thumb-bg: #18c964;
+	--eap-ct-label-color: #5b6675;
+	--eap-ct-active-color: #ffffff;
+	--eap-ct-count: 2;
+	--eap-ct-index: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: var(--eap-ct-align);
+}
+
+.eap-content-toggle__switcher {
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	padding: var(--eap-ct-pad);
+	border-radius: var(--eap-ct-radius);
+	background: var(--eap-ct-track-bg);
+	margin-bottom: var(--eap-ct-gap);
+	max-width: 100%;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.eap-content-toggle__thumb {
+	position: absolute;
+	top: var(--eap-ct-pad);
+	bottom: var(--eap-ct-pad);
+	left: var(--eap-ct-pad);
+	width: calc((100% - 2 * var(--eap-ct-pad)) / var(--eap-ct-count, 2));
+	border-radius: var(--eap-ct-radius);
+	background: var(--eap-ct-thumb-bg);
+	transform: translateX(calc(var(--eap-ct-index, 0) * 100%));
+	transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	z-index: 0;
+	pointer-events: none;
+}
+
+.eap-content-toggle__label {
+	position: relative;
+	z-index: 1;
+	flex: 1 1 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	margin: 0;
+	padding: 10px 26px;
+	border: 0;
+	background: transparent;
+	color: var(--eap-ct-label-color);
+	font-weight: 600;
+	line-height: 1.2;
+	white-space: nowrap;
+	cursor: pointer;
+	border-radius: var(--eap-ct-radius);
+	transition: color 0.3s ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.eap-content-toggle__label[aria-selected="true"] {
+	color: var(--eap-ct-active-color);
+}
+
+/*
+ * The sliding thumb is the only coloured surface. Force the buttons themselves
+ * transparent in every state so a theme's `button:hover` / focus background
+ * can't paint a second pill behind the label.
+ */
+.eap-content-toggle__label,
+.eap-content-toggle__label:hover,
+.eap-content-toggle__label:focus,
+.eap-content-toggle__label:active {
+	background: transparent !important;
+	box-shadow: none !important;
+}
+
+.eap-content-toggle__content {
+	align-self: stretch;
+	width: 100%;
+}
+
+/*
+ * Show only the active pane. `eap-ct-pane` is added by PHP render on the front
+ * end and by content-toggle.js in the editor (once the nested panes mount), so
+ * the editor also shows one condition at a time — click the switcher buttons to
+ * reveal and edit each pane.
+ */
+.eap-content-toggle__content > .eap-ct-pane:not(.e-active) {
+	display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-content-toggle__thumb {
+		transition: none;
+	}
+}

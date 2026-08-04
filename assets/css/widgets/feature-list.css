@@ -1,0 +1,159 @@
+/* =========================================================================
+ * EAP Feature List
+ * A vertical list of icon/image + title + description items. Icon on the left
+ * or right, several shapes/views, an optional connector line joining the icons,
+ * and per-item colour overrides. CSS-only.
+ *
+ * Connector: the icon column stretches to the full item height (align-items:
+ * stretch), so a line drawn on it from the icon's bottom (top: icon size) down
+ * into the gap (bottom: -gap) reaches the next icon's top regardless of how
+ * tall the description is.
+ * ====================================================================== */
+
+.eap-feature-list {
+	--eap-fl-gap: 26px;
+	--eap-fl-icon-size: 56px;
+	--eap-fl-connector-color: #cbd5e1;
+	--eap-fl-connector-width: 2px;
+	--eap-fl-connector-style: solid;
+	display: flex;
+	flex-direction: column;
+}
+
+.eap-feature-list * {
+	box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------------------
+ * Item
+ * ---------------------------------------------------------------------- */
+
+.eap-feature-list__item {
+	display: flex;
+	align-items: stretch;
+	gap: 20px;
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-feature-list--pos-right .eap-feature-list__item {
+	flex-direction: row-reverse;
+}
+
+.eap-feature-list--pos-right .eap-feature-list__content {
+	text-align: right;
+}
+
+/* -------------------------------------------------------------------------
+ * Icon column + box
+ * ---------------------------------------------------------------------- */
+
+.eap-feature-list__icon-col {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 0 0 auto;
+}
+
+.eap-feature-list__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: var(--eap-fl-icon-size, 56px);
+	height: var(--eap-fl-icon-size, 56px);
+	line-height: 1;
+	border-style: solid;
+	border-width: 0;
+	border-color: transparent;
+	background-color: transparent;
+	overflow: hidden;
+	transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.eap-feature-list__icon > i {
+	font-size: var(--eap-fl-glyph, 22px);
+	color: inherit;
+}
+
+.eap-feature-list__icon > svg {
+	width: var(--eap-fl-glyph, 22px);
+	height: var(--eap-fl-glyph, 22px);
+	fill: currentColor;
+}
+
+.eap-feature-list__img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Views */
+.eap-feature-list--view-framed .eap-feature-list__icon {
+	background-color: transparent;
+	border-style: solid;
+}
+
+/* Shapes */
+.eap-feature-list--shape-circle .eap-feature-list__icon {
+	border-radius: 50%;
+}
+.eap-feature-list--shape-rounded .eap-feature-list__icon {
+	border-radius: 16px;
+}
+.eap-feature-list--shape-square .eap-feature-list__icon {
+	border-radius: 0;
+}
+.eap-feature-list--shape-diamond .eap-feature-list__icon {
+	border-radius: 8px;
+	transform: rotate(45deg);
+}
+.eap-feature-list--shape-diamond .eap-feature-list__icon > i,
+.eap-feature-list--shape-diamond .eap-feature-list__icon > svg,
+.eap-feature-list--shape-diamond .eap-feature-list__img {
+	transform: rotate(-45deg);
+}
+
+/* -------------------------------------------------------------------------
+ * Connector line (icon to icon)
+ * ---------------------------------------------------------------------- */
+
+.eap-feature-list--connector .eap-feature-list__item:not(:last-child) .eap-feature-list__icon-col::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: var(--eap-fl-icon-size, 56px);
+	bottom: calc(-1 * var(--eap-fl-gap, 26px));
+	width: 0;
+	border-left: var(--eap-fl-connector-width, 2px) var(--eap-fl-connector-style, solid) var(--eap-fl-connector-color, #cbd5e1);
+	transform: translateX(-50%);
+	pointer-events: none;
+}
+
+/* Keep the connector clear of a diamond's rotated bottom tip. */
+.eap-feature-list--connector.eap-feature-list--shape-diamond .eap-feature-list__item:not(:last-child) .eap-feature-list__icon-col::after {
+	top: calc(var(--eap-fl-icon-size, 56px) * 1.2);
+}
+
+/* -------------------------------------------------------------------------
+ * Content
+ * ---------------------------------------------------------------------- */
+
+.eap-feature-list__content {
+	flex: 1 1 auto;
+	min-width: 0;
+	align-self: center;
+}
+
+.eap-feature-list__title {
+	margin: 0 0 6px;
+	line-height: 1.3;
+	transition: color 0.3s ease;
+}
+
+.eap-feature-list__desc {
+	margin: 0;
+	line-height: 1.6;
+}

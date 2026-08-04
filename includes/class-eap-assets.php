@@ -67,6 +67,23 @@ class EAP_Assets {
 			true
 		);
 
+		// GSAP + ScrollTrigger (loaded on-demand by widgets that opt in via get_script_depends()).
+		wp_register_script(
+			'eap-gsap',
+			'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js',
+			array(),
+			'3.12.5',
+			true
+		);
+
+		wp_register_script(
+			'eap-gsap-scrolltrigger',
+			'https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js',
+			array( 'eap-gsap' ),
+			'3.12.5',
+			true
+		);
+
 		$this->register_widget_styles();
 		$this->register_widget_scripts();
 	}
@@ -78,6 +95,8 @@ class EAP_Assets {
 	 */
 	private function register_widget_styles() {
 		$styles = array(
+			'progress-bar',
+			'team',
 			'testimonial',
 			'testimonial-slider',
 			'icon-box',
@@ -94,6 +113,19 @@ class EAP_Assets {
 			'animated-text',
 			'advanced-animated-text',
 			'advanced-button',
+			'timeline',
+			'services-tabs',
+			'one-page-nav',
+			'advanced-testimonial-slider',
+			'advanced-slider',
+			'countdown',
+			'image-accordion',
+			'content-toggle',
+			'multi-buttons',
+			'price-box',
+			'data-table',
+			'feature-list',
+			'sticky-video',
 		);
 
 		foreach ( $styles as $style ) {
@@ -114,6 +146,8 @@ class EAP_Assets {
 	private function register_widget_scripts() {
 		$scripts = array(
 			'visibility',
+			'progress-bar',
+			'team',
 			'testimonial-slider',
 			'animated-text',
 			'advanced-animated-text',
@@ -125,6 +159,16 @@ class EAP_Assets {
 			'image-comparison',
 			'brand-slider',
 			'parallax-sections',
+			'timeline',
+			'services-tabs',
+			'one-page-nav',
+			'advanced-testimonial-slider',
+			'advanced-slider',
+			'countdown',
+			'image-accordion',
+			'content-toggle',
+			'data-table',
+			'sticky-video',
 		);
 
 		foreach ( $scripts as $script ) {
@@ -158,6 +202,16 @@ class EAP_Assets {
 			EAP_VERSION,
 			true
 		);
+
+		// Editor element-type registration for the nested Content Toggle widget.
+		// Depends on 'elementor-editor' so NestedElementBase is guaranteed present.
+		wp_register_script(
+			'eap-content-toggle-editor',
+			EAP_URL . 'assets/js/widgets/content-toggle-editor.js',
+			array( 'elementor-editor' ),
+			EAP_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -168,6 +222,7 @@ class EAP_Assets {
 	public function enqueue_editor_assets() {
 		wp_enqueue_style( 'eap-editor' );
 		wp_enqueue_script( 'eap-editor' );
+		wp_enqueue_script( 'eap-content-toggle-editor' );
 	}
 
 	/**

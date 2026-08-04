@@ -1,0 +1,252 @@
+/* ==========================================================================
+   EAP One Page Nav
+   ========================================================================== */
+
+.eap-onepage-nav {
+	--eap-opn-edge-offset: 32px;
+	--eap-opn-tooltip-offset: 14px;
+	--eap-opn-transition: 220ms;
+	z-index: 80;
+	pointer-events: auto;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+.eap-onepage-nav *,
+.eap-onepage-nav *::before,
+.eap-onepage-nav *::after {
+	box-sizing: border-box;
+}
+
+.eap-onepage-nav__list {
+	list-style: none;
+	margin: 0;
+	padding: 12px;
+	display: inline-flex;
+	gap: 6px;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+}
+
+.eap-onepage-nav__item {
+	margin: 0;
+	padding: 0;
+	display: block;
+	position: relative;
+}
+
+.eap-onepage-nav__link {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+	color: inherit;
+	white-space: nowrap;
+	cursor: pointer;
+	font: inherit;
+	border: 0;
+	background: transparent;
+	transition:
+		color var(--eap-opn-transition) ease,
+		background-color var(--eap-opn-transition) ease,
+		border-color var(--eap-opn-transition) ease,
+		transform var(--eap-opn-transition) ease;
+}
+
+.eap-onepage-nav__link:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.eap-onepage-nav__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+}
+
+.eap-onepage-nav__icon i,
+.eap-onepage-nav__icon svg {
+	display: block;
+}
+
+.eap-onepage-nav__label {
+	display: inline-block;
+	line-height: 1.2;
+}
+
+/* Screen reader text — always present so assistive tech can read each item. */
+.eap-onepage-nav .screen-reader-text {
+	position: absolute !important;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+}
+
+/* ==========================================================================
+   Orientation
+   ========================================================================== */
+
+.eap-onepage-nav--orient-vertical .eap-onepage-nav__list {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.eap-onepage-nav--orient-horizontal .eap-onepage-nav__list {
+	flex-direction: row;
+	align-items: center;
+}
+
+/* Hide labels when toggle is off (icon-only). */
+.eap-onepage-nav--no-label .eap-onepage-nav__label {
+	display: none;
+}
+
+/* ==========================================================================
+   Positioning — both modes use position:fixed so the nav docks to the viewport
+   edge identically. Section-only mode adds a visibility gate driven by JS.
+   ========================================================================== */
+
+.eap-onepage-nav--mode-page,
+.eap-onepage-nav--mode-section {
+	position: fixed;
+	z-index: 80;
+}
+
+/* Default centered alignment per edge */
+.eap-onepage-nav--edge-left {
+	left: var(--eap-opn-edge-offset);
+	top: 50%;
+	transform: translate3d(0, -50%, 0);
+}
+
+.eap-onepage-nav--edge-right {
+	right: var(--eap-opn-edge-offset);
+	top: 50%;
+	transform: translate3d(0, -50%, 0);
+}
+
+.eap-onepage-nav--edge-top {
+	top: var(--eap-opn-edge-offset);
+	left: 50%;
+	transform: translate3d(-50%, 0, 0);
+}
+
+.eap-onepage-nav--edge-bottom {
+	bottom: var(--eap-opn-edge-offset);
+	left: 50%;
+	transform: translate3d(-50%, 0, 0);
+}
+
+/* Alignment overrides for left/right edges (vertical orientation) */
+.eap-onepage-nav--edge-left.eap-onepage-nav--align-start,
+.eap-onepage-nav--edge-right.eap-onepage-nav--align-start {
+	top: var(--eap-opn-edge-offset);
+	transform: none;
+}
+
+.eap-onepage-nav--edge-left.eap-onepage-nav--align-end,
+.eap-onepage-nav--edge-right.eap-onepage-nav--align-end {
+	top: auto;
+	bottom: var(--eap-opn-edge-offset);
+	transform: none;
+}
+
+/* Alignment overrides for top/bottom edges (horizontal orientation) */
+.eap-onepage-nav--edge-top.eap-onepage-nav--align-start,
+.eap-onepage-nav--edge-bottom.eap-onepage-nav--align-start {
+	left: var(--eap-opn-edge-offset);
+	transform: none;
+}
+
+.eap-onepage-nav--edge-top.eap-onepage-nav--align-end,
+.eap-onepage-nav--edge-bottom.eap-onepage-nav--align-end {
+	left: auto;
+	right: var(--eap-opn-edge-offset);
+	transform: none;
+}
+
+/* Section-only mode visibility — fully hidden (display:none) until JS detects
+   the target container in the viewport. Removing it from layout entirely
+   guarantees it can't be visible outside the section, with no transition lag
+   to "leak" past the section boundary. */
+.eap-onepage-nav--mode-section {
+	display: none;
+}
+
+.eap-onepage-nav--mode-section.is-in-section {
+	display: inline-flex;
+	animation: eapOnepageNavFadeIn var(--eap-opn-transition) ease both;
+}
+
+@keyframes eapOnepageNavFadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+/* ==========================================================================
+   Tooltip mode (icon-only with hover label)
+   ========================================================================== */
+
+.eap-onepage-nav--has-tooltip .eap-onepage-nav__label {
+	display: none;
+}
+
+.eap-onepage-nav__tooltip {
+	position: absolute;
+	pointer-events: none;
+	opacity: 0;
+	transition: opacity var(--eap-opn-transition) ease, transform var(--eap-opn-transition) ease;
+	font-size: 0.85rem;
+	white-space: nowrap;
+	background-color: #111418;
+	color: #ffffff;
+	padding: 6px 10px;
+	border-radius: 6px;
+	z-index: 5;
+}
+
+.eap-onepage-nav__item:hover .eap-onepage-nav__tooltip,
+.eap-onepage-nav__link:focus-visible .eap-onepage-nav__tooltip {
+	opacity: 1;
+}
+
+.eap-onepage-nav--tooltip-right .eap-onepage-nav__tooltip {
+	left: 100%;
+	top: 50%;
+	transform: translate(var(--eap-opn-tooltip-offset), -50%);
+}
+
+.eap-onepage-nav--tooltip-left .eap-onepage-nav__tooltip {
+	right: 100%;
+	top: 50%;
+	transform: translate(calc(-1 * var(--eap-opn-tooltip-offset)), -50%);
+}
+
+.eap-onepage-nav--tooltip-top .eap-onepage-nav__tooltip {
+	bottom: 100%;
+	left: 50%;
+	transform: translate(-50%, calc(-1 * var(--eap-opn-tooltip-offset)));
+}
+
+.eap-onepage-nav--tooltip-bottom .eap-onepage-nav__tooltip {
+	top: 100%;
+	left: 50%;
+	transform: translate(-50%, var(--eap-opn-tooltip-offset));
+}
+
+/* ==========================================================================
+   Hide on small screens by default — can be overridden via Elementor's
+   Responsive Hide controls on the widget itself if needed.
+   ========================================================================== */
+
+@media (max-width: 767px) {
+	.eap-onepage-nav--mode-page.eap-onepage-nav--edge-left,
+	.eap-onepage-nav--mode-page.eap-onepage-nav--edge-right {
+		--eap-opn-edge-offset: 16px;
+	}
+}

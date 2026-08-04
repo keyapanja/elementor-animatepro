@@ -1,0 +1,307 @@
+/* ==========================================================================
+   EAP Services Tabs
+   ========================================================================== */
+
+.eap-services-tabs {
+	--eap-st-transition: 500ms;
+	--eap-st-number-gap: 22px;
+	display: flex;
+	align-items: stretch;
+	gap: 60px;
+	width: 100%;
+	position: relative;
+}
+
+.eap-services-tabs *,
+.eap-services-tabs *::before,
+.eap-services-tabs *::after {
+	box-sizing: border-box;
+}
+
+.eap-services-tabs--image-left {
+	flex-direction: row-reverse;
+}
+
+/* ==========================================================================
+   Tab list (left column)
+   ========================================================================== */
+
+.eap-services-tabs__list {
+	flex: 0 0 50%;
+	max-width: 50%;
+	display: flex;
+	flex-direction: column;
+	gap: 28px;
+	min-width: 0;
+}
+
+.eap-services-tabs__item {
+	all: unset;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: var(--eap-st-number-gap);
+	width: 100%;
+	cursor: pointer;
+	position: relative;
+	box-sizing: border-box;
+	color: inherit;
+	font: inherit;
+	text-align: left;
+	transition:
+		color var(--eap-st-transition) ease,
+		background-color var(--eap-st-transition) ease,
+		border-color var(--eap-st-transition) ease,
+		padding var(--eap-st-transition) ease;
+}
+
+.eap-services-tabs__item:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 4px;
+}
+
+.eap-services-tabs__number {
+	flex: 0 0 auto;
+	font-size: 0.9em;
+	letter-spacing: 0.04em;
+	line-height: 1;
+	padding-top: 0.35em;
+	transition: color var(--eap-st-transition) ease;
+}
+
+.eap-services-tabs__content {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+.eap-services-tabs__title {
+	display: block;
+	transition: color var(--eap-st-transition) ease;
+}
+
+.eap-services-tabs__subtitle {
+	display: block;
+	transition: color var(--eap-st-transition) ease;
+}
+
+.eap-services-tabs__description {
+	display: block;
+	transition:
+		color var(--eap-st-transition) ease,
+		max-height var(--eap-st-transition) ease,
+		opacity var(--eap-st-transition) ease,
+		margin var(--eap-st-transition) ease;
+}
+
+/* Bold-list variant collapses description / button for non-active items
+   when `reveal-desc` mode is on. */
+.eap-services-tabs--reveal-desc .eap-services-tabs__item:not(.is-active) .eap-services-tabs__description,
+.eap-services-tabs--reveal-desc .eap-services-tabs__item:not(.is-active) .eap-services-tabs__button {
+	max-height: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	opacity: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.eap-services-tabs--reveal-desc .eap-services-tabs__item .eap-services-tabs__description,
+.eap-services-tabs--reveal-desc .eap-services-tabs__item .eap-services-tabs__button {
+	max-height: 600px;
+	opacity: 1;
+}
+
+/* ==========================================================================
+   Bold List layout — large uppercase titles, numbers above-left
+   ========================================================================== */
+
+.eap-services-tabs--bold-list .eap-services-tabs__title {
+	font-size: clamp(32px, 4vw, 64px);
+	font-weight: 700;
+	line-height: 1.05;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+}
+
+.eap-services-tabs--bold-list .eap-services-tabs__description {
+	font-size: 1rem;
+	line-height: 1.55;
+	margin-top: 14px;
+}
+
+.eap-services-tabs--bold-list .eap-services-tabs__number {
+	font-size: 1rem;
+	padding-top: 0.85em;
+	letter-spacing: 0.1em;
+}
+
+/* ==========================================================================
+   Rule Stack layout — vertical line indicator on the left
+   ========================================================================== */
+
+.eap-services-tabs--rule-stack .eap-services-tabs__item {
+	padding-left: 24px;
+	position: relative;
+}
+
+.eap-services-tabs--rule-stack .eap-services-tabs__item::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 2px;
+	background-color: rgba(255, 255, 255, 0.18);
+	transition: background-color var(--eap-st-transition) ease;
+}
+
+.eap-services-tabs--rule-stack .eap-services-tabs__item.is-active::before {
+	background-color: #ffffff;
+}
+
+.eap-services-tabs--rule-stack .eap-services-tabs__title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.eap-services-tabs--rule-stack .eap-services-tabs__description {
+	margin-top: 8px;
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
+
+/* ==========================================================================
+   Numbered List layout — number + title row, description always visible
+   ========================================================================== */
+
+.eap-services-tabs--numbered .eap-services-tabs__title {
+	font-size: 1.4rem;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.eap-services-tabs--numbered .eap-services-tabs__description {
+	margin-top: 8px;
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
+
+.eap-services-tabs--numbered .eap-services-tabs__number {
+	font-size: 1rem;
+	padding-top: 0.35em;
+	letter-spacing: 0.08em;
+}
+
+/* ==========================================================================
+   Button (CTA in Bold List)
+   ========================================================================== */
+
+.eap-services-tabs__button {
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid currentColor;
+	background-color: transparent;
+	color: inherit;
+	font: inherit;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	cursor: pointer;
+	text-decoration: none;
+	transition:
+		background-color var(--eap-st-transition) ease,
+		color var(--eap-st-transition) ease,
+		border-color var(--eap-st-transition) ease,
+		transform var(--eap-st-transition) ease;
+}
+
+.eap-services-tabs__button:hover {
+	transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   Media (right column)
+   ========================================================================== */
+
+.eap-services-tabs__media {
+	flex: 1 1 50%;
+	position: relative;
+	min-height: 200px;
+	overflow: hidden;
+	align-self: stretch;
+}
+
+/* "Match Tab List Height" — drop the explicit height set by the slider so the
+   media stretches to equal the tab list column via flex align-items:stretch.
+   Min-height also removed so a short list collapses to its natural height. */
+.eap-services-tabs--media-stretch .eap-services-tabs__media {
+	height: auto !important;
+	min-height: 0;
+	align-self: stretch;
+}
+
+.eap-services-tabs__image {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity var(--eap-st-transition) ease,
+		visibility var(--eap-st-transition) ease,
+		transform var(--eap-st-transition) ease;
+	transform: scale(1.04);
+	pointer-events: none;
+}
+
+.eap-services-tabs__image.is-active {
+	opacity: 1;
+	visibility: visible;
+	transform: scale(1);
+	pointer-events: auto;
+}
+
+.eap-services-tabs--media-zoom .eap-services-tabs__image:not(.is-active) {
+	transform: scale(1.08);
+}
+
+.eap-services-tabs__image img {
+	width: 100%;
+	height: 100%;
+	display: block;
+	object-fit: cover;
+}
+
+/* ==========================================================================
+   Responsive — collapse to single column on small screens
+   ========================================================================== */
+
+@media (max-width: 767px) {
+	.eap-services-tabs {
+		flex-direction: column;
+		gap: 32px;
+	}
+
+	.eap-services-tabs--image-left {
+		flex-direction: column;
+	}
+
+	.eap-services-tabs__list,
+	.eap-services-tabs__media {
+		flex: 1 1 100%;
+		max-width: 100%;
+	}
+
+	.eap-services-tabs__media {
+		height: 320px;
+		order: -1;
+	}
+
+	.eap-services-tabs--bold-list .eap-services-tabs__title {
+		font-size: clamp(28px, 8vw, 48px);
+	}
+}

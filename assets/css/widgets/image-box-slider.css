@@ -1,0 +1,147 @@
+/* ==========================================================================
+   EAP Image Box Slider
+   --------------------------------------------------------------------------
+   Slide content reuses the .eap-image-box card styles from image-box.css.
+   This file only provides the slider chrome (Swiper container, arrows,
+   pagination dots).
+   ========================================================================== */
+
+.eap-image-box-slider {
+	position: relative;
+	width: 100%;
+}
+
+.eap-image-box-slider *,
+.eap-image-box-slider *::before,
+.eap-image-box-slider *::after {
+	box-sizing: border-box;
+}
+
+.eap-image-box-slider__swiper {
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+}
+
+.eap-image-box-slider .swiper-wrapper {
+	display: flex;
+	align-items: stretch;
+}
+
+.eap-image-box-slider .swiper-slide {
+	height: auto;
+	display: flex;
+}
+
+.eap-image-box-slider .swiper-slide > * {
+	width: 100%;
+}
+
+/* Arrows ------------------------------------------------------------------ */
+
+.eap-image-box-slider__arrow {
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	transform: translateY(-50%);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: #ffffff;
+	cursor: pointer;
+	border-radius: 50%;
+	transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+	line-height: 1;
+}
+
+.eap-image-box-slider__arrow:hover,
+.eap-image-box-slider__arrow:focus {
+	background-color: rgba(0, 0, 0, 0.85);
+	color: #ffffff;
+	outline: none;
+}
+
+.eap-image-box-slider__arrow:disabled,
+.eap-image-box-slider__arrow.swiper-button-disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.eap-image-box-slider__arrow--prev {
+	left: 12px;
+}
+
+.eap-image-box-slider__arrow--next {
+	right: 12px;
+}
+
+.eap-image-box-slider__arrow svg,
+.eap-image-box-slider__arrow i {
+	width: 18px;
+	height: 18px;
+	display: block;
+	fill: currentColor;
+	line-height: 1;
+}
+
+.eap-image-box-slider__arrow i {
+	width: auto;
+	height: auto;
+	font-size: 18px;
+}
+
+/* Pagination -------------------------------------------------------------- */
+
+.eap-image-box-slider__pagination {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 20px;
+	color: currentColor;
+}
+
+.eap-image-box-slider__pagination .swiper-pagination-bullet {
+	width: 10px;
+	height: 10px;
+	background-color: currentColor;
+	opacity: 0.35;
+	border-radius: 50%;
+	margin: 0;
+	cursor: pointer;
+	transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+	display: inline-block;
+}
+
+.eap-image-box-slider__pagination .swiper-pagination-bullet-active {
+	opacity: 1;
+	transform: scale(1.2);
+}
+
+.eap-image-box-slider__pagination .swiper-pagination-fraction,
+.eap-image-box-slider__pagination .swiper-pagination-progressbar {
+	color: currentColor;
+}
+
+.eap-image-box-slider__pagination .swiper-pagination-progressbar {
+	width: 100%;
+	height: 3px;
+	background-color: rgba(255, 255, 255, 0.18);
+	overflow: hidden;
+	position: relative;
+}
+
+.eap-image-box-slider__pagination .swiper-pagination-progressbar-fill {
+	background-color: currentColor;
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	transform-origin: left center;
+}

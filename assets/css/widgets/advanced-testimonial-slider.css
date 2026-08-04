@@ -1,0 +1,967 @@
+/* ==========================================================================
+   EAP Advanced Testimonial Slider — Background Overlay layout
+   ========================================================================== */
+
+.eap-adv-testimonial-slider {
+	--eap-ats-arrow-box: 42px;
+	--eap-ats-arrow-icon: 16px;
+	--eap-ats-arrow-offset-x: 0px;
+	--eap-ats-pag-size: 10px;
+	position: relative;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.eap-adv-testimonial-slider *,
+.eap-adv-testimonial-slider *::before,
+.eap-adv-testimonial-slider *::after {
+	box-sizing: border-box;
+}
+
+.eap-adv-testimonial-slider__shell {
+	position: relative;
+	max-width: 100%;
+}
+
+.eap-adv-testimonial-slider__swiper {
+	width: 100%;
+	max-width: 100%;
+	padding: 12px;
+	overflow: hidden;
+}
+
+.eap-adv-testimonial-slider .swiper-wrapper {
+	align-items: stretch;
+}
+
+.eap-adv-testimonial-slider__slide {
+	display: flex;
+	height: auto;
+	padding: 0;
+}
+
+.eap-adv-testimonial-slider__slide > .eap-adv-testimonial-slide {
+	width: 100%;
+}
+
+/* ==========================================================================
+   Slide card (Background Overlay)
+   ========================================================================== */
+
+.eap-adv-testimonial-slide {
+	--eap-ats-overlay-start: 58%;
+	--eap-ats-overlay-color: rgba(15, 17, 22, 0.85);
+	--eap-ats-clamp: 3;
+	position: relative;
+	width: 100%;
+	height: 480px;
+	border-radius: 16px;
+	overflow: hidden;
+	color: #ffffff;
+}
+
+.eap-adv-testimonial-slide__bg {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.eap-adv-testimonial-slide__bg img,
+.eap-adv-testimonial-slide__bg-video {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.eap-adv-testimonial-slide__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		180deg,
+		transparent 0%,
+		transparent var(--eap-ats-overlay-start),
+		var(--eap-ats-overlay-color) 100%
+	);
+	pointer-events: none;
+}
+
+.eap-adv-testimonial-slide__body {
+	position: relative;
+	z-index: 2;
+	height: 100%;
+	padding: 28px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.eap-adv-testimonial-slide__text {
+	margin: 0;
+	display: -webkit-box;
+	-webkit-line-clamp: var(--eap-ats-clamp);
+	line-clamp: var(--eap-ats-clamp);
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	color: inherit;
+	line-height: 1.5;
+}
+
+.eap-adv-testimonial-slide__text p {
+	margin: 0;
+}
+
+.eap-adv-testimonial-slide__text p + p {
+	margin-top: 0.6em;
+}
+
+.eap-adv-testimonial-slide__read-more {
+	align-self: flex-start;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 8px;
+	padding: 6px 12px;
+	background: transparent;
+	color: #ffffff;
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	border-radius: 999px;
+	cursor: pointer;
+	font: inherit;
+	font-size: 0.9em;
+	transition: color 220ms ease, background-color 220ms ease, border-color 220ms ease;
+}
+
+.eap-adv-testimonial-slide__read-more:hover {
+	background-color: rgba(255, 255, 255, 0.12);
+}
+
+.eap-adv-testimonial-slide__read-more[hidden] {
+	display: none !important;
+}
+
+.eap-adv-testimonial-slide__separator {
+	width: 100%;
+	height: 1px;
+	background-color: rgba(255, 255, 255, 0.18);
+	margin: 16px 0;
+}
+
+.eap-adv-testimonial-slide__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.eap-adv-testimonial-slide__user-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+
+.eap-adv-testimonial-slide__avatar {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	overflow: hidden;
+	background-color: rgba(255, 255, 255, 0.12);
+}
+
+.eap-adv-testimonial-slide__avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.eap-adv-testimonial-slide__user-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.eap-adv-testimonial-slide__name {
+	font-weight: 600;
+	line-height: 1.2;
+	color: #ffffff;
+}
+
+.eap-adv-testimonial-slide__role {
+	font-size: 0.85em;
+	line-height: 1.2;
+	color: rgba(255, 255, 255, 0.75);
+}
+
+.eap-adv-testimonial-slide__play {
+	flex: 0 0 auto;
+	width: 48px;
+	height: 48px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	background-color: #ffffff;
+	color: #111111;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: transform 220ms ease, background-color 220ms ease, color 220ms ease;
+	font-size: 16px;
+}
+
+.eap-adv-testimonial-slide__play svg,
+.eap-adv-testimonial-slide__play i {
+	width: 1em;
+	height: 1em;
+	display: block;
+	fill: currentColor;
+	color: currentColor;
+}
+
+/* Force every fillable element inside the icon to inherit the button color —
+   some Font Awesome / Elementor icons ship with explicit `fill` attributes
+   that would otherwise win against `currentColor` on the parent. */
+.eap-adv-testimonial-slide__play svg path,
+.eap-adv-testimonial-slide__play svg circle,
+.eap-adv-testimonial-slide__play svg rect,
+.eap-adv-testimonial-slide__play svg polygon,
+.eap-adv-testimonial-slide__play svg ellipse {
+	fill: currentColor;
+}
+
+.eap-adv-testimonial-slide__play:hover {
+	transform: scale(1.06);
+}
+
+/* User-info alignment overrides (text-align cascades to flex justify-content) */
+.eap-adv-testimonial-slide__body[style*="text-align: center"] .eap-adv-testimonial-slide__user-info,
+.eap-adv-testimonial-slide__body[style*="text-align: center"] .eap-adv-testimonial-slide__footer {
+	justify-content: center;
+}
+
+.eap-adv-testimonial-slide__body[style*="text-align: right"] .eap-adv-testimonial-slide__user-info,
+.eap-adv-testimonial-slide__body[style*="text-align: right"] .eap-adv-testimonial-slide__footer {
+	justify-content: flex-end;
+}
+
+/* ==========================================================================
+   Slider chrome (arrows, pagination)
+   ========================================================================== */
+
+.eap-adv-testimonial-slider__arrow {
+	position: absolute;
+	top: 50%;
+	z-index: 4;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-ats-arrow-box);
+	height: var(--eap-ats-arrow-box);
+	padding: 0;
+	border: 0;
+	background-color: rgba(15, 17, 22, 0.78);
+	color: #ffffff;
+	border-radius: 999px;
+	cursor: pointer;
+	transform: translateY(-50%);
+	transition: background-color 220ms ease, color 220ms ease, opacity 220ms ease;
+	font-size: var(--eap-ats-arrow-icon);
+}
+
+.eap-adv-testimonial-slider__arrow svg,
+.eap-adv-testimonial-slider__arrow i {
+	width: 1em;
+	height: 1em;
+	display: block;
+	fill: currentColor;
+}
+
+.eap-adv-testimonial-slider__arrow--prev {
+	left: calc(-1 * var(--eap-ats-arrow-box) / 2 + var(--eap-ats-arrow-offset-x));
+}
+
+.eap-adv-testimonial-slider__arrow--next {
+	right: calc(-1 * var(--eap-ats-arrow-box) / 2 + var(--eap-ats-arrow-offset-x));
+}
+
+.eap-adv-testimonial-slider__arrow.swiper-button-disabled {
+	opacity: 0.4;
+	cursor: default;
+}
+
+.eap-adv-testimonial-slider__pagination {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 18px;
+}
+
+.eap-adv-testimonial-slider__pagination .swiper-pagination-bullet {
+	width: var(--eap-ats-pag-size);
+	height: var(--eap-ats-pag-size);
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 0.45);
+	opacity: 1;
+	margin: 0;
+	cursor: pointer;
+	transition: background-color 220ms ease, transform 220ms ease;
+}
+
+.eap-adv-testimonial-slider__pagination .swiper-pagination-bullet-active {
+	background-color: #ffffff;
+	transform: scale(1.15);
+}
+
+.eap-adv-testimonial-slider__pagination .swiper-pagination-fraction,
+.eap-adv-testimonial-slider__pagination .swiper-pagination-progressbar {
+	color: currentColor;
+}
+
+.eap-adv-testimonial-slider__pagination .swiper-pagination-progressbar {
+	position: relative;
+	height: 4px;
+	width: min(280px, 100%);
+	background-color: rgba(255, 255, 255, 0.18);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.eap-adv-testimonial-slider__pagination .swiper-pagination-progressbar-fill {
+	background-color: #ffffff;
+	position: absolute;
+	inset: 0;
+	transform-origin: left center;
+}
+
+.eap-adv-testimonial-slider--pagination-inside .eap-adv-testimonial-slider__swiper {
+	padding-bottom: 56px;
+}
+
+.eap-adv-testimonial-slider--pagination-inside .eap-adv-testimonial-slider__pagination {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 18px;
+	z-index: 5;
+	margin-top: 0;
+}
+
+/* ==========================================================================
+   Popups (video + content)
+   ========================================================================== */
+
+.eap-adv-testimonial-popup {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: none;
+	align-items: center;
+	justify-content: center;
+}
+
+.eap-adv-testimonial-popup.is-open {
+	display: flex;
+}
+
+.eap-adv-testimonial-popup__backdrop {
+	position: absolute;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.82);
+	cursor: pointer;
+}
+
+.eap-adv-testimonial-popup__panel {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 960px;
+	max-height: 90vh;
+	background-color: #1a1d24;
+	color: #ffffff;
+	border-radius: 12px;
+	overflow: auto;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+	animation: eapAtsPopupIn 220ms ease both;
+}
+
+@keyframes eapAtsPopupIn {
+	from { opacity: 0; transform: translateY(20px) scale(0.98); }
+	to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.eap-adv-testimonial-popup__close {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	z-index: 2;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	display: grid;
+	place-items: center;
+	background-color: rgba(0, 0, 0, 0.45);
+	color: #ffffff;
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	line-height: 0;
+	font-size: 0;
+	transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.eap-adv-testimonial-popup__close svg {
+	display: block;
+	width: 14px;
+	height: 14px;
+}
+
+.eap-adv-testimonial-popup__close:hover {
+	background-color: rgba(0, 0, 0, 0.7);
+	transform: rotate(90deg);
+}
+
+/* Video popup */
+.eap-adv-testimonial-popup--video .eap-adv-testimonial-popup__panel {
+	background-color: #000000;
+	padding: 0;
+	overflow: hidden;
+}
+
+.eap-adv-testimonial-popup__video {
+	display: block;
+	width: 100%;
+	height: auto;
+	max-height: 90vh;
+	background-color: #000000;
+}
+
+/* Content popup */
+.eap-adv-testimonial-popup--content .eap-adv-testimonial-popup__panel {
+	max-width: 620px;
+	padding: 36px;
+}
+
+.eap-adv-testimonial-popup__header {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 20px;
+}
+
+.eap-adv-testimonial-popup__avatar {
+	flex: 0 0 auto;
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	overflow: hidden;
+	background-color: rgba(255, 255, 255, 0.08);
+}
+
+.eap-adv-testimonial-popup__avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.eap-adv-testimonial-popup__user {
+	min-width: 0;
+}
+
+.eap-adv-testimonial-popup__name {
+	font-size: 1.1em;
+	font-weight: 600;
+	color: #ffffff;
+}
+
+.eap-adv-testimonial-popup__role {
+	font-size: 0.9em;
+	color: rgba(255, 255, 255, 0.7);
+	margin-top: 2px;
+}
+
+.eap-adv-testimonial-popup__content {
+	color: #e6e8eb;
+	line-height: 1.6;
+}
+
+.eap-adv-testimonial-popup__content p {
+	margin: 0 0 1em;
+}
+
+.eap-adv-testimonial-popup__content p:last-child {
+	margin-bottom: 0;
+}
+
+/* Body lock when any popup is open */
+body.eap-ats-popup-open {
+	overflow: hidden;
+}
+
+/* ==========================================================================
+   Star rating helpers (optional)
+   ========================================================================== */
+
+.eap-adv-testimonial-slide__rating {
+	display: inline-flex;
+	gap: 2px;
+	margin-bottom: 8px;
+}
+
+.eap-adv-testimonial-slide__star {
+	width: 14px;
+	height: 14px;
+	background-color: currentColor;
+	-webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>") center / contain no-repeat;
+	mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>") center / contain no-repeat;
+	opacity: 0.3;
+}
+
+.eap-adv-testimonial-slide__star--full { opacity: 1; }
+.eap-adv-testimonial-slide__star--half {
+	opacity: 1;
+	-webkit-mask-image: linear-gradient(90deg, #000 50%, transparent 50%), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'/></svg>");
+}
+
+/* ==========================================================================
+   Dual Marquee layout
+   ========================================================================== */
+
+.eap-adv-testimonial-slider--dual-marquee {
+	width: 100%;
+}
+
+.eap-adv-ts-marquee-wrap {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	width: 100%;
+}
+
+.eap-adv-ts-marquee {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	/* Vertical breathing room so card box-shadows aren't clipped by the
+	   overflow:hidden bounds. User-controllable via "Row Vertical Padding"
+	   in Marquee Settings. Horizontal fade is handled by mask-image. */
+	padding: 12px 0;
+	-webkit-mask-image: linear-gradient(
+		90deg,
+		transparent 0%,
+		#000 6%,
+		#000 94%,
+		transparent 100%
+	);
+	mask-image: linear-gradient(
+		90deg,
+		transparent 0%,
+		#000 6%,
+		#000 94%,
+		transparent 100%
+	);
+}
+
+.eap-adv-ts-marquee__track {
+	--eap-marquee-duration: 40s;
+	display: flex;
+	align-items: stretch;
+	gap: 20px;
+	width: max-content;
+	will-change: transform;
+	animation: eap-marquee-left var(--eap-marquee-duration) linear infinite;
+}
+
+/* Row direction is on the parent wrapper; track animation reads it. */
+.eap-adv-ts-marquee[data-direction="right"] .eap-adv-ts-marquee__track {
+	animation-name: eap-marquee-right;
+}
+
+/* Pause on hover (whole widget hover, since rows are close together) */
+.eap-adv-testimonial-slider--marquee-pause:hover .eap-adv-ts-marquee__track {
+	animation-play-state: paused;
+}
+
+@keyframes eap-marquee-left {
+	from { transform: translate3d(0, 0, 0); }
+	to   { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes eap-marquee-right {
+	from { transform: translate3d(-50%, 0, 0); }
+	to   { transform: translate3d(0, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-adv-ts-marquee__track {
+		animation: none;
+	}
+}
+
+/* ---- Marquee card ---- */
+.eap-adv-ts-marquee__card {
+	flex: 0 0 320px;
+	width: 320px;
+	box-sizing: border-box;
+	padding: 28px;
+	background-color: #ffffff;
+	border-radius: 14px;
+	display: flex;
+	flex-direction: column;
+	color: #0f172a;
+	box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+}
+
+.eap-adv-ts-marquee__quote-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: flex-start;
+	color: #4f46e5;
+	font-size: 30px;
+	margin-bottom: 16px;
+	line-height: 1;
+}
+
+.eap-adv-ts-marquee__quote-icon svg,
+.eap-adv-ts-marquee__quote-icon i {
+	width: 1em;
+	height: 1em;
+	display: block;
+	fill: currentColor;
+}
+
+.eap-adv-ts-marquee__quote-icon svg path,
+.eap-adv-ts-marquee__quote-icon svg * {
+	fill: currentColor;
+}
+
+.eap-adv-ts-marquee__content {
+	color: #0f172a;
+	line-height: 1.55;
+	margin: 0 0 24px;
+	flex: 1 1 auto;
+}
+
+.eap-adv-ts-marquee__user-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: auto;
+}
+
+.eap-adv-ts-marquee__avatar {
+	flex: 0 0 auto;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	background-color: rgba(15, 23, 42, 0.08);
+}
+
+.eap-adv-ts-marquee__avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.eap-adv-ts-marquee__user-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.eap-adv-ts-marquee__name {
+	font-weight: 600;
+	line-height: 1.2;
+	color: #0f172a;
+}
+
+.eap-adv-ts-marquee__role {
+	font-size: 0.85em;
+	line-height: 1.3;
+	color: #64748b;
+	margin-top: 2px;
+}
+
+
+/* ==========================================================================
+   Brand Quote layout
+   ========================================================================== */
+
+.eap-adv-testimonial-slider--brand-quote .eap-adv-testimonial-slider__shell {
+	position: relative;
+	max-width: 1120px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.eap-adv-testimonial-slider--brand-quote .eap-adv-testimonial-slider__slide {
+	height: auto;
+	box-sizing: border-box;
+	padding: 8px 0 64px;
+}
+
+.eap-adv-tbq {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 48px;
+	align-items: center;
+	width: 100%;
+	box-sizing: border-box;
+	cursor: pointer;
+}
+
+.eap-adv-tbq--image-left .eap-adv-tbq {
+	grid-template-columns: auto 1fr;
+}
+
+.eap-adv-tbq--image-left .eap-adv-tbq__text {
+	order: 2;
+}
+
+.eap-adv-tbq--image-left .eap-adv-tbq__media-wrap {
+	order: 1;
+}
+
+.eap-adv-tbq__text {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	min-width: 0;
+}
+
+.eap-adv-tbq__brand {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 12px;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: rgba(107, 114, 128, 1);
+	line-height: 1;
+	margin: 0;
+}
+
+.eap-adv-tbq__brand-line {
+	display: inline-block;
+	flex: 0 0 auto;
+	width: 32px;
+	height: 1px;
+	background-color: rgba(107, 114, 128, 0.5);
+}
+
+.eap-adv-tbq__brand-name {
+	display: inline-block;
+}
+
+.eap-adv-tbq__quote {
+	font-size: clamp(22px, 2.4vw + 0.5rem, 36px);
+	font-weight: 300;
+	line-height: 1.3;
+	letter-spacing: -0.01em;
+	color: #0a0a0a;
+	margin: 0;
+}
+
+.eap-adv-tbq__quote p {
+	margin: 0 0 0.6em;
+}
+
+.eap-adv-tbq__quote p:last-child {
+	margin-bottom: 0;
+}
+
+.eap-adv-tbq__author {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.eap-adv-tbq__author-line {
+	display: inline-block;
+	flex: 0 0 auto;
+	width: 40px;
+	height: 1px;
+	background-color: rgba(10, 10, 10, 0.2);
+}
+
+.eap-adv-tbq__author-text {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.eap-adv-tbq__name {
+	display: block;
+	font-size: 14px;
+	font-weight: 500;
+	color: #0a0a0a;
+	line-height: 1.4;
+}
+
+.eap-adv-tbq__role {
+	display: block;
+	font-size: 12px;
+	color: rgba(107, 114, 128, 1);
+	margin-top: 2px;
+	line-height: 1.4;
+}
+
+.eap-adv-tbq__media-wrap {
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.eap-adv-tbq__media {
+	width: 280px;
+	height: 340px;
+	border-radius: 18px;
+	overflow: hidden;
+	border: 1px solid rgba(0, 0, 0, 0.08);
+	position: relative;
+	background: #f3f4f6;
+}
+
+.eap-adv-tbq__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.eap-adv-tbq__next-indicator {
+	position: absolute;
+	bottom: -34px;
+	left: 50%;
+	transform: translateX(-50%) scale(0.8);
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: rgba(107, 114, 128, 1);
+	opacity: 0;
+	transition: opacity 0.2s ease, transform 0.2s ease;
+	pointer-events: none;
+	white-space: nowrap;
+}
+
+.eap-adv-tbq:hover .eap-adv-tbq__next-indicator {
+	opacity: 1;
+	transform: translateX(-50%) scale(1);
+}
+
+.eap-adv-tbq__next-indicator svg {
+	width: 12px;
+	height: 12px;
+	display: inline-block;
+}
+
+/* Pagination dots — placed below the slide content, left-aligned by default */
+.eap-adv-testimonial-slider--brand-quote .eap-adv-testimonial-slider__pagination {
+	display: flex;
+	justify-content: flex-start;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+/* Slide entrance animations on the active fade-effect slide */
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-active .eap-adv-tbq__brand,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-duplicate-active .eap-adv-tbq__brand {
+	animation: eapTbqFadeYsm 0.4s ease both;
+}
+
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-active .eap-adv-tbq__quote,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-duplicate-active .eap-adv-tbq__quote {
+	animation: eapTbqFadeY 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-active .eap-adv-tbq__author,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-duplicate-active .eap-adv-tbq__author {
+	animation: eapTbqFadeIn 0.4s 0.2s ease both;
+}
+
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-active .eap-adv-tbq__media,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide-duplicate-active .eap-adv-tbq__media {
+	animation: eapTbqMediaIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* JS retrigger class — used to replay animations on slide change */
+.eap-adv-testimonial-slider--brand-quote .swiper-slide.is-replaying .eap-adv-tbq__brand,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide.is-replaying .eap-adv-tbq__quote,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide.is-replaying .eap-adv-tbq__author,
+.eap-adv-testimonial-slider--brand-quote .swiper-slide.is-replaying .eap-adv-tbq__media {
+	animation: none !important;
+}
+
+@keyframes eapTbqFadeIn {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes eapTbqFadeYsm {
+	from { opacity: 0; transform: translateY(10px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes eapTbqFadeY {
+	from { opacity: 0; transform: translateY(40px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes eapTbqMediaIn {
+	from { opacity: 0; filter: blur(20px); transform: scale(1.05); }
+	to   { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+	.eap-adv-tbq {
+		gap: 36px;
+	}
+
+	.eap-adv-tbq__media {
+		width: 220px;
+		height: 280px;
+	}
+}
+
+@media (max-width: 767px) {
+	.eap-adv-testimonial-slide__footer {
+		flex-wrap: wrap;
+	}
+
+	.eap-adv-tbq,
+	.eap-adv-tbq--image-left .eap-adv-tbq {
+		grid-template-columns: 1fr;
+		gap: 28px;
+	}
+
+	.eap-adv-tbq--image-left .eap-adv-tbq__text {
+		order: 1;
+	}
+
+	.eap-adv-tbq--image-left .eap-adv-tbq__media-wrap {
+		order: 2;
+	}
+
+	.eap-adv-tbq__media {
+		width: 100%;
+		max-width: 280px;
+		height: 320px;
+	}
+
+	.eap-adv-tbq__quote {
+		font-size: 22px;
+	}
+}

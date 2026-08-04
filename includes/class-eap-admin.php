@@ -56,6 +56,7 @@ class EAP_Admin {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'handle_form_submission' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'in_admin_header', array( $this, 'suppress_foreign_admin_notices' ), 1 );
 		add_filter( 'plugin_action_links_' . plugin_basename( EAP_FILE ), array( $this, 'add_plugin_action_links' ) );
 	}
 
@@ -114,6 +115,111 @@ class EAP_Admin {
 			$done['testimonial-slider-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['progress-bar-built'] ) ) {
+			$states['progress-bar'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['progress-bar-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['team-built'] ) ) {
+			$states['team'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['team-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['timeline-built'] ) ) {
+			$states['timeline'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['timeline-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['services-tabs-built'] ) ) {
+			$states['services-tabs'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['services-tabs-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['one-page-nav-built'] ) ) {
+			$states['one-page-nav'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['one-page-nav-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['advanced-testimonial-slider-built'] ) ) {
+			$states['advanced-testimonial-slider'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['advanced-testimonial-slider-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['advanced-slider-built'] ) ) {
+			$states['advanced-slider'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['advanced-slider-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['countdown-built'] ) ) {
+			$states['countdown'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['countdown-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['image-accordion-built'] ) ) {
+			$states['image-accordion'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['image-accordion-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['content-toggle-built'] ) ) {
+			$states['content-toggle'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['content-toggle-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['multi-buttons-built'] ) ) {
+			$states['multi-buttons'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['multi-buttons-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['price-box-built'] ) ) {
+			$states['price-box'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['price-box-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['data-table-built'] ) ) {
+			$states['data-table'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['data-table-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['feature-list-built'] ) ) {
+			$states['feature-list'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['feature-list-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['sticky-video-built'] ) ) {
+			$states['sticky-video'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['sticky-video-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -169,7 +275,7 @@ class EAP_Admin {
 			'manage_options',
 			self::MENU_SLUG,
 			array( $this, 'render_dashboard_page' ),
-			'dashicons-format-image',
+			'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCI+PHBhdGggZD0iTTEyIDEuNUw0LjUgMTFoNC43bC0xLjYgNy41TDE1LjUgOWgtNC43TDEyIDEuNXoiIGZpbGw9ImJsYWNrIi8+PC9zdmc+',
 			58
 		);
 
@@ -275,6 +381,50 @@ class EAP_Admin {
 		array_unshift( $links, $settings_link );
 
 		return $links;
+	}
+
+	/**
+	 * Hide third-party admin notices on AnimatePro screens for a clean, branded
+	 * dashboard. Runs on `in_admin_header`, which fires before any of the notice
+	 * hooks. Our own "settings saved" notice is printed directly in the page
+	 * body (not via these hooks), so it is unaffected.
+	 *
+	 * @return void
+	 */
+	public function suppress_foreign_admin_notices() {
+		if ( ! $this->is_eap_admin_screen() ) {
+			return;
+		}
+
+		remove_all_actions( 'admin_notices' );
+		remove_all_actions( 'all_admin_notices' );
+		remove_all_actions( 'user_admin_notices' );
+		remove_all_actions( 'network_admin_notices' );
+	}
+
+	/**
+	 * Whether the current admin screen is one of the AnimatePro pages.
+	 *
+	 * @return bool
+	 */
+	private function is_eap_admin_screen() {
+		$allowed_pages = array(
+			self::MENU_SLUG,
+			self::WIDGETS_SLUG,
+			self::EXTENSIONS_SLUG,
+			self::THEME_BUILDER_SLUG,
+		);
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$current_page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+
+		if ( in_array( $current_page, $allowed_pages, true ) ) {
+			return true;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+		return $screen && isset( $screen->base ) && false !== strpos( (string) $screen->base, self::MENU_SLUG );
 	}
 
 	/**
@@ -474,6 +624,16 @@ class EAP_Admin {
 			self::THEME_BUILDER_SLUG => __( 'Theme Builder', 'elementor-animatepro' ),
 		);
 		?>
+		<?php
+		/*
+		 * WordPress relocates every admin notice (incl. other plugins') to just
+		 * after `.wp-header-end`, or — when that marker is missing — after the
+		 * first h1/h2 inside `.wrap`, which dropped foreign notices into the
+		 * middle of our page. This invisible anchor, rendered first inside every
+		 * AnimatePro page, keeps notices pinned to the very top instead.
+		 */
+		?>
+		<hr class="wp-header-end" />
 		<div class="eap-topbar">
 			<div class="eap-topbar__brand">
 				<span class="eap-topbar__logo">AP</span>
@@ -591,38 +751,28 @@ class EAP_Admin {
 					'Text Hover Image',
 					'Brand Slider',
 					'Icon Box',
+					'Animated Text',
+					'Advanced Animated Text',
 					'Testimonial Box',
 					'Testimonial Slider',
 					'Advanced Testimonial Slider',
+					'Advanced Slider',
 					'Advanced Button',
 					'Image Comparison',
 					'Parallax Sections',
 					'Progress Bar',
 					'Team',
-					'Notification',
 					'One Page Nav',
 					'Timeline',
-					'Tabs',
 					'Services Tabs',
-					'Floating Elements',
-					'Event Slider',
-					'Content Slider',
 					'Countdown',
-					'Clicktop',
-				),
-			),
-			'animations'    => array(
-				'tab'     => __( 'Animations', 'elementor-animatepro' ),
-				'title'   => __( 'Animations', 'elementor-animatepro' ),
-				'widgets' => array(
-					'Typewriter',
-					'Animated Heading',
-					'Animated Title',
-					'Animated Text',
-					'Advanced Animated Text',
-					'Lottie',
-					'GSAP DrawSvg',
-					'Cube Scroll Reveal',
+					'Image Accordion',
+					'Content Toggle',
+					'Multi Buttons',
+					'Price Box',
+					'Data Table',
+					'Feature List',
+					'Sticky Video',
 				),
 			),
 			'header-footer' => array(
@@ -681,26 +831,6 @@ class EAP_Admin {
 					'Live Events',
 				),
 			),
-			'form'          => array(
-				'tab'     => __( 'Form', 'elementor-animatepro' ),
-				'title'   => __( 'Form Widgets', 'elementor-animatepro' ),
-				'widgets' => array(
-					'Contact Form 7',
-					'Mailchimp',
-					'Advanced Mailchimp',
-				),
-			),
-			'video'         => array(
-				'tab'     => __( 'Video', 'elementor-animatepro' ),
-				'title'   => __( 'Video Widgets', 'elementor-animatepro' ),
-				'widgets' => array(
-					'Video Popup',
-					'Video Box',
-					'Video Mask',
-					'Youtube Video',
-					'Scrollable Video',
-				),
-			),
 			'advanced'      => array(
 				'tab'     => __( 'Advanced', 'elementor-animatepro' ),
 				'title'   => __( 'Advanced Widgets', 'elementor-animatepro' ),
@@ -714,7 +844,6 @@ class EAP_Admin {
 					'Filterable Gallery',
 					'Breadcrumbs',
 					'Table Of Content',
-					'Image Accordion',
 					'Author Box',
 					'Flip Box',
 					'Advanced Accordion',
@@ -835,9 +964,24 @@ class EAP_Admin {
 			'icon-box',
 			'testimonial-box',
 			'testimonial-slider',
+			'progress-bar',
+			'team',
 			'advanced-button',
 			'animated-text',
 			'advanced-animated-text',
+			'timeline',
+			'services-tabs',
+			'one-page-nav',
+			'advanced-testimonial-slider',
+			'advanced-slider',
+			'countdown',
+			'image-accordion',
+			'content-toggle',
+			'multi-buttons',
+			'price-box',
+			'data-table',
+			'feature-list',
+			'sticky-video',
 		);
 
 		return in_array( $widget_key, $built, true );
@@ -883,6 +1027,7 @@ class EAP_Admin {
 			'slider'       => 'dashicons-images-alt2',
 			'video'        => 'dashicons-video-alt3',
 			'button'       => 'dashicons-button',
+			'progress'     => 'dashicons-chart-bar',
 			'testimonial'  => 'dashicons-format-quote',
 			'tabs'         => 'dashicons-index-card',
 			'timeline'     => 'dashicons-backup',
@@ -904,7 +1049,10 @@ class EAP_Admin {
 			'breadcrumbs'  => 'dashicons-arrow-right-alt2',
 			'countdown'    => 'dashicons-clock',
 			'author'       => 'dashicons-admin-users',
+			'price'        => 'dashicons-money-alt',
 			'pricing'      => 'dashicons-money-alt',
+			'table'        => 'dashicons-editor-table',
+			'feature'      => 'dashicons-list-view',
 			'text'         => 'dashicons-editor-textcolor',
 			'icon'         => 'dashicons-star-filled',
 			'brand'        => 'dashicons-megaphone',

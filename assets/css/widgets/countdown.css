@@ -1,0 +1,463 @@
+/* =========================================================================
+ * EAP Countdown
+ * Layouts: flip (split-flap), boxed, minimal, circle.
+ * Sizing/colors are driven by CSS variables so every value stays editable
+ * from the Elementor controls.
+ * ====================================================================== */
+
+.eap-countdown {
+	--eap-cd-align: center;
+	--eap-cd-card-w: 60px;
+	--eap-cd-card-h: 80px;
+	--eap-cd-card-radius: 10px;
+	--eap-cd-divider-color: rgba(0, 0, 0, 0.35);
+	--eap-cd-divider-size: 2px;
+	--eap-cd-flip-speed: 600ms;
+	--eap-cd-ring-size: 120px;
+	--eap-cd-ring-width: 6;
+	--eap-cd-ring-color: #7dd3d8;
+	--eap-cd-track-color: rgba(255, 255, 255, 0.12);
+	--eap-cd-anim-duration: 700ms;
+	--eap-cd-anim-delay: 0ms;
+}
+
+.eap-countdown__row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: var(--eap-cd-align, center);
+	gap: 18px;
+}
+
+.eap-countdown__unit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-sizing: border-box;
+}
+
+.eap-cd-num {
+	font-weight: 700;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: "tnum";
+	color: #ffffff;
+}
+
+.eap-cd-label {
+	margin-top: 10px;
+	font-size: 13px;
+	letter-spacing: 0.04em;
+	color: #9aa5b1;
+	text-align: center;
+}
+
+.eap-cd-sep {
+	color: #ffffff;
+	font-weight: 700;
+	line-height: 1;
+	font-size: 32px;
+}
+
+/* -------------------------------------------------------------------------
+ * Flip clock
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown__digits {
+	display: flex;
+	gap: 6px;
+}
+
+.eap-countdown--flip .eap-cd-sep {
+	height: var(--eap-cd-card-h);
+	display: inline-flex;
+	align-items: center;
+}
+
+.eap-cd-flip {
+	position: relative;
+	width: var(--eap-cd-card-w);
+	height: var(--eap-cd-card-h);
+	border-radius: var(--eap-cd-card-radius);
+	perspective: 420px;
+}
+
+.eap-countdown--flip .eap-cd-num {
+	font-size: calc(var(--eap-cd-card-h) * 0.5);
+}
+
+.eap-cd-flip__num {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: var(--eap-cd-card-h);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.eap-cd-flip__static,
+.eap-cd-flip__fold {
+	position: absolute;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	overflow: hidden;
+	background-color: #20242e;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+.eap-cd-flip__static--top,
+.eap-cd-flip__fold--top {
+	top: 0;
+	border-radius: var(--eap-cd-card-radius) var(--eap-cd-card-radius) 0 0;
+}
+
+.eap-cd-flip__static--top .eap-cd-flip__num,
+.eap-cd-flip__fold--top .eap-cd-flip__num {
+	top: 0;
+}
+
+.eap-cd-flip__static--bottom,
+.eap-cd-flip__fold--bottom {
+	bottom: 0;
+	border-radius: 0 0 var(--eap-cd-card-radius) var(--eap-cd-card-radius);
+}
+
+.eap-cd-flip__static--bottom .eap-cd-flip__num,
+.eap-cd-flip__fold--bottom .eap-cd-flip__num {
+	bottom: 0;
+}
+
+.eap-cd-flip__static {
+	z-index: 1;
+}
+
+.eap-cd-flip__fold {
+	z-index: 2;
+	margin: 0;
+}
+
+.eap-cd-flip__fold--top {
+	transform-origin: center bottom;
+	transform: rotateX(0deg);
+}
+
+.eap-cd-flip__fold--bottom {
+	transform-origin: center top;
+	transform: rotateX(90deg);
+}
+
+/* Center divider line that sells the split-flap look. */
+.eap-cd-flip::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 50%;
+	height: var(--eap-cd-divider-size);
+	transform: translateY(-50%);
+	background: var(--eap-cd-divider-color);
+	z-index: 3;
+	pointer-events: none;
+}
+
+.eap-cd-flip.is-flipping .eap-cd-flip__fold--top {
+	animation: eap-cd-fold-top calc(var(--eap-cd-flip-speed) / 2) ease-in forwards;
+}
+
+.eap-cd-flip.is-flipping .eap-cd-flip__fold--bottom {
+	animation: eap-cd-fold-bottom calc(var(--eap-cd-flip-speed) / 2) ease-out forwards;
+	animation-delay: calc(var(--eap-cd-flip-speed) / 2);
+}
+
+@keyframes eap-cd-fold-top {
+	from {
+		transform: rotateX(0deg);
+	}
+	to {
+		transform: rotateX(-90deg);
+	}
+}
+
+@keyframes eap-cd-fold-bottom {
+	from {
+		transform: rotateX(90deg);
+	}
+	to {
+		transform: rotateX(0deg);
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Boxed
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown__box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 96px;
+	padding: 18px 14px;
+	border-radius: 14px;
+	background-color: #20242e;
+	box-sizing: border-box;
+}
+
+.eap-countdown--boxed .eap-cd-num {
+	font-size: 40px;
+}
+
+/* -------------------------------------------------------------------------
+ * Minimal
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown--minimal .eap-countdown__row {
+	align-items: baseline;
+}
+
+.eap-countdown--minimal .eap-cd-num {
+	font-size: 46px;
+}
+
+/* -------------------------------------------------------------------------
+ * Circle
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown__circle {
+	position: relative;
+	width: var(--eap-cd-ring-size);
+	height: var(--eap-cd-ring-size);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+}
+
+.eap-countdown__ring {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	transform: rotate(-90deg);
+}
+
+.eap-countdown__ring-track {
+	fill: none;
+	stroke: var(--eap-cd-track-color);
+	stroke-width: var(--eap-cd-ring-width);
+}
+
+.eap-countdown__ring-fill {
+	fill: none;
+	stroke: var(--eap-cd-ring-color);
+	stroke-width: var(--eap-cd-ring-width);
+	stroke-linecap: round;
+	transition: stroke-dashoffset 0.45s ease;
+}
+
+.eap-countdown__circle-num {
+	position: relative;
+	z-index: 1;
+}
+
+.eap-countdown--circle .eap-cd-num {
+	font-size: 26px;
+}
+
+/* -------------------------------------------------------------------------
+ * Tick (boxed / minimal / circle number change)
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown__number.is-tick {
+	animation: eap-cd-tick 0.4s ease;
+}
+
+@keyframes eap-cd-tick {
+	0% {
+		transform: translateY(-26%);
+		opacity: 0.25;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Expire message
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown__message {
+	margin-top: 16px;
+	font-size: 18px;
+	font-weight: 600;
+	text-align: center;
+	color: #ffffff;
+}
+
+.eap-countdown__message[hidden] {
+	display: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Entrance animations (toggled via .is-visible by countdown.js)
+ * ---------------------------------------------------------------------- */
+
+.eap-countdown--anim-fade,
+.eap-countdown--anim-zoom,
+.eap-countdown--anim-slide {
+	opacity: 0;
+	will-change: opacity, transform;
+	transition: opacity var(--eap-cd-anim-duration) ease var(--eap-cd-anim-delay),
+		transform var(--eap-cd-anim-duration) ease var(--eap-cd-anim-delay);
+}
+
+.eap-countdown--anim-zoom {
+	transform: scale(0.92);
+}
+
+.eap-countdown--anim-slide {
+	transform: translateY(28px);
+}
+
+.eap-countdown--anim-fade.is-visible,
+.eap-countdown--anim-zoom.is-visible,
+.eap-countdown--anim-slide.is-visible {
+	opacity: 1;
+	transform: none;
+}
+
+/* -------------------------------------------------------------------------
+ * Reduced motion
+ * ---------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-cd-flip.is-flipping .eap-cd-flip__fold--top,
+	.eap-cd-flip.is-flipping .eap-cd-flip__fold--bottom {
+		animation: none;
+	}
+
+	.eap-countdown__number.is-tick {
+		animation: none;
+	}
+
+	.eap-countdown--anim-fade,
+	.eap-countdown--anim-zoom,
+	.eap-countdown--anim-slide {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+
+	.eap-cd-roll__reel {
+		transition: none;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Panel (single card, labels above the digits, vertical slide/roll digits)
+ * ---------------------------------------------------------------------- */
+
+/* Panel root is a column flex so the Alignment control (via --eap-cd-align)
+   can position the shrink-wrapped panel card left/center/right. */
+.eap-countdown--panel {
+	display: flex;
+	flex-direction: column;
+	align-items: var(--eap-cd-align, center);
+}
+
+.eap-countdown--panel .eap-countdown__panel {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 100%;
+	padding: 48px 56px;
+	border-radius: 18px;
+	background: linear-gradient(145deg, #4b4660 0%, #3a3650 100%);
+	box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+	box-sizing: border-box;
+}
+
+.eap-countdown--panel .eap-countdown__row {
+	align-items: center;
+	flex-wrap: nowrap;
+	gap: 28px;
+}
+
+.eap-countdown--panel .eap-countdown__unit {
+	position: relative;
+}
+
+.eap-countdown--panel .eap-cd-label {
+	position: absolute;
+	bottom: 100%;
+	left: 0;
+	right: 0;
+	margin: 0 0 14px;
+	font-size: 14px;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.55);
+	white-space: nowrap;
+}
+
+.eap-countdown--panel .eap-countdown__digits {
+	display: flex;
+	font-size: 96px;
+	line-height: 1;
+}
+
+.eap-countdown--panel .eap-cd-num {
+	font-weight: 300;
+	color: #ffffff;
+}
+
+.eap-countdown--panel .eap-cd-sep {
+	align-self: center;
+	font-size: 64px;
+	font-weight: 300;
+	color: rgba(255, 255, 255, 0.35);
+}
+
+.eap-countdown__panel-icon {
+	position: absolute;
+	top: 16px;
+	left: 18px;
+	width: 18px;
+	height: 18px;
+	display: inline-flex;
+	color: rgba(255, 255, 255, 0.5);
+	pointer-events: none;
+}
+
+.eap-countdown__panel-icon svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* Vertical slide / odometer reel (a 0-9 column translated to the active digit). */
+.eap-cd-roll {
+	display: inline-block;
+	overflow: hidden;
+	height: 1em;
+	vertical-align: top;
+}
+
+.eap-cd-roll__reel {
+	display: flex;
+	flex-direction: column;
+	transition: transform var(--eap-cd-roll-speed, 650ms) cubic-bezier(0.22, 1, 0.36, 1);
+	will-change: transform;
+}
+
+.eap-cd-roll__cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 1em;
+	line-height: 1;
+}

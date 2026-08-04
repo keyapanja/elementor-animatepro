@@ -1,0 +1,419 @@
+/* =========================================================================
+ * EAP Price Box
+ * A single, fully styleable pricing card. Place several side by side (in a
+ * flex container / columns) to build a pricing table. CSS-only — ribbons and
+ * tooltips are pure CSS, no JS.
+ *
+ * Layout notes:
+ *  - The card uses `overflow: visible` so tooltips and the circular ribbon can
+ *    extend past its edges. The header's top corners are rounded to the card's
+ *    radius via the --eap-pb-rtl / --eap-pb-rtr vars (set by the Border Radius
+ *    control) so a full-bleed coloured header still clips to the card corners.
+ *  - The corner ribbon clips its diagonal banner inside its own corner box, so
+ *    the card itself doesn't need overflow:hidden.
+ * ====================================================================== */
+
+.eap-price-box {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+.eap-price-box * {
+	box-sizing: border-box;
+}
+
+/* -------------------------------------------------------------------------
+ * Header
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__header {
+	border-top-left-radius: var(--eap-pb-rtl, 12px);
+	border-top-right-radius: var(--eap-pb-rtr, 12px);
+}
+
+.eap-price-box__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
+	font-size: var(--eap-pb-icon-size, 48px);
+}
+
+.eap-price-box__icon i {
+	font-size: inherit;
+	color: inherit;
+}
+
+.eap-price-box__icon svg {
+	width: var(--eap-pb-icon-size, 48px);
+	height: var(--eap-pb-icon-size, 48px);
+}
+
+.eap-price-box__title {
+	margin: 0;
+	line-height: 1.2;
+}
+
+.eap-price-box__subtitle {
+	margin: 6px 0 0;
+	line-height: 1.5;
+}
+
+/* -------------------------------------------------------------------------
+ * Pricing
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__pricing {
+	line-height: 1;
+}
+
+.eap-price-box__original {
+	display: inline-block;
+	margin-right: 10px;
+	text-decoration: line-through;
+	font-size: 0.9rem;
+	vertical-align: middle;
+}
+
+.eap-price-box__price {
+	display: inline-flex;
+	align-items: baseline;
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 1;
+	vertical-align: middle;
+}
+
+.eap-price-box__amount {
+	font-size: 1em;
+	line-height: 1;
+}
+
+.eap-price-box__fraction {
+	font-size: 0.5em;
+	align-self: flex-start;
+	line-height: 1;
+}
+
+.eap-price-box__currency {
+	line-height: 1;
+}
+
+.eap-price-box--currency-normal .eap-price-box__currency {
+	align-self: baseline;
+	font-size: 0.6em;
+	margin-right: 1px;
+}
+
+.eap-price-box--currency-raised .eap-price-box__currency {
+	align-self: flex-start;
+	font-size: 0.5em;
+	margin-right: 1px;
+}
+
+.eap-price-box__period {
+	font-weight: 400;
+}
+
+.eap-price-box__period--beside {
+	align-self: flex-end;
+	font-size: 0.34em;
+	margin-left: 4px;
+}
+
+.eap-price-box__period--below {
+	display: block;
+	font-size: 0.95rem;
+	margin-top: 8px;
+}
+
+/* -------------------------------------------------------------------------
+ * Features
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__features {
+	list-style: none;
+	margin: 0;
+}
+
+.eap-price-box__feature {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	line-height: 1.4;
+}
+
+.eap-price-box__feature-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	line-height: 1;
+	font-size: var(--eap-pb-feat-icon-size, 1em);
+}
+
+.eap-price-box__feature-icon svg {
+	width: var(--eap-pb-feat-icon-size, 1em);
+	height: var(--eap-pb-feat-icon-size, 1em);
+}
+
+.eap-price-box__feature--excluded {
+	opacity: 0.85;
+}
+
+/* -------------------------------------------------------------------------
+ * Tooltip (CSS-only, shown on hover / focus of a feature row)
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__feature[data-eap-tooltip]::after,
+.eap-price-box__feature[data-eap-tooltip]::before {
+	position: absolute;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.2s ease, transform 0.2s ease;
+	z-index: 6;
+}
+
+.eap-price-box__feature[data-eap-tooltip]::after {
+	content: attr(data-eap-tooltip);
+	width: max-content;
+	max-width: 200px;
+	padding: 8px 12px;
+	border-radius: 6px;
+	background: #1f2937;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.4;
+	text-align: center;
+	white-space: normal;
+}
+
+.eap-price-box__feature[data-eap-tooltip]::before {
+	content: "";
+	border: 6px solid transparent;
+	--eap-pb-tip-bg: #1f2937;
+}
+
+.eap-price-box__feature[data-eap-tooltip]:hover::after,
+.eap-price-box__feature[data-eap-tooltip]:hover::before,
+.eap-price-box__feature[data-eap-tooltip]:focus::after,
+.eap-price-box__feature[data-eap-tooltip]:focus::before {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* Top (default) */
+.eap-price-box--tip-top .eap-price-box__feature[data-eap-tooltip]::after {
+	left: 50%;
+	bottom: 100%;
+	transform: translate(-50%, calc(var(--eap-pb-tip-distance, 8px) * -1 + 6px));
+}
+.eap-price-box--tip-top .eap-price-box__feature[data-eap-tooltip]:hover::after,
+.eap-price-box--tip-top .eap-price-box__feature[data-eap-tooltip]:focus::after {
+	transform: translate(-50%, calc(var(--eap-pb-tip-distance, 8px) * -1));
+}
+.eap-price-box--tip-top.eap-price-box--tip-arrow .eap-price-box__feature[data-eap-tooltip]::before {
+	left: 50%;
+	bottom: 100%;
+	transform: translate(-50%, calc(var(--eap-pb-tip-distance, 8px) - 6px));
+	border-top-color: var(--eap-pb-tip-bg);
+}
+
+/* Bottom */
+.eap-price-box--tip-bottom .eap-price-box__feature[data-eap-tooltip]::after {
+	left: 50%;
+	top: 100%;
+	transform: translate(-50%, calc(var(--eap-pb-tip-distance, 8px) - 6px));
+}
+.eap-price-box--tip-bottom .eap-price-box__feature[data-eap-tooltip]:hover::after,
+.eap-price-box--tip-bottom .eap-price-box__feature[data-eap-tooltip]:focus::after {
+	transform: translate(-50%, var(--eap-pb-tip-distance, 8px));
+}
+.eap-price-box--tip-bottom.eap-price-box--tip-arrow .eap-price-box__feature[data-eap-tooltip]::before {
+	left: 50%;
+	top: 100%;
+	transform: translate(-50%, calc(var(--eap-pb-tip-distance, 8px) - 6px));
+	border-bottom-color: var(--eap-pb-tip-bg);
+}
+
+/* Left */
+.eap-price-box--tip-left .eap-price-box__feature[data-eap-tooltip]::after {
+	right: 100%;
+	top: 50%;
+	transform: translate(calc(var(--eap-pb-tip-distance, 8px) - 6px), -50%);
+}
+.eap-price-box--tip-left .eap-price-box__feature[data-eap-tooltip]:hover::after,
+.eap-price-box--tip-left .eap-price-box__feature[data-eap-tooltip]:focus::after {
+	transform: translate(calc(var(--eap-pb-tip-distance, 8px) * -1), -50%);
+}
+.eap-price-box--tip-left.eap-price-box--tip-arrow .eap-price-box__feature[data-eap-tooltip]::before {
+	right: 100%;
+	top: 50%;
+	transform: translate(calc(var(--eap-pb-tip-distance, 8px) - 6px), -50%);
+	border-left-color: var(--eap-pb-tip-bg);
+}
+
+/* Right */
+.eap-price-box--tip-right .eap-price-box__feature[data-eap-tooltip]::after {
+	left: 100%;
+	top: 50%;
+	transform: translate(calc(var(--eap-pb-tip-distance, 8px) - 6px), -50%);
+}
+.eap-price-box--tip-right .eap-price-box__feature[data-eap-tooltip]:hover::after,
+.eap-price-box--tip-right .eap-price-box__feature[data-eap-tooltip]:focus::after {
+	transform: translate(var(--eap-pb-tip-distance, 8px), -50%);
+}
+.eap-price-box--tip-right.eap-price-box--tip-arrow .eap-price-box__feature[data-eap-tooltip]::before {
+	left: 100%;
+	top: 50%;
+	transform: translate(calc(var(--eap-pb-tip-distance, 8px) - 6px), -50%);
+	border-right-color: var(--eap-pb-tip-bg);
+}
+
+/* -------------------------------------------------------------------------
+ * Footer / Call to action
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__footer {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: auto; /* push the CTA to the bottom for equal-height cards */
+}
+
+.eap-price-box__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	max-width: 100%;
+	border: 0 solid transparent;
+	background-color: #4f46e5;
+	color: #fff;
+	font-weight: 600;
+	line-height: 1.2;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.eap-price-box__footer > .eap-price-box__button {
+	align-self: inherit;
+}
+
+.eap-price-box__button-icon {
+	display: inline-flex;
+	align-items: center;
+	line-height: 1;
+}
+
+.eap-price-box__button-icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-price-box__footer-note {
+	width: 100%;
+	text-align: center;
+	line-height: 1.5;
+}
+
+/* -------------------------------------------------------------------------
+ * Ribbon — circular badge
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__ribbon {
+	z-index: 3;
+}
+
+.eap-price-box__ribbon--circle {
+	position: absolute;
+	top: var(--eap-pb-ribbon-distance, 12px);
+	width: 84px;
+	height: 84px;
+}
+
+.eap-price-box__ribbon--circle.eap-price-box__ribbon--right {
+	right: var(--eap-pb-ribbon-distance, 12px);
+}
+
+.eap-price-box__ribbon--circle.eap-price-box__ribbon--left {
+	left: var(--eap-pb-ribbon-distance, 12px);
+}
+
+.eap-price-box__ribbon--circle .eap-price-box__ribbon-inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	padding: 6px;
+	border-radius: 50%;
+	background: #1f2937;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 1.1;
+	text-align: center;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+/* -------------------------------------------------------------------------
+ * Ribbon — corner banner
+ * ---------------------------------------------------------------------- */
+
+.eap-price-box__ribbon--corner {
+	position: absolute;
+	top: 0;
+	width: 120px;
+	height: 120px;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.eap-price-box__ribbon--corner.eap-price-box__ribbon--right {
+	right: 0;
+	border-top-right-radius: var(--eap-pb-rtr, 12px);
+}
+
+.eap-price-box__ribbon--corner.eap-price-box__ribbon--left {
+	left: 0;
+	border-top-left-radius: var(--eap-pb-rtl, 12px);
+}
+
+.eap-price-box__ribbon--corner .eap-price-box__ribbon-inner {
+	position: absolute;
+	display: block;
+	width: 170px;
+	padding: 6px 0;
+	background: #1f2937;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-align: center;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.eap-price-box__ribbon--corner.eap-price-box__ribbon--right .eap-price-box__ribbon-inner {
+	top: 26px;
+	right: -46px;
+	transform: rotate(45deg);
+}
+
+.eap-price-box__ribbon--corner.eap-price-box__ribbon--left .eap-price-box__ribbon-inner {
+	top: 26px;
+	left: -46px;
+	transform: rotate(-45deg);
+}

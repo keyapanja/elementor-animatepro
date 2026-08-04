@@ -1,18 +1,26 @@
+/*
+ * AnimatePro editor badge.
+ * In Elementor 4.x the panel tiles (normal list AND search results) are
+ * <button class="elementor-element" data-library-element-type="<widget-type>">.
+ * editor.js tags only our widgets (eap-* type) with .eap-widget-badge-ready, so
+ * the badge can never land on a same-named default Elementor widget.
+ */
 .elementor-panel .elementor-element.eap-widget-badge-ready,
-.elementor-panel .elementor-element[data-widget_type*="eap-"],
-.elementor-panel .elementor-element-wrapper.eap-widget-badge-ready,
-.elementor-panel .elementor-element-wrapper[data-widget_type*="eap-"] {
+.elementor-panel .elementor-element[data-library-element-type^="eap-"] {
 	position: relative;
 }
 
-.elementor-panel .elementor-element.eap-widget-badge-ready .eap-widget-badge,
-.elementor-panel .elementor-element[data-widget_type*="eap-"] .eap-widget-badge,
-.elementor-panel .elementor-element-wrapper.eap-widget-badge-ready .eap-widget-badge,
-.elementor-panel .elementor-element-wrapper[data-widget_type*="eap-"] .eap-widget-badge {
+.elementor-panel .elementor-element.eap-widget-badge-ready .eap-widget-badge {
 	position: absolute;
 	top: 8px;
 	right: 8px;
-	z-index: 5;
+	/*
+	 * Elementor's sticky search header (#elementor-panel-elements-search-area)
+	 * sits at z-index:1. Keep the badge below that so it never paints over the
+	 * search bar when a card scrolls behind it, while still sitting above the
+	 * card's own (non-positioned) icon and title.
+	 */
+	z-index: 0;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
