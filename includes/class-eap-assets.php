@@ -126,6 +126,9 @@ class EAP_Assets {
 			'data-table',
 			'feature-list',
 			'sticky-video',
+			'stacked-cards',
+			'social-share',
+			'site-logo',
 		);
 
 		foreach ( $styles as $style ) {
@@ -169,6 +172,8 @@ class EAP_Assets {
 			'content-toggle',
 			'data-table',
 			'sticky-video',
+			'stacked-cards',
+			'social-share',
 		);
 
 		foreach ( $scripts as $script ) {

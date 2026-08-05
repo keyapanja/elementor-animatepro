@@ -1,0 +1,160 @@
+/* =========================================================================
+ * Social Share
+ * ====================================================================== */
+
+.eap-social-share {
+	--eap-ss-size: 44px;
+	--eap-ss-label-gap: 8px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.eap-social-share__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--eap-ss-label-gap);
+	min-width: var(--eap-ss-size);
+	min-height: var(--eap-ss-size);
+	box-sizing: border-box;
+	color: #ffffff;
+	background-color: #4a5568;
+	line-height: 1;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease, filter 0.2s ease;
+}
+
+.eap-social-share__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 18px;
+}
+
+.eap-social-share__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-social-share__label {
+	white-space: nowrap;
+}
+
+/* Labelled buttons get breathing room by default; the Horizontal Padding
+ * control overrides this. Icon-only buttons stay square (no side padding). */
+.eap-social-share--content-icon_label .eap-social-share__btn,
+.eap-social-share--content-label .eap-social-share__btn {
+	padding-left: 16px;
+	padding-right: 16px;
+}
+
+/* --- Shapes ------------------------------------------------------------ */
+
+.eap-social-share--shape-square .eap-social-share__btn {
+	border-radius: 0;
+}
+
+.eap-social-share--shape-rounded .eap-social-share__btn {
+	border-radius: 10px;
+}
+
+.eap-social-share--shape-circle .eap-social-share__btn {
+	border-radius: 50%;
+}
+
+.eap-social-share--shape-pill .eap-social-share__btn {
+	border-radius: 999px;
+}
+
+/* --- Brand colours (default) ------------------------------------------- */
+
+.eap-social-share--brand .eap-social-share__btn {
+	background-color: var(--eap-ss-brand, #4a5568);
+	color: #ffffff;
+}
+
+.eap-social-share--brand .eap-social-share__icon svg {
+	fill: #ffffff;
+}
+
+.eap-social-share--brand .eap-social-share__btn:hover {
+	filter: brightness(0.9);
+}
+
+/* --- Hover effects ----------------------------------------------------- */
+
+.eap-social-share--hover-grow .eap-social-share__btn:hover {
+	transform: scale(1.12);
+}
+
+.eap-social-share--hover-lift .eap-social-share__btn:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Copy Link feedback ------------------------------------------------ */
+
+.eap-social-share__copied {
+	display: none;
+	white-space: nowrap;
+}
+
+.eap-social-share__btn.is-copied .eap-social-share__icon,
+.eap-social-share__btn.is-copied .eap-social-share__label {
+	display: none;
+}
+
+.eap-social-share__btn.is-copied .eap-social-share__copied {
+	display: inline-flex;
+}
+
+/* --- Native "Share…" button: hidden until JS confirms support ---------- */
+
+.eap-social-share__btn--native {
+	display: none;
+}
+
+.eap-social-share__btn--native.is-share-supported {
+	display: inline-flex;
+}
+
+/* --- Floating rail ----------------------------------------------------- */
+
+.eap-social-share--floating {
+	position: fixed;
+	z-index: var(--eap-ss-z, 99);
+	flex-direction: column;
+	flex-wrap: nowrap;
+	gap: 6px;
+}
+
+.eap-social-share--floating.eap-social-share--side-left {
+	left: var(--eap-ss-offset, 0px);
+}
+
+.eap-social-share--floating.eap-social-share--side-right {
+	right: var(--eap-ss-offset, 0px);
+}
+
+.eap-social-share--floating.eap-social-share--valign-top {
+	top: 20px;
+}
+
+.eap-social-share--floating.eap-social-share--valign-middle {
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.eap-social-share--floating.eap-social-share--valign-bottom {
+	bottom: 20px;
+}
+
+@media (max-width: 767px) {
+	.eap-social-share--floating.eap-social-share--hide-mobile {
+		display: none;
+	}
+}

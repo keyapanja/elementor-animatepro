@@ -72,6 +72,9 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-data-table.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-feature-list.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-sticky-video.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-stacked-cards.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-social-share.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-site-logo.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -105,6 +108,9 @@ class EAP_Elementor {
 		$data_table_on             = ! array_key_exists( 'data-table', $widget_states ) || ! empty( $widget_states['data-table'] );
 		$feature_list_on           = ! array_key_exists( 'feature-list', $widget_states ) || ! empty( $widget_states['feature-list'] );
 		$sticky_video_on           = ! array_key_exists( 'sticky-video', $widget_states ) || ! empty( $widget_states['sticky-video'] );
+		$stacked_cards_on          = ! array_key_exists( 'stacked-cards', $widget_states ) || ! empty( $widget_states['stacked-cards'] );
+		$social_share_on           = ! array_key_exists( 'social-share', $widget_states ) || ! empty( $widget_states['social-share'] );
+		$site_logo_on              = ! array_key_exists( 'site-logo', $widget_states ) || ! empty( $widget_states['site-logo'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -224,6 +230,18 @@ class EAP_Elementor {
 
 		if ( $sticky_video_on ) {
 			$widgets_manager->register( new EAP_Widget_Sticky_Video() );
+		}
+
+		if ( $stacked_cards_on ) {
+			$widgets_manager->register( new EAP_Widget_Stacked_Cards() );
+		}
+
+		if ( $social_share_on ) {
+			$widgets_manager->register( new EAP_Widget_Social_Share() );
+		}
+
+		if ( $site_logo_on ) {
+			$widgets_manager->register( new EAP_Widget_Site_Logo() );
 		}
 
 		// Content Toggle is a nested widget — only load it when Elementor's

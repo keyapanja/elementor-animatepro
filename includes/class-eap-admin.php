@@ -220,6 +220,27 @@ class EAP_Admin {
 			$done['sticky-video-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['stacked-cards-built'] ) ) {
+			$states['stacked-cards'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['stacked-cards-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['social-share-built'] ) ) {
+			$states['social-share'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['social-share-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['site-logo-built'] ) ) {
+			$states['site-logo'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['site-logo-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -773,6 +794,8 @@ class EAP_Admin {
 					'Data Table',
 					'Feature List',
 					'Sticky Video',
+					'Stacked Cards',
+					'Social Share',
 				),
 			),
 			'header-footer' => array(
@@ -982,6 +1005,9 @@ class EAP_Admin {
 			'data-table',
 			'feature-list',
 			'sticky-video',
+			'stacked-cards',
+			'social-share',
+			'site-logo',
 		);
 
 		return in_array( $widget_key, $built, true );

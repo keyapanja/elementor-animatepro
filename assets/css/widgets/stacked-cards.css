@@ -1,0 +1,194 @@
+/* =========================================================================
+ * Stacked Cards
+ * The visual layout is identical whether the cards are in "list" mode
+ * (normal document flow — used in the editor, on small screens, or without
+ * GSAP) or "pinned" mode (the .is-pinned class the script adds while it runs
+ * the GSAP stacking effect). Only positioning differs between the two.
+ * ====================================================================== */
+
+.eap-stacked-cards {
+	--eap-sc-media-gap: 40px;
+	--eap-sc-img-width: 42%;
+	position: relative;
+	width: 100%;
+}
+
+.eap-stacked-cards__stage {
+	position: relative;
+}
+
+/* --- The card ---------------------------------------------------------- */
+
+.eap-stacked-cards__card {
+	position: relative;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 440px;
+	padding: 48px 56px;
+	border-radius: 28px;
+	background-color: #7cc04f;
+	color: #ffffff;
+	overflow: hidden;
+}
+
+.eap-stacked-cards:not(.is-pinned) .eap-stacked-cards__card:not(:last-child) {
+	margin-bottom: 24px;
+}
+
+/* Pinned mode: cards are absolutely stacked; the script sets their height
+ * and drives the transforms. The stage clips incoming cards below while
+ * still letting the peeking tops show above (negative clip inset on top). */
+.eap-stacked-cards.is-pinned .eap-stacked-cards__stage {
+	clip-path: inset(-3000px 0px 0px 0px);
+}
+
+.eap-stacked-cards.is-pinned .eap-stacked-cards__card {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 0;
+	will-change: transform;
+	backface-visibility: hidden;
+}
+
+/* --- Card contents ----------------------------------------------------- */
+
+.eap-stacked-cards__inner {
+	display: flex;
+	align-items: center;
+	gap: var(--eap-sc-media-gap);
+	height: 100%;
+}
+
+.eap-stacked-cards__card--img-right .eap-stacked-cards__inner {
+	flex-direction: row-reverse;
+}
+
+.eap-stacked-cards__media {
+	flex: 0 0 var(--eap-sc-img-width);
+	max-width: var(--eap-sc-img-width);
+}
+
+.eap-stacked-cards__img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 16px;
+	object-fit: cover;
+}
+
+.eap-stacked-cards__body {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.eap-stacked-cards__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 40px;
+	line-height: 1;
+	margin-bottom: 20px;
+	color: inherit;
+}
+
+.eap-stacked-cards__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-stacked-cards__icon i {
+	color: inherit;
+}
+
+.eap-stacked-cards__subtitle {
+	margin: 0 0 10px;
+	color: inherit;
+	opacity: 0.9;
+}
+
+.eap-stacked-cards__title {
+	margin: 0 0 16px;
+	color: inherit;
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+.eap-stacked-cards__desc {
+	margin: 0 0 26px;
+	color: inherit;
+}
+
+.eap-stacked-cards__desc p:last-child {
+	margin-bottom: 0;
+}
+
+.eap-stacked-cards__button {
+	display: inline-block;
+	margin-top: 8px;
+	padding: 14px 32px;
+	border: 2px solid rgba(255, 255, 255, 0.85);
+	border-radius: 40px;
+	background-color: transparent;
+	color: #ffffff;
+	font-weight: 600;
+	line-height: 1;
+	text-decoration: none;
+	cursor: pointer;
+	transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.eap-stacked-cards__button:hover {
+	color: #1f2937;
+	background-color: #ffffff;
+}
+
+/* --- Text alignment ---------------------------------------------------- */
+
+.eap-stacked-cards--align-center .eap-stacked-cards__body {
+	text-align: center;
+}
+
+.eap-stacked-cards--align-center .eap-stacked-cards__icon {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.eap-stacked-cards--align-right .eap-stacked-cards__body {
+	text-align: right;
+}
+
+.eap-stacked-cards--align-right .eap-stacked-cards__icon {
+	margin-left: auto;
+}
+
+/* --- Small screens: media stacks above the text ------------------------ */
+
+@media (max-width: 767px) {
+	.eap-stacked-cards__inner,
+	.eap-stacked-cards__card--img-right .eap-stacked-cards__inner {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.eap-stacked-cards__media {
+		flex-basis: auto;
+		max-width: 100%;
+		width: 100%;
+	}
+
+	.eap-stacked-cards__card {
+		padding: 32px;
+	}
+}
+
+/* --- Respect reduced motion (belt-and-suspenders; the JS also checks) --- */
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-stacked-cards.is-pinned .eap-stacked-cards__card {
+		transition: none !important;
+	}
+}
