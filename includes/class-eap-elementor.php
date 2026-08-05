@@ -75,6 +75,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-stacked-cards.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-social-share.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-site-logo.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-nav-menu.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -111,6 +112,7 @@ class EAP_Elementor {
 		$stacked_cards_on          = ! array_key_exists( 'stacked-cards', $widget_states ) || ! empty( $widget_states['stacked-cards'] );
 		$social_share_on           = ! array_key_exists( 'social-share', $widget_states ) || ! empty( $widget_states['social-share'] );
 		$site_logo_on              = ! array_key_exists( 'site-logo', $widget_states ) || ! empty( $widget_states['site-logo'] );
+		$nav_menu_on               = ! array_key_exists( 'nav-menu', $widget_states ) || ! empty( $widget_states['nav-menu'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -242,6 +244,10 @@ class EAP_Elementor {
 
 		if ( $site_logo_on ) {
 			$widgets_manager->register( new EAP_Widget_Site_Logo() );
+		}
+
+		if ( $nav_menu_on ) {
+			$widgets_manager->register( new EAP_Widget_Nav_Menu() );
 		}
 
 		// Content Toggle is a nested widget — only load it when Elementor's

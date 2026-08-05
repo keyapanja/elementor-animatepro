@@ -1,0 +1,442 @@
+/* =========================================================================
+ * Nav Menu
+ * Desktop dropdowns are pure CSS (hover + :focus-within). The `.is-mobile`
+ * class (added by nav-menu.js below the breakpoint) switches to the hamburger
+ * + accordion layout, in either dropdown-panel or full-screen mode.
+ * ====================================================================== */
+
+.eap-nav-menu {
+	--eap-nm-pointer-color: #4f46e5;
+	--eap-nm-pointer-weight: 2px;
+	--eap-nm-toggle-size: 24px;
+	position: relative;
+	display: flex;
+}
+
+.eap-nav-menu__list,
+.eap-nav-menu__sub {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.eap-nav-menu__list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	width: 100%;
+}
+
+.eap-nav-menu--vertical > .eap-nav-menu__list {
+	flex-direction: column;
+	align-items: stretch;
+}
+
+.eap-nav-menu__item {
+	position: relative;
+}
+
+.eap-nav-menu__row {
+	display: flex;
+	align-items: center;
+}
+
+.eap-nav-menu__link {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 14px;
+	color: #1f2937;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.eap-nav-menu__indicator {
+	display: inline-flex;
+	transition: transform 0.25s ease;
+}
+
+.eap-nav-menu__indicator svg,
+.eap-nav-menu__chevron {
+	display: block;
+}
+
+/* Sub-toggle (accordion) button — desktop hides it; mobile shows it. */
+.eap-nav-menu .eap-nav-menu__sub-toggle {
+	display: none;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	padding: 8px 12px;
+	margin: 0;
+	line-height: 0;
+	cursor: pointer;
+}
+
+.eap-nav-menu__sub-toggle-icon {
+	display: inline-flex;
+	transition: transform 0.25s ease;
+}
+
+/* --- Desktop dropdowns -------------------------------------------------- */
+
+.eap-nav-menu__sub {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 220px;
+	padding: 6px 0;
+	background: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(8px);
+	transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+	z-index: 100;
+}
+
+.eap-nav-menu__sub .eap-nav-menu__row {
+	justify-content: space-between;
+}
+
+.eap-nav-menu__sub .eap-nav-menu__link {
+	width: 100%;
+	white-space: normal;
+}
+
+.eap-nav-menu:not(.is-mobile) .eap-nav-menu__item--has-children:hover > .eap-nav-menu__sub,
+.eap-nav-menu:not(.is-mobile) .eap-nav-menu__item--has-children:focus-within > .eap-nav-menu__sub {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+/* Second level and deeper fly out to the side. */
+.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__sub,
+.eap-nav-menu--vertical:not(.is-mobile) > .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__sub {
+	top: 0;
+	left: 100%;
+	transform: translateX(8px);
+}
+
+.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children:hover > .eap-nav-menu__sub,
+.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children:focus-within > .eap-nav-menu__sub,
+.eap-nav-menu--vertical:not(.is-mobile) > .eap-nav-menu__list > .eap-nav-menu__item--has-children:hover > .eap-nav-menu__sub,
+.eap-nav-menu--vertical:not(.is-mobile) > .eap-nav-menu__list > .eap-nav-menu__item--has-children:focus-within > .eap-nav-menu__sub {
+	transform: translateX(0);
+}
+
+.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children > .eap-nav-menu__row > .eap-nav-menu__link > .eap-nav-menu__indicator {
+	transform: rotate(-90deg);
+}
+
+/* --- Pointer / hover effects (top-level links) ------------------------- */
+
+.eap-nav-menu--pointer-underline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::after,
+.eap-nav-menu--pointer-overline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::before,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::after,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::before {
+	content: '';
+	position: absolute;
+	left: 12px;
+	right: 12px;
+	height: var(--eap-nm-pointer-weight, 2px);
+	background: var(--eap-nm-pointer-color, #4f46e5);
+	transform: scaleX(0);
+	transform-origin: center;
+	transition: transform 0.28s ease;
+	pointer-events: none;
+}
+
+.eap-nav-menu--pointer-underline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::after,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::after {
+	bottom: 4px;
+}
+
+.eap-nav-menu--pointer-overline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::before,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link::before {
+	top: 4px;
+}
+
+.eap-nav-menu--pointer-underline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link:hover::after,
+.eap-nav-menu--pointer-underline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link.is-current::after,
+.eap-nav-menu--pointer-overline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link:hover::before,
+.eap-nav-menu--pointer-overline .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link.is-current::before,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link:hover::after,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link.is-current::after,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link:hover::before,
+.eap-nav-menu--pointer-double .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link.is-current::before {
+	transform: scaleX(1);
+}
+
+.eap-nav-menu--pointer-background .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link {
+	border-radius: 6px;
+}
+
+.eap-nav-menu--pointer-background .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link:hover,
+.eap-nav-menu--pointer-background .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__row > .eap-nav-menu__link.is-current {
+	background-color: var(--eap-nm-pointer-bg, #eef2ff);
+}
+
+/* --- Hamburger toggle -------------------------------------------------- */
+
+.eap-nav-menu .eap-nav-menu__toggle {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: #1f2937;
+	font: inherit;
+	line-height: 0;
+	padding: 8px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__toggle {
+	display: inline-flex;
+	position: relative;
+	z-index: 100001;
+}
+
+.eap-nav-menu__toggle svg,
+.eap-nav-menu__toggle i {
+	width: var(--eap-nm-toggle-size, 24px);
+	height: var(--eap-nm-toggle-size, 24px);
+	font-size: var(--eap-nm-toggle-size, 24px);
+}
+
+.eap-nav-menu__bars {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
+	width: var(--eap-nm-toggle-size, 24px);
+	height: var(--eap-nm-toggle-size, 24px);
+}
+
+.eap-nav-menu__bars span {
+	display: block;
+	width: 100%;
+	height: 2px;
+	background: currentColor;
+	border-radius: 2px;
+}
+
+.eap-nav-menu__toggle-close {
+	display: none;
+}
+
+.eap-nav-menu.is-open .eap-nav-menu__toggle-open {
+	display: none;
+}
+
+.eap-nav-menu.is-open .eap-nav-menu__toggle-close {
+	display: inline-flex;
+}
+
+/* --- Mobile layout (added by JS below the breakpoint) ------------------ */
+
+.eap-nav-menu.is-mobile {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/* Dropdown-panel mode — a card that drops from the toggle (the nav itself is
+ * only as wide as the toggle, so anchor to its right edge and give it width). */
+.eap-nav-menu.is-mobile > .eap-nav-menu__list {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	left: auto;
+	width: min(320px, 92vw);
+	margin-top: 8px;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	background: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	visibility: hidden;
+	transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+	z-index: 200;
+}
+
+.eap-nav-menu.is-mobile.is-open > .eap-nav-menu__list {
+	max-height: 80vh;
+	overflow-y: auto;
+	opacity: 1;
+	visibility: visible;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__row {
+	justify-content: center;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__link {
+	flex: 0 0 auto;
+	width: auto;
+	white-space: normal;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__sub-toggle {
+	display: inline-flex;
+	align-items: center;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__indicator {
+	display: none;
+}
+
+/* Mobile accordion submenus */
+.eap-nav-menu.is-mobile .eap-nav-menu__sub {
+	position: static;
+	width: auto;
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	opacity: 1;
+	visibility: visible;
+	transform: none;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__item.is-expanded > .eap-nav-menu__sub {
+	max-height: 1500px;
+}
+
+.eap-nav-menu.is-mobile .eap-nav-menu__item.is-expanded > .eap-nav-menu__row > .eap-nav-menu__sub-toggle .eap-nav-menu__sub-toggle-icon {
+	transform: rotate(180deg);
+}
+
+/* Full-screen overlay mode */
+.eap-nav-menu--mobile-fullscreen.is-mobile > .eap-nav-menu__list {
+	position: fixed;
+	inset: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	margin-top: 0;
+	max-height: none;
+	height: 100vh;
+	height: 100dvh;
+	border-radius: 0;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	padding: 64px 24px;
+	background: rgba(255, 255, 255, 0.98);
+	transform: translateY(-20px);
+	overflow-y: auto;
+	z-index: 100000;
+}
+
+/* Vertical position of the menu block inside the overlay. */
+.eap-nav-menu--mobile-fullscreen.is-mobile.eap-nav-menu--fs-top > .eap-nav-menu__list {
+	justify-content: flex-start;
+}
+
+.eap-nav-menu--mobile-fullscreen.is-mobile.eap-nav-menu--fs-bottom > .eap-nav-menu__list {
+	justify-content: flex-end;
+}
+
+/* Hide the header hamburger while the full-screen overlay is open (the
+ * dedicated close button takes over). */
+.eap-nav-menu--mobile-fullscreen.is-mobile.is-open .eap-nav-menu__toggle {
+	visibility: hidden;
+}
+
+/* --- Dedicated close button (full-screen mode) ------------------------- */
+
+.eap-nav-menu .eap-nav-menu__close {
+	display: none;
+	position: fixed;
+	z-index: 100002;
+	align-items: center;
+	justify-content: center;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: #1f2937;
+	font: inherit;
+	line-height: 0;
+	padding: 8px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.eap-nav-menu--mobile-fullscreen.is-mobile.is-open .eap-nav-menu__close {
+	display: inline-flex;
+}
+
+.eap-nav-menu__close svg,
+.eap-nav-menu__close i {
+	width: var(--eap-nm-close-size, 24px);
+	height: var(--eap-nm-close-size, 24px);
+	font-size: var(--eap-nm-close-size, 24px);
+}
+
+.eap-nav-menu--close-top-right .eap-nav-menu__close {
+	top: var(--eap-nm-close-offset, 18px);
+	right: var(--eap-nm-close-offset, 18px);
+}
+
+.eap-nav-menu--close-top-left .eap-nav-menu__close {
+	top: var(--eap-nm-close-offset, 18px);
+	left: var(--eap-nm-close-offset, 18px);
+}
+
+.eap-nav-menu--close-top-center .eap-nav-menu__close {
+	top: var(--eap-nm-close-offset, 18px);
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.eap-nav-menu--mobile-fullscreen.is-mobile.is-open > .eap-nav-menu__list {
+	transform: translateY(0);
+	max-height: none;
+	height: 100vh;
+	height: 100dvh;
+}
+
+.eap-nav-menu--mobile-fullscreen.is-mobile .eap-nav-menu__item {
+	width: 100%;
+	max-width: 420px;
+	text-align: center;
+}
+
+/* Item alignment (both mobile modes) is driven by the Menu Alignment control
+ * via justify-content on .eap-nav-menu__row; links shrink so it takes effect. */
+
+/* --- Editor / empty notice -------------------------------------------- */
+
+.eap-nav-menu__notice {
+	padding: 10px 14px;
+	color: #6b7280;
+	font-style: italic;
+	border: 1px dashed #d1d5db;
+	border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-nav-menu__sub,
+	.eap-nav-menu.is-mobile > .eap-nav-menu__list {
+		transition: none !important;
+	}
+}

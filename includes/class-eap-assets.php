@@ -129,6 +129,7 @@ class EAP_Assets {
 			'stacked-cards',
 			'social-share',
 			'site-logo',
+			'nav-menu',
 		);
 
 		foreach ( $styles as $style ) {
@@ -174,6 +175,7 @@ class EAP_Assets {
 			'sticky-video',
 			'stacked-cards',
 			'social-share',
+			'nav-menu',
 		);
 
 		foreach ( $scripts as $script ) {
