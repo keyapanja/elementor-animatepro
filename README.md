@@ -1,7 +1,7 @@
 # Elementor AnimatePro
 
 A WordPress plugin that adds a suite of custom, fully-styleable
-[Elementor](https://elementor.com/) widgets under its own **EAP Elements**
+[Elementor](https://elementor.com/) widgets under its own **AnimatePro**
 category, plus an admin panel to turn individual widgets on or off.
 
 Every widget is designed so that **everything is editable** from the Elementor
@@ -16,6 +16,8 @@ it**.
 - [Elementor](https://wordpress.org/plugins/elementor/) (free)
 - The **Content Toggle** widget uses Elementor's *Nested Elements* feature
   (active by default); it is only registered when that base is available.
+- The **Stacked Cards** widget loads GSAP + ScrollTrigger from a CDN (jsDelivr)
+  to drive its scroll animation.
 
 ## Widgets
 
@@ -35,6 +37,13 @@ it**.
 - **Feature List** — icon/image + title + description items with an optional
   **connector line**, plus per-item colour overrides.
 - **Multi Buttons** — a row of individually-styled buttons (separate or joined).
+- **Stacked Cards** — a scroll-driven stacking card deck (GSAP + ScrollTrigger):
+  cards pin and stack as you scroll, with configurable peek, scale-down, dimming
+  and optional alternating tilt. Cards size to their content (or a fixed height),
+  the deck auto-centres in the viewport, respects reduced-motion, and can be
+  disabled below a chosen breakpoint. Each card is a structured repeater item
+  (icon / subtitle / title / description / button / image, with per-card image
+  side and colours).
 
 ### Media
 - **Sticky Video** — YouTube / Vimeo / self-hosted; **floats to a corner while
@@ -50,6 +59,22 @@ it**.
 - **Animated Text**, **Advanced Animated Text**, **Advanced Button**,
   **Icon Box**, **Social Icons**, **Progress Bar**, **Timeline**,
   **Services Tabs**, **One Page Nav**, **Team**, **Parallax Sections**.
+- **Social Share** — an inline row and/or a floating bar; share to Facebook, X,
+  LinkedIn, WhatsApp, Telegram, Pinterest, Reddit, Tumblr, VK and email, plus
+  **copy-link**, **print** and **native** (Web Share API) actions. Official
+  brand colours are on by default (toggleable), and the shared URL/title are
+  resolved server-side.
+
+### Header & footer
+- **Site Logo** — shows the site's Customizer logo, a custom image, or the site
+  title as a text fallback; links home, with width/height, object-fit, alignment
+  and hover-opacity controls.
+- **Nav Menu** — renders any WordPress menu with desktop dropdown submenus
+  (hover / focus) and a mobile hamburger that opens either a **dropdown** or a
+  **full-screen overlay** (a setting). Full-screen mode covers the whole viewport
+  with configurable menu position and item alignment, plus a fully-styleable
+  close button (placement, size, colours, offset). Includes pointer/underline
+  hover effects, submenu accordions on mobile, Escape-to-close and scroll-lock.
 
 ## Admin
 
@@ -70,4 +95,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.20
+**Current version:** 1.20.31
