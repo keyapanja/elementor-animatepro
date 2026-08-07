@@ -1,0 +1,64 @@
+/* =========================================================================
+ * Post Meta Info
+ * A flex row (or stack) of current-post meta items — author, dates, terms,
+ * comment count, reading time — each an icon/avatar + text, joined by a
+ * separator. Colour/typography/sizes come from the Style controls.
+ * ====================================================================== */
+
+.eap-post-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	line-height: 1.4;
+}
+
+.eap-post-meta__item {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--eap-meta-icon-gap, 6px);
+}
+
+.eap-post-meta__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 0;
+}
+
+.eap-post-meta__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-post-meta__avatar {
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	object-fit: cover;
+	vertical-align: middle;
+}
+
+.eap-post-meta__text {
+	display: inline;
+}
+
+.eap-post-meta__prefix {
+	opacity: 0.85;
+}
+
+.eap-post-meta__link {
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.eap-post-meta__link:hover,
+.eap-post-meta__link:focus {
+	text-decoration: underline;
+}
+
+.eap-post-meta__sep {
+	opacity: 0.55;
+}

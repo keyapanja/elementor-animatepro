@@ -262,6 +262,41 @@ class EAP_Admin {
 			$done['animated-off-canvas-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['post-title-built'] ) ) {
+			$states['post-title'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-title-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['post-featured-image-built'] ) ) {
+			$states['post-featured-image'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-featured-image-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['post-excerpt-built'] ) ) {
+			$states['post-excerpt'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-excerpt-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['post-content-built'] ) ) {
+			$states['post-content'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-content-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['post-meta-info-built'] ) ) {
+			$states['post-meta-info'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-meta-info-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1032,6 +1067,11 @@ class EAP_Admin {
 			'nav-menu',
 			'mega-menu',
 			'animated-off-canvas',
+			'post-title',
+			'post-featured-image',
+			'post-excerpt',
+			'post-content',
+			'post-meta-info',
 		);
 
 		return in_array( $widget_key, $built, true );

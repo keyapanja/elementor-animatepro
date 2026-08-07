@@ -1,0 +1,33 @@
+/* =========================================================================
+ * Post Excerpt
+ * Dynamic current-post excerpt with an optional Read More link (inline or on
+ * its own line). Structural only — colour/typography come from Style controls.
+ * ====================================================================== */
+
+.eap-post-excerpt__text {
+	line-height: 1.6;
+}
+
+.eap-post-excerpt__text > p:first-child {
+	margin-top: 0;
+}
+
+.eap-post-excerpt__text > p:last-child {
+	margin-bottom: 0;
+}
+
+.eap-post-excerpt--inline .eap-post-excerpt__text {
+	display: inline;
+}
+
+.eap-post-excerpt__more {
+	display: inline-block;
+	font-weight: 600;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.eap-post-excerpt__more:hover,
+.eap-post-excerpt__more:focus {
+	text-decoration: underline;
+}

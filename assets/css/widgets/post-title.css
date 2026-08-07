@@ -1,0 +1,22 @@
+/* =========================================================================
+ * Post Title
+ * Dynamic current-post title in a chosen tag, optionally linked. Structural
+ * only — colour, typography, alignment and spacing come from the widget's
+ * Style controls.
+ * ====================================================================== */
+
+.eap-post-title {
+	margin: 0;
+	line-height: 1.2;
+}
+
+.eap-post-title__link {
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.eap-post-title__link:hover,
+.eap-post-title__link:focus {
+	text-decoration: none;
+}

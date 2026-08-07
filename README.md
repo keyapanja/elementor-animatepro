@@ -90,6 +90,29 @@ it**.
   overlay colour + click-to-close, a styleable close button, plus open-on-load
   and open-via-`#hash`. Esc-to-close, scroll-lock and focus handling included.
 
+### Dynamic (theme building)
+These widgets output the **current post's** data, for use on single post / page
+layouts (or any post context). In the Elementor editor, when there is no real
+post in context, they fall back to a sample / placeholder so they are never
+blank on the canvas.
+- **Post Title** — the current post title in a chosen HTML tag (h1–h6 / p / span
+  / div), optionally linked to the post permalink or a custom URL, with a
+  fallback text and full typography / colour / hover styling.
+- **Post Featured Image** — the current post's featured image at a chosen
+  registered size, optionally linked (post / media file / custom) with a
+  caption; width / height / object-fit, border / radius / shadow and hover
+  effects (zoom / lift / grayscale / fade). Falls back to a chosen image when
+  the post has none.
+- **Post Excerpt** — the manual excerpt (falling back to an auto-trim) or an
+  auto-trim of the content, capped to a word count, with an optional inline or
+  block **Read More** link.
+- **Post Content** — the full post content run through the `the_content` filters.
+  Guards against infinite recursion when the post is itself built with Elementor.
+- **Post Meta Info** — a configurable inline row (or stack) of meta: author (with
+  avatar), published / modified date, categories, tags, comment count and
+  reading time, each with an optional prefix and icon, joined by a chosen
+  separator, with author / term archive links.
+
 ## Admin
 
 The plugin's admin page lets you enable or disable each widget individually
@@ -109,4 +132,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.37
+**Current version:** 1.20.38

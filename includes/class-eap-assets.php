@@ -132,6 +132,11 @@ class EAP_Assets {
 			'nav-menu',
 			'mega-menu',
 			'animated-off-canvas',
+			'post-title',
+			'post-featured-image',
+			'post-excerpt',
+			'post-content',
+			'post-meta-info',
 		);
 
 		foreach ( $styles as $style ) {

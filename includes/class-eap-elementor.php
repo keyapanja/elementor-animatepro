@@ -77,6 +77,11 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-site-logo.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-nav-menu.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-mega-menu.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-title.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-featured-image.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-excerpt.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-content.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-meta-info.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -115,6 +120,11 @@ class EAP_Elementor {
 		$site_logo_on              = ! array_key_exists( 'site-logo', $widget_states ) || ! empty( $widget_states['site-logo'] );
 		$nav_menu_on               = ! array_key_exists( 'nav-menu', $widget_states ) || ! empty( $widget_states['nav-menu'] );
 		$mega_menu_on              = ! array_key_exists( 'mega-menu', $widget_states ) || ! empty( $widget_states['mega-menu'] );
+		$post_title_on             = ! array_key_exists( 'post-title', $widget_states ) || ! empty( $widget_states['post-title'] );
+		$post_featured_image_on    = ! array_key_exists( 'post-featured-image', $widget_states ) || ! empty( $widget_states['post-featured-image'] );
+		$post_excerpt_on           = ! array_key_exists( 'post-excerpt', $widget_states ) || ! empty( $widget_states['post-excerpt'] );
+		$post_content_on           = ! array_key_exists( 'post-content', $widget_states ) || ! empty( $widget_states['post-content'] );
+		$post_meta_info_on         = ! array_key_exists( 'post-meta-info', $widget_states ) || ! empty( $widget_states['post-meta-info'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -254,6 +264,26 @@ class EAP_Elementor {
 
 		if ( $mega_menu_on ) {
 			$widgets_manager->register( new EAP_Widget_Mega_Menu() );
+		}
+
+		if ( $post_title_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Title() );
+		}
+
+		if ( $post_featured_image_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Featured_Image() );
+		}
+
+		if ( $post_excerpt_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Excerpt() );
+		}
+
+		if ( $post_content_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Content() );
+		}
+
+		if ( $post_meta_info_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Meta_Info() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

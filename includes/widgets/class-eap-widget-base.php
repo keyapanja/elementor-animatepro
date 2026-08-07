@@ -71,6 +71,54 @@ abstract class EAP_Widget_Base extends Widget_Base {
 	}
 
 	/**
+	 * Whether Elementor is in editor edit-mode (the panel / canvas being edited).
+	 *
+	 * Dynamic widgets use this to render a sample/placeholder instead of the real
+	 * (possibly missing) post data so the widget is never blank on the canvas.
+	 *
+	 * @return bool
+	 */
+	protected function eap_is_editor() {
+		return class_exists( '\Elementor\Plugin' )
+			&& isset( \Elementor\Plugin::$instance->editor )
+			&& \Elementor\Plugin::$instance->editor->is_edit_mode();
+	}
+
+	/**
+	 * Resolve the "current post" for a dynamic widget.
+	 *
+	 * Front-end: the post in the loop (get_the_ID) or the queried object. In the
+	 * editor, when there is no real post in context (e.g. editing a header/footer
+	 * or a library template), fall back to the most recent published post so the
+	 * preview shows live data instead of rendering empty.
+	 *
+	 * @return int Post ID, or 0 when nothing is available.
+	 */
+	protected function eap_get_post_id() {
+		$post_id = (int) get_the_ID();
+
+		if ( ! $post_id ) {
+			$post_id = (int) get_queried_object_id();
+		}
+
+		if ( ! $post_id && $this->eap_is_editor() ) {
+			$recent = get_posts(
+				array(
+					'numberposts'      => 1,
+					'post_status'      => 'publish',
+					'suppress_filters' => false,
+				)
+			);
+
+			if ( ! empty( $recent ) ) {
+				$post_id = (int) $recent[0]->ID;
+			}
+		}
+
+		return $post_id;
+	}
+
+	/**
 	 * Add alignment control.
 	 *
 	 * @return void

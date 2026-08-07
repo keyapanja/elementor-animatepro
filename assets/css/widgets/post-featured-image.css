@@ -1,0 +1,65 @@
+/* =========================================================================
+ * Post Featured Image
+ * Dynamic current-post thumbnail with optional link + caption and hover
+ * effects. The figure stays block-level so the image's percentage width
+ * resolves against the full wrapper; alignment is inherited text-align.
+ * ====================================================================== */
+
+.eap-post-featured-image {
+	line-height: 0;
+}
+
+.eap-post-featured-image__figure {
+	margin: 0;
+}
+
+.eap-post-featured-image__link {
+	display: inline;
+	color: inherit;
+}
+
+.eap-post-featured-image__img {
+	display: inline-block;
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+	transition: transform 0.45s ease, opacity 0.3s ease, filter 0.45s ease;
+}
+
+.eap-post-featured-image__caption {
+	display: block;
+	margin-top: 10px;
+	line-height: 1.5;
+}
+
+/* --- Hover effects ----------------------------------------------------- */
+
+.eap-post-featured-image--hover-zoom .eap-post-featured-image__figure {
+	overflow: hidden;
+}
+
+.eap-post-featured-image--hover-zoom:hover .eap-post-featured-image__img {
+	transform: scale(1.08);
+}
+
+.eap-post-featured-image--hover-lift:hover .eap-post-featured-image__img {
+	transform: translateY(-6px);
+}
+
+.eap-post-featured-image--hover-grayscale .eap-post-featured-image__img {
+	filter: grayscale(100%);
+}
+
+.eap-post-featured-image--hover-grayscale:hover .eap-post-featured-image__img {
+	filter: grayscale(0);
+}
+
+.eap-post-featured-image--hover-fade:hover .eap-post-featured-image__img {
+	opacity: 0.82;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-post-featured-image__img {
+		transition: none;
+	}
+}

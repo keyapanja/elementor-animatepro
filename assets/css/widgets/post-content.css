@@ -1,0 +1,35 @@
+/* =========================================================================
+ * Post Content
+ * Dynamic current-post content (the_content filters). Structural resets only —
+ * colour/typography/links come from the Style controls. The editor note is
+ * shown on the canvas so the widget is styleable without a live render.
+ * ====================================================================== */
+
+.eap-post-content > :first-child {
+	margin-top: 0;
+}
+
+.eap-post-content > :last-child {
+	margin-bottom: 0;
+}
+
+.eap-post-content img {
+	max-width: 100%;
+	height: auto;
+}
+
+.eap-post-content figure {
+	margin: 0 0 1em;
+}
+
+.eap-post-content__notice {
+	margin-bottom: 16px;
+	padding: 10px 14px;
+	color: #6b7280;
+	font-size: 13px;
+	font-style: italic;
+	text-align: left;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 8px;
+}
