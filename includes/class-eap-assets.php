@@ -131,6 +131,7 @@ class EAP_Assets {
 			'site-logo',
 			'nav-menu',
 			'mega-menu',
+			'animated-off-canvas',
 		);
 
 		foreach ( $styles as $style ) {
@@ -178,6 +179,7 @@ class EAP_Assets {
 			'social-share',
 			'nav-menu',
 			'mega-menu',
+			'animated-off-canvas',
 		);
 
 		foreach ( $scripts as $script ) {
@@ -212,11 +214,20 @@ class EAP_Assets {
 			true
 		);
 
-		// Editor element-type registration for the nested Content Toggle widget.
-		// Depends on 'elementor-editor' so NestedElementBase is guaranteed present.
+		// Editor element-type registration for the nested widgets (Content Toggle,
+		// Animated Off-Canvas). Depends on 'elementor-editor' so NestedElementBase
+		// is guaranteed present.
 		wp_register_script(
 			'eap-content-toggle-editor',
 			EAP_URL . 'assets/js/widgets/content-toggle-editor.js',
+			array( 'elementor-editor' ),
+			EAP_VERSION,
+			true
+		);
+
+		wp_register_script(
+			'eap-animated-off-canvas-editor',
+			EAP_URL . 'assets/js/widgets/animated-off-canvas-editor.js',
 			array( 'elementor-editor' ),
 			EAP_VERSION,
 			true
@@ -232,6 +243,7 @@ class EAP_Assets {
 		wp_enqueue_style( 'eap-editor' );
 		wp_enqueue_script( 'eap-editor' );
 		wp_enqueue_script( 'eap-content-toggle-editor' );
+		wp_enqueue_script( 'eap-animated-off-canvas-editor' );
 	}
 
 	/**

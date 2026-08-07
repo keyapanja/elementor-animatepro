@@ -76,15 +76,31 @@
 				width = vw;
 				leftViewport = 0;
 			} else {
-				// Match the parent container, capped + centred by the max-width.
+				// Match the parent container, capped by the max-width, then placed
+				// per the alignment setting — default aligns the panel to the menu
+				// item that opened it, clamped so it never spills past the container.
 				const ref = nav.closest('.elementor-widget-container') ||
 					nav.closest('.elementor-widget') || nav.parentElement;
 				const refRect = ref.getBoundingClientRect();
 				width = refRect.width;
-				leftViewport = refRect.left;
 				if (maxW && width > maxW) {
-					leftViewport = refRect.left + (width - maxW) / 2;
 					width = maxW;
+				}
+				const align = nav.dataset.panelAlign || 'item';
+				if (align === 'center') {
+					leftViewport = refRect.left + (refRect.width - width) / 2;
+				} else if (align === 'left') {
+					leftViewport = refRect.left;
+				} else {
+					leftViewport = itemRect.left;
+				}
+				// Keep the panel inside the container.
+				const maxLeft = refRect.right - width;
+				if (leftViewport > maxLeft) {
+					leftViewport = maxLeft;
+				}
+				if (leftViewport < refRect.left) {
+					leftViewport = refRect.left;
 				}
 			}
 

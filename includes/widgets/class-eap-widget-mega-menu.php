@@ -224,6 +224,21 @@ class EAP_Widget_Mega_Menu extends EAP_Widget_Base {
 		);
 
 		$this->add_control(
+			'panel_align',
+			array(
+				'label'       => __( 'Panel Alignment', 'elementor-animatepro' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'item',
+				'options'     => array(
+					'item'   => __( 'Align to menu item', 'elementor-animatepro' ),
+					'center' => __( 'Centre in container', 'elementor-animatepro' ),
+					'left'   => __( 'Container left', 'elementor-animatepro' ),
+				),
+				'description' => __( 'Where a Container-width panel sits when it is narrower than the container (via Max Width). Full-width and dropdown panels ignore this.', 'elementor-animatepro' ),
+			)
+		);
+
+		$this->add_control(
 			'hover_delay',
 			array(
 				'label'       => __( 'Hover Close Delay (ms)', 'elementor-animatepro' ),
@@ -1048,7 +1063,7 @@ class EAP_Widget_Mega_Menu extends EAP_Widget_Base {
 				'selectors'   => array(
 					'{{WRAPPER}} .eap-mega-menu' => '--eap-mm-max-width: {{SIZE}}{{UNIT}};',
 				),
-				'description' => __( 'Caps “Container width” panels — they centre within the container. Full-width panels ignore this; clear it to fill the container.', 'elementor-animatepro' ),
+				'description' => __( 'Caps “Container width” panels; use Menu → Panel Alignment to place them. Full-width panels ignore this; clear it to fill the container.', 'elementor-animatepro' ),
 			)
 		);
 
@@ -1799,6 +1814,7 @@ class EAP_Widget_Mega_Menu extends EAP_Widget_Base {
 		$fs_position = ! empty( $settings['fullscreen_position'] ) ? $settings['fullscreen_position'] : 'top';
 		$close_place = ! empty( $settings['close_placement'] ) ? $settings['close_placement'] : 'top-right';
 		$hover_delay = isset( $settings['hover_delay'] ) && '' !== $settings['hover_delay'] ? (int) $settings['hover_delay'] : 160;
+		$panel_align = ! empty( $settings['panel_align'] ) ? $settings['panel_align'] : 'item';
 		$chevron     = $this->get_chevron( $settings );
 
 		$classes = array(
@@ -1828,6 +1844,7 @@ class EAP_Widget_Mega_Menu extends EAP_Widget_Base {
 				'data-breakpoint'  => (string) $breakpoint,
 				'data-mobile-mode' => $mobile_mode,
 				'data-hover-delay' => (string) $hover_delay,
+				'data-panel-align' => $panel_align,
 				'aria-label'       => __( 'Main menu', 'elementor-animatepro' ),
 			)
 		);

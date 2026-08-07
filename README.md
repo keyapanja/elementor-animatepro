@@ -14,8 +14,9 @@ it**.
 - WordPress 6.4+
 - PHP 7.4+
 - [Elementor](https://wordpress.org/plugins/elementor/) (free)
-- The **Content Toggle** widget uses Elementor's *Nested Elements* feature
-  (active by default); it is only registered when that base is available.
+- The **Content Toggle** and **Animated Off-Canvas** widgets use Elementor's
+  *Nested Elements* feature (active by default) for their droppable content; they
+  are only registered when that base is available.
 - The **Stacked Cards** widget loads GSAP + ScrollTrigger from a CDN (jsDelivr)
   to drive its scroll animation.
 
@@ -78,9 +79,16 @@ it**.
 - **Mega Menu** — a menu bar whose top-level items open large multi-column
   panels. Author each panel as one ordered list (item → columns → links → promo,
   where order = layout) **or** render a saved Elementor template per item. Panels
-  can **match the container** (capped by a Max Width and centred), span the
-  **full viewport**, or **drop under the item**; they open on hover or click,
-  and collapse to an accordion drawer or full-screen overlay on mobile.
+  can **match the container** (capped by a Max Width and aligned to the menu
+  item), span the **full viewport**, or **drop under the item**; they open on
+  hover or click, and collapse to an accordion drawer or full-screen overlay on
+  mobile.
+- **Animated Off-Canvas** — a trigger button opens a panel that **slides in from
+  a screen edge** (left / right / top / bottom) over a dimming overlay. Fill the
+  panel with **droppable content** (any Elementor widgets, edited live) **or** a
+  **saved template**. Slide or fade animation, configurable width/height,
+  overlay colour + click-to-close, a styleable close button, plus open-on-load
+  and open-via-`#hash`. Esc-to-close, scroll-lock and focus handling included.
 
 ## Admin
 
@@ -101,4 +109,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.33
+**Current version:** 1.20.37

@@ -1,0 +1,219 @@
+/* =========================================================================
+ * Animated Off-Canvas
+ * A trigger button opens a panel that slides in from a screen edge over a
+ * dimming overlay. On the front-end animated-off-canvas.js portals the stage
+ * (overlay + panel) into the `.elementor` wrapper so position:fixed covers the
+ * whole viewport; the `--editor` variant renders the panel inline so the
+ * droppable area stays editable on the canvas.
+ * ====================================================================== */
+
+.eap-offcanvas__trigger-wrap {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	justify-content: flex-start;
+}
+
+.eap-offcanvas .eap-offcanvas__trigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	margin: 0;
+	font: inherit;
+	line-height: 1.2;
+	color: #ffffff;
+	background-color: #4f46e5;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.eap-offcanvas__trigger-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 0;
+}
+
+.eap-offcanvas__trigger-icon svg {
+	width: 1em;
+	height: 1em;
+}
+
+.eap-offcanvas__bars {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
+	width: 1em;
+	height: 1em;
+}
+
+.eap-offcanvas__bars span {
+	display: block;
+	width: 100%;
+	height: 2px;
+	background: currentColor;
+	border-radius: 2px;
+}
+
+/* --- Stage (portaled on the front-end) --------------------------------- */
+
+.eap-offcanvas__stage {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	pointer-events: none;
+	visibility: hidden;
+}
+
+.eap-offcanvas__stage.is-open {
+	pointer-events: auto;
+	visibility: visible;
+}
+
+.eap-offcanvas__overlay {
+	position: absolute;
+	inset: 0;
+	background-color: rgba(17, 24, 39, 0.5);
+	opacity: 0;
+	transition: opacity var(--eap-oc-duration, 350ms) ease;
+}
+
+.eap-offcanvas__stage.is-open .eap-offcanvas__overlay {
+	opacity: 1;
+}
+
+.eap-offcanvas__panel {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	background-color: #ffffff;
+	box-shadow: 0 0 50px rgba(0, 0, 0, 0.25);
+	transition: transform var(--eap-oc-duration, 350ms) cubic-bezier(0.4, 0, 0.2, 1), opacity var(--eap-oc-duration, 350ms) ease;
+	will-change: transform;
+}
+
+.eap-offcanvas__body {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+/* Direction anchoring + off-screen resting transform. */
+.eap-offcanvas__stage--from-left .eap-offcanvas__panel {
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: var(--eap-oc-width, 360px);
+	max-width: 100vw;
+	transform: translateX(-100%);
+}
+
+.eap-offcanvas__stage--from-right .eap-offcanvas__panel {
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: var(--eap-oc-width, 360px);
+	max-width: 100vw;
+	transform: translateX(100%);
+}
+
+.eap-offcanvas__stage--from-top .eap-offcanvas__panel {
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: var(--eap-oc-height, 340px);
+	max-height: 100vh;
+	transform: translateY(-100%);
+}
+
+.eap-offcanvas__stage--from-bottom .eap-offcanvas__panel {
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: var(--eap-oc-height, 340px);
+	max-height: 100vh;
+	transform: translateY(100%);
+}
+
+.eap-offcanvas__stage.is-open .eap-offcanvas__panel {
+	transform: translate(0, 0);
+}
+
+/* Fade variant — no slide, just a cross-fade (overrides the direction transform). */
+.eap-offcanvas__stage--anim-fade .eap-offcanvas__panel {
+	transform: none;
+	opacity: 0;
+}
+
+.eap-offcanvas__stage--anim-fade.is-open .eap-offcanvas__panel {
+	transform: none;
+	opacity: 1;
+}
+
+/* --- Close button ------------------------------------------------------ */
+
+.eap-offcanvas .eap-offcanvas__close {
+	position: absolute;
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	margin: 0;
+	padding: 0;
+	font: inherit;
+	line-height: 0;
+	color: #1f2937;
+	background: transparent;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.eap-offcanvas__close svg,
+.eap-offcanvas__close i {
+	width: var(--eap-oc-close-size, 20px);
+	height: var(--eap-oc-close-size, 20px);
+	font-size: var(--eap-oc-close-size, 20px);
+}
+
+.eap-offcanvas__stage--close-top-right .eap-offcanvas__close {
+	top: var(--eap-oc-close-offset, 12px);
+	right: var(--eap-oc-close-offset, 12px);
+}
+
+.eap-offcanvas__stage--close-top-left .eap-offcanvas__close {
+	top: var(--eap-oc-close-offset, 12px);
+	left: var(--eap-oc-close-offset, 12px);
+}
+
+/* --- Editor (inline-open so the droppable body is editable) ------------ */
+
+.eap-offcanvas__editor-note {
+	margin-top: 12px;
+	padding: 12px 16px;
+	color: #6b7280;
+	font-style: italic;
+	border: 1px dashed #d1d5db;
+	border-radius: 8px;
+}
+
+/* In the editor the panel opens on trigger click (same as the front-end); give
+ * the empty droppable body some height so its drop zone is easy to target. */
+.elementor-editor-active .eap-offcanvas__body {
+	min-height: 120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-offcanvas__overlay,
+	.eap-offcanvas__panel {
+		transition: none !important;
+	}
+}

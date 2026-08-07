@@ -256,16 +256,22 @@ class EAP_Elementor {
 			$widgets_manager->register( new EAP_Widget_Mega_Menu() );
 		}
 
-		// Content Toggle is a nested widget — only load it when Elementor's
-		// Nested Elements base class is available, otherwise the class would
-		// fatal on extend.
+		// Content Toggle and Animated Off-Canvas are nested widgets — only load
+		// them when Elementor's Nested Elements base class is available,
+		// otherwise the classes would fatal on extend.
 		if ( class_exists( '\Elementor\Modules\NestedElements\Base\Widget_Nested_Base' ) ) {
 			require_once EAP_PATH . 'includes/widgets/class-eap-widget-content-toggle.php';
+			require_once EAP_PATH . 'includes/widgets/class-eap-widget-animated-off-canvas.php';
 
 			$content_toggle_on = ! array_key_exists( 'content-toggle', $widget_states ) || ! empty( $widget_states['content-toggle'] );
+			$off_canvas_on     = ! array_key_exists( 'animated-off-canvas', $widget_states ) || ! empty( $widget_states['animated-off-canvas'] );
 
 			if ( $content_toggle_on ) {
 				$widgets_manager->register( new EAP_Widget_Content_Toggle() );
+			}
+
+			if ( $off_canvas_on ) {
+				$widgets_manager->register( new EAP_Widget_Animated_Off_Canvas() );
 			}
 		}
 	}

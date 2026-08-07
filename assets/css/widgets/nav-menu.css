@@ -116,23 +116,44 @@
 	transform: translateY(0);
 }
 
-/* Second level and deeper fly out to the side. */
-.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__sub,
-.eap-nav-menu--vertical:not(.is-mobile) > .eap-nav-menu__list > .eap-nav-menu__item > .eap-nav-menu__sub {
+/* Second level and deeper (horizontal only) fly out to the side. */
+.eap-nav-menu--horizontal:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__sub {
 	top: 0;
 	left: 100%;
 	transform: translateX(8px);
 }
 
-.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children:hover > .eap-nav-menu__sub,
-.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children:focus-within > .eap-nav-menu__sub,
-.eap-nav-menu--vertical:not(.is-mobile) > .eap-nav-menu__list > .eap-nav-menu__item--has-children:hover > .eap-nav-menu__sub,
-.eap-nav-menu--vertical:not(.is-mobile) > .eap-nav-menu__list > .eap-nav-menu__item--has-children:focus-within > .eap-nav-menu__sub {
+.eap-nav-menu--horizontal:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children:hover > .eap-nav-menu__sub,
+.eap-nav-menu--horizontal:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children:focus-within > .eap-nav-menu__sub {
 	transform: translateX(0);
 }
 
-.eap-nav-menu:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children > .eap-nav-menu__row > .eap-nav-menu__link > .eap-nav-menu__indicator {
+.eap-nav-menu--horizontal:not(.is-mobile) .eap-nav-menu__sub .eap-nav-menu__item--has-children > .eap-nav-menu__row > .eap-nav-menu__link > .eap-nav-menu__indicator {
 	transform: rotate(-90deg);
+}
+
+/* Vertical layout: sub-menus stack inline & indented under their parent instead
+ * of flying out as a side panel. The "Dropdown" style controls are scoped for
+ * the horizontal flyout, so the inline structure is forced here. */
+.eap-nav-menu--vertical:not(.is-mobile) .eap-nav-menu__sub {
+	position: static !important;
+	width: auto !important;
+	max-height: none !important;
+	padding: 0 0 0 18px !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	border-radius: 0 !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	transform: none !important;
+	transition: none !important;
+	overflow: visible !important;
+	z-index: auto !important;
+}
+
+/* Submenus are always visible, so the dropdown chevron isn't needed. */
+.eap-nav-menu--vertical:not(.is-mobile) .eap-nav-menu__indicator {
+	display: none;
 }
 
 /* --- Pointer / hover effects (top-level links) ------------------------- */
