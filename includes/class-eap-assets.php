@@ -130,6 +130,7 @@ class EAP_Assets {
 			'social-share',
 			'site-logo',
 			'nav-menu',
+			'mega-menu',
 		);
 
 		foreach ( $styles as $style ) {
@@ -176,6 +177,7 @@ class EAP_Assets {
 			'stacked-cards',
 			'social-share',
 			'nav-menu',
+			'mega-menu',
 		);
 
 		foreach ( $scripts as $script ) {

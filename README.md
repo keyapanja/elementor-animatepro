@@ -75,6 +75,12 @@ it**.
   with configurable menu position and item alignment, plus a fully-styleable
   close button (placement, size, colours, offset). Includes pointer/underline
   hover effects, submenu accordions on mobile, Escape-to-close and scroll-lock.
+- **Mega Menu** — a menu bar whose top-level items open large multi-column
+  panels. Author each panel as one ordered list (item → columns → links → promo,
+  where order = layout) **or** render a saved Elementor template per item. Panels
+  can **match the container** (capped by a Max Width and centred), span the
+  **full viewport**, or **drop under the item**; they open on hover or click,
+  and collapse to an accordion drawer or full-screen overlay on mobile.
 
 ## Admin
 
@@ -95,4 +101,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.31
+**Current version:** 1.20.33

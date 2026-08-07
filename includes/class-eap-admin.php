@@ -248,6 +248,13 @@ class EAP_Admin {
 			$done['nav-menu-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['mega-menu-built'] ) ) {
+			$states['mega-menu'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['mega-menu-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1016,6 +1023,7 @@ class EAP_Admin {
 			'social-share',
 			'site-logo',
 			'nav-menu',
+			'mega-menu',
 		);
 
 		return in_array( $widget_key, $built, true );

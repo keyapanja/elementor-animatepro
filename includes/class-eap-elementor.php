@@ -76,6 +76,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-social-share.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-site-logo.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-nav-menu.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-mega-menu.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -113,6 +114,7 @@ class EAP_Elementor {
 		$social_share_on           = ! array_key_exists( 'social-share', $widget_states ) || ! empty( $widget_states['social-share'] );
 		$site_logo_on              = ! array_key_exists( 'site-logo', $widget_states ) || ! empty( $widget_states['site-logo'] );
 		$nav_menu_on               = ! array_key_exists( 'nav-menu', $widget_states ) || ! empty( $widget_states['nav-menu'] );
+		$mega_menu_on              = ! array_key_exists( 'mega-menu', $widget_states ) || ! empty( $widget_states['mega-menu'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -248,6 +250,10 @@ class EAP_Elementor {
 
 		if ( $nav_menu_on ) {
 			$widgets_manager->register( new EAP_Widget_Nav_Menu() );
+		}
+
+		if ( $mega_menu_on ) {
+			$widgets_manager->register( new EAP_Widget_Mega_Menu() );
 		}
 
 		// Content Toggle is a nested widget — only load it when Elementor's

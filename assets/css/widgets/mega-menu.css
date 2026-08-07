@@ -1,0 +1,606 @@
+/* =========================================================================
+ * Mega Menu
+ * Desktop: a horizontal bar whose top-level items open large multi-column
+ * panels on hover or click (mega-menu.js sizes full-width panels to the
+ * viewport). Below the breakpoint the `.is-mobile` class switches to a
+ * hamburger with an accordion drawer or a portaled full-screen overlay.
+ * ====================================================================== */
+
+.eap-mega-menu {
+	--eap-mm-anim: 250ms;
+	--eap-mm-pointer-color: #4f46e5;
+	--eap-mm-pointer-weight: 2px;
+	--eap-mm-toggle-size: 26px;
+	position: relative;
+	display: flex;
+}
+
+/* Scoped box-sizing so padded panels size correctly under any theme (Elementor
+ * sets this globally on the frontend; this keeps the widget correct elsewhere
+ * too — e.g. inside the portaled overlay). */
+.eap-mega-menu *,
+.eap-mega-menu *::before,
+.eap-mega-menu *::after {
+	box-sizing: border-box;
+}
+
+.eap-mega-menu__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	width: 100%;
+}
+
+.eap-mega-menu__item {
+	position: relative;
+}
+
+.eap-mega-menu__row {
+	display: flex;
+	align-items: center;
+}
+
+.eap-mega-menu__top-link {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 16px;
+	color: #1f2937;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.eap-mega-menu__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 0;
+}
+
+.eap-mega-menu__icon svg {
+	width: 1em;
+	height: 1em;
+}
+
+.eap-mega-menu__indicator {
+	display: inline-flex;
+	transition: transform 0.25s ease;
+}
+
+.eap-mega-menu__indicator svg,
+.eap-mega-menu__chevron {
+	display: block;
+}
+
+/* Sub-toggle (accordion) button — desktop hides it, mobile shows it. */
+.eap-mega-menu .eap-mega-menu__sub-toggle {
+	display: none;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	padding: 10px 14px;
+	margin: 0;
+	line-height: 0;
+	cursor: pointer;
+}
+
+.eap-mega-menu__sub-toggle-icon {
+	display: inline-flex;
+	transition: transform 0.25s ease;
+}
+
+/* --- Panel ------------------------------------------------------------- */
+
+.eap-mega-menu__panel {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	z-index: 100;
+	background: #ffffff;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity var(--eap-mm-anim, 250ms) ease, transform var(--eap-mm-anim, 250ms) ease, visibility var(--eap-mm-anim, 250ms);
+}
+
+.eap-mega-menu__panel-inner {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 32px;
+	padding: 28px;
+}
+
+/* Width modes (desktop). Full/container are sized by JS — full spans the
+ * viewport, container matches the parent container capped by --eap-mm-max-width.
+ * These are graceful pre-JS fallbacks. */
+.eap-mega-menu__panel--full,
+.eap-mega-menu__panel--container {
+	left: 0;
+	width: 100%;
+	min-width: 320px;
+}
+
+.eap-mega-menu__panel--dropdown {
+	width: max-content;
+	min-width: 260px;
+	max-width: min(760px, 92vw);
+	border-radius: 12px;
+}
+
+/* Animations */
+.eap-mega-menu--anim-slide .eap-mega-menu__panel {
+	transform: translateY(10px);
+}
+
+.eap-mega-menu--anim-none .eap-mega-menu__panel {
+	transition: none;
+}
+
+/* Show conditions: hover / focus (hover trigger) or JS-driven .is-active. */
+.eap-mega-menu--trigger-hover:not(.is-mobile) .eap-mega-menu__item--has-panel:hover > .eap-mega-menu__panel,
+.eap-mega-menu--trigger-hover:not(.is-mobile) .eap-mega-menu__item--has-panel:focus-within > .eap-mega-menu__panel,
+.eap-mega-menu:not(.is-mobile) .eap-mega-menu__item.is-active > .eap-mega-menu__panel {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: translateY(0);
+}
+
+/* Indicator flips while the panel is open. */
+.eap-mega-menu--trigger-hover:not(.is-mobile) .eap-mega-menu__item--has-panel:hover > .eap-mega-menu__row > .eap-mega-menu__top-link > .eap-mega-menu__indicator,
+.eap-mega-menu:not(.is-mobile) .eap-mega-menu__item.is-active > .eap-mega-menu__row > .eap-mega-menu__top-link > .eap-mega-menu__indicator {
+	transform: rotate(180deg);
+}
+
+/* --- Columns / links --------------------------------------------------- */
+
+.eap-mega-menu__col {
+	flex: 1 1 180px;
+	min-width: 0;
+}
+
+.eap-mega-menu__col-heading {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 12px;
+	font-size: 0.78em;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: #111827;
+}
+
+.eap-mega-menu__col-heading a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-mega-menu__links {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.eap-mega-menu__link {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 8px 10px;
+	border-radius: 8px;
+	text-decoration: none;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.eap-mega-menu__link .eap-mega-menu__icon {
+	color: #4f46e5;
+	margin-top: 2px;
+	font-size: 1.05em;
+}
+
+.eap-mega-menu__link-body {
+	display: flex;
+	flex-direction: column;
+}
+
+.eap-mega-menu__link-label {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	color: #374151;
+	line-height: 1.3;
+}
+
+.eap-mega-menu__link-desc {
+	font-size: 0.85em;
+	color: #9ca3af;
+	margin-top: 2px;
+	line-height: 1.4;
+}
+
+.eap-mega-menu__badge {
+	display: inline-block;
+	font-size: 0.68em;
+	font-weight: 600;
+	line-height: 1;
+	padding: 3px 7px;
+	border-radius: 999px;
+	background: #4f46e5;
+	color: #ffffff;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+}
+
+/* --- Promo / CTA cell -------------------------------------------------- */
+
+.eap-mega-menu__promo {
+	flex: 0 1 260px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	background: #f9fafb;
+	border-radius: 12px;
+	padding: 18px;
+}
+
+.eap-mega-menu__promo-img {
+	width: 100%;
+	height: auto;
+	display: block;
+	margin-bottom: 12px;
+	border-radius: 12px;
+}
+
+.eap-mega-menu__promo-title {
+	display: block;
+	font-weight: 700;
+	color: #111827;
+	margin-bottom: 6px;
+}
+
+.eap-mega-menu__promo-text {
+	display: block;
+	font-size: 0.9em;
+	color: #6b7280;
+	margin-bottom: 14px;
+}
+
+.eap-mega-menu__promo-btn {
+	display: inline-block;
+	margin-top: auto;
+	background: #4f46e5;
+	color: #ffffff;
+	text-decoration: none;
+	padding: 10px 18px;
+	border-radius: 8px;
+	font-weight: 600;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* --- Pointer / hover effects (top-level links) ------------------------- */
+
+.eap-mega-menu--pointer-underline .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link::after,
+.eap-mega-menu--pointer-overline .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link::before {
+	content: '';
+	position: absolute;
+	left: 14px;
+	right: 14px;
+	height: var(--eap-mm-pointer-weight, 2px);
+	background: var(--eap-mm-pointer-color, #4f46e5);
+	transform: scaleX(0);
+	transform-origin: center;
+	transition: transform 0.28s ease;
+	pointer-events: none;
+}
+
+.eap-mega-menu--pointer-underline .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link::after {
+	bottom: 6px;
+}
+
+.eap-mega-menu--pointer-overline .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link::before {
+	top: 6px;
+}
+
+.eap-mega-menu--pointer-underline .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link:hover::after,
+.eap-mega-menu--pointer-underline .eap-mega-menu__list > .eap-mega-menu__item.is-active > .eap-mega-menu__row > .eap-mega-menu__top-link::after,
+.eap-mega-menu--pointer-overline .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link:hover::before,
+.eap-mega-menu--pointer-overline .eap-mega-menu__list > .eap-mega-menu__item.is-active > .eap-mega-menu__row > .eap-mega-menu__top-link::before {
+	transform: scaleX(1);
+}
+
+.eap-mega-menu--pointer-background .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link {
+	border-radius: 6px;
+}
+
+.eap-mega-menu--pointer-background .eap-mega-menu__list > .eap-mega-menu__item > .eap-mega-menu__row > .eap-mega-menu__top-link:hover,
+.eap-mega-menu--pointer-background .eap-mega-menu__list > .eap-mega-menu__item.is-active > .eap-mega-menu__row > .eap-mega-menu__top-link {
+	background-color: var(--eap-mm-pointer-bg, #eef2ff);
+}
+
+/* --- Hamburger toggle -------------------------------------------------- */
+
+.eap-mega-menu .eap-mega-menu__toggle {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: #1f2937;
+	font: inherit;
+	line-height: 0;
+	padding: 8px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__toggle {
+	display: inline-flex;
+	position: relative;
+	z-index: 100001;
+}
+
+.eap-mega-menu__toggle svg,
+.eap-mega-menu__toggle i {
+	width: var(--eap-mm-toggle-size, 26px);
+	height: var(--eap-mm-toggle-size, 26px);
+	font-size: var(--eap-mm-toggle-size, 26px);
+}
+
+.eap-mega-menu__bars {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
+	width: var(--eap-mm-toggle-size, 26px);
+	height: var(--eap-mm-toggle-size, 26px);
+}
+
+.eap-mega-menu__bars span {
+	display: block;
+	width: 100%;
+	height: 2px;
+	background: currentColor;
+	border-radius: 2px;
+}
+
+.eap-mega-menu__toggle-close {
+	display: none;
+}
+
+.eap-mega-menu.is-open .eap-mega-menu__toggle-open {
+	display: none;
+}
+
+.eap-mega-menu.is-open .eap-mega-menu__toggle-close {
+	display: inline-flex;
+}
+
+/* --- Mobile layout (added by JS below the breakpoint) ------------------ */
+
+.eap-mega-menu.is-mobile {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+/* Accordion drawer — a card dropped from the toggle. */
+.eap-mega-menu.is-mobile > .eap-mega-menu__list {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	left: auto;
+	width: min(360px, 94vw);
+	margin-top: 8px;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	background: #ffffff;
+	border-radius: 10px;
+	box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+	max-height: 0;
+	overflow: hidden;
+	opacity: 0;
+	visibility: hidden;
+	transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+	z-index: 200;
+}
+
+.eap-mega-menu.is-mobile.is-open > .eap-mega-menu__list {
+	max-height: 85vh;
+	overflow-y: auto;
+	opacity: 1;
+	visibility: visible;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__row {
+	justify-content: space-between;
+	padding: 0 6px;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__top-link {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: var(--eap-mm-mobile-align, flex-start);
+	width: auto;
+	white-space: normal;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__sub-toggle {
+	display: inline-flex;
+	align-items: center;
+	flex: 0 0 auto;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__indicator {
+	display: none;
+}
+
+/* Panels collapse into the accordion (reset the desktop absolute sizing —
+ * !important beats the inline left/width mega-menu.js sets for wide panels). */
+.eap-mega-menu.is-mobile .eap-mega-menu__panel {
+	position: static !important;
+	left: auto !important;
+	width: auto !important;
+	min-width: 0 !important;
+	max-width: none !important;
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+	transform: none;
+	background: transparent;
+	box-shadow: none;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__item.is-expanded > .eap-mega-menu__panel {
+	max-height: 2000px;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__panel-inner {
+	flex-direction: column;
+	gap: 6px;
+	padding: 4px 14px 16px;
+	max-width: none;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__col {
+	flex: 1 1 auto;
+}
+
+.eap-mega-menu.is-mobile .eap-mega-menu__item.is-expanded > .eap-mega-menu__row > .eap-mega-menu__sub-toggle .eap-mega-menu__sub-toggle-icon {
+	transform: rotate(180deg);
+}
+
+/* Full-screen overlay mode */
+.eap-mega-menu--mobile-fullscreen.is-mobile > .eap-mega-menu__list {
+	position: fixed;
+	inset: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	margin-top: 0;
+	max-height: none;
+	height: 100vh;
+	height: 100dvh;
+	border-radius: 0;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+	padding: 72px 24px;
+	background: rgba(255, 255, 255, 0.98);
+	transform: translateY(-16px);
+	overflow-y: auto;
+	z-index: 100000;
+}
+
+.eap-mega-menu--mobile-fullscreen.is-mobile.eap-mega-menu--fs-top > .eap-mega-menu__list {
+	justify-content: flex-start;
+}
+
+.eap-mega-menu--mobile-fullscreen.is-mobile.eap-mega-menu--fs-bottom > .eap-mega-menu__list {
+	justify-content: flex-end;
+}
+
+.eap-mega-menu--mobile-fullscreen.is-mobile.is-open > .eap-mega-menu__list {
+	transform: translateY(0);
+	max-height: none;
+	height: 100vh;
+	height: 100dvh;
+}
+
+.eap-mega-menu--mobile-fullscreen.is-mobile .eap-mega-menu__item {
+	width: 100%;
+	max-width: 460px;
+}
+
+/* Hide the header hamburger while the overlay is open (close button takes over). */
+.eap-mega-menu--mobile-fullscreen.is-mobile.is-open .eap-mega-menu__toggle {
+	visibility: hidden;
+}
+
+/* --- Dedicated close button (full-screen mode) ------------------------- */
+
+.eap-mega-menu .eap-mega-menu__close {
+	display: none;
+	position: fixed;
+	z-index: 100002;
+	align-items: center;
+	justify-content: center;
+	-webkit-appearance: none;
+	appearance: none;
+	border: 0;
+	background: transparent;
+	color: #1f2937;
+	font: inherit;
+	line-height: 0;
+	padding: 8px;
+	margin: 0;
+	cursor: pointer;
+}
+
+.eap-mega-menu--mobile-fullscreen.is-mobile.is-open .eap-mega-menu__close {
+	display: inline-flex;
+}
+
+.eap-mega-menu__close svg,
+.eap-mega-menu__close i {
+	width: var(--eap-mm-close-size, 24px);
+	height: var(--eap-mm-close-size, 24px);
+	font-size: var(--eap-mm-close-size, 24px);
+}
+
+.eap-mega-menu--close-top-right .eap-mega-menu__close {
+	top: var(--eap-mm-close-offset, 18px);
+	right: var(--eap-mm-close-offset, 18px);
+}
+
+.eap-mega-menu--close-top-left .eap-mega-menu__close {
+	top: var(--eap-mm-close-offset, 18px);
+	left: var(--eap-mm-close-offset, 18px);
+}
+
+.eap-mega-menu--close-top-center .eap-mega-menu__close {
+	top: var(--eap-mm-close-offset, 18px);
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+/* --- Portal (full-screen overlay is moved here by JS) ------------------ */
+
+.eap-mega-menu-portal {
+	position: relative;
+	z-index: 100000;
+}
+
+/* --- Editor / empty notice -------------------------------------------- */
+
+.eap-mega-menu__notice {
+	padding: 12px 16px;
+	color: #6b7280;
+	font-style: italic;
+	border: 1px dashed #d1d5db;
+	border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-mega-menu__panel,
+	.eap-mega-menu.is-mobile > .eap-mega-menu__list,
+	.eap-mega-menu__indicator,
+	.eap-mega-menu__sub-toggle-icon {
+		transition: none !important;
+	}
+}
