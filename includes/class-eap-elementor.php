@@ -82,6 +82,9 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-excerpt.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-content.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-meta-info.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-comments.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-reactions.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-pagination.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -125,6 +128,9 @@ class EAP_Elementor {
 		$post_excerpt_on           = ! array_key_exists( 'post-excerpt', $widget_states ) || ! empty( $widget_states['post-excerpt'] );
 		$post_content_on           = ! array_key_exists( 'post-content', $widget_states ) || ! empty( $widget_states['post-content'] );
 		$post_meta_info_on         = ! array_key_exists( 'post-meta-info', $widget_states ) || ! empty( $widget_states['post-meta-info'] );
+		$post_comments_on          = ! array_key_exists( 'post-comments', $widget_states ) || ! empty( $widget_states['post-comments'] );
+		$post_reactions_on         = ! array_key_exists( 'post-reactions', $widget_states ) || ! empty( $widget_states['post-reactions'] );
+		$post_pagination_on        = ! array_key_exists( 'post-pagination', $widget_states ) || ! empty( $widget_states['post-pagination'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -284,6 +290,18 @@ class EAP_Elementor {
 
 		if ( $post_meta_info_on ) {
 			$widgets_manager->register( new EAP_Widget_Post_Meta_Info() );
+		}
+
+		if ( $post_comments_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Comments() );
+		}
+
+		if ( $post_reactions_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Reactions() );
+		}
+
+		if ( $post_pagination_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Pagination() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

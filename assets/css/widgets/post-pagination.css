@@ -1,0 +1,97 @@
+/* =========================================================================
+ * Post Pagination
+ * Prev/Next post links, numbered archive pages (paginate_links) or in-post
+ * page links (wp_link_pages) — all as a flex row of pill links. Colours,
+ * padding and radius come from the Style controls.
+ * ====================================================================== */
+
+.eap-post-pagination {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.eap-post-pagination__link,
+.eap-post-pagination .page-numbers,
+.eap-post-pagination__pages a {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	line-height: 1.2;
+	color: #374151;
+	text-decoration: none;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-post-pagination .page-numbers.dots {
+	background: transparent;
+	border-color: transparent;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+
+/* --- Prev / Next post navigation --------------------------------------- */
+
+.eap-post-pagination__meta {
+	display: inline-flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.eap-post-pagination__link--next {
+	text-align: right;
+}
+
+.eap-post-pagination__link--next .eap-post-pagination__meta {
+	align-items: flex-end;
+}
+
+.eap-post-pagination__label {
+	font-weight: 600;
+}
+
+.eap-post-pagination__title {
+	max-width: 22ch;
+	overflow: hidden;
+	font-size: 0.85em;
+	font-weight: 400;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	opacity: 0.85;
+}
+
+.eap-post-pagination__arrow {
+	font-size: 1.25em;
+	line-height: 1;
+}
+
+/* --- In-post pages ----------------------------------------------------- */
+
+.eap-post-pagination__pages {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.eap-post-pagination__pages-label {
+	color: inherit;
+	font-weight: 600;
+}
+
+.eap-post-pagination__pages-current {
+	font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-post-pagination__link,
+	.eap-post-pagination .page-numbers,
+	.eap-post-pagination__pages a {
+		transition: none;
+	}
+}

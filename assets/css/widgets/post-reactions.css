@@ -1,0 +1,74 @@
+/* =========================================================================
+ * Post Reactions
+ * A flex row of emoji reaction buttons with live counts. Colours/sizes/radius
+ * come from the Style controls; this file handles layout + interaction feel.
+ * ====================================================================== */
+
+.eap-post-reactions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+}
+
+.eap-post-reactions__btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+	padding: 8px 14px;
+	font: inherit;
+	line-height: 1;
+	color: inherit;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 30px;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.12s ease;
+}
+
+.eap-post-reactions__btn:hover {
+	transform: translateY(-1px);
+}
+
+.eap-post-reactions__btn:active {
+	transform: scale(0.96);
+}
+
+.eap-post-reactions__emoji {
+	display: inline-block;
+	font-size: 20px;
+	line-height: 1;
+}
+
+.eap-post-reactions__btn.is-active .eap-post-reactions__emoji {
+	animation: eap-react-pop 0.3s ease;
+}
+
+.eap-post-reactions__label,
+.eap-post-reactions__count {
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+@keyframes eap-react-pop {
+	0% {
+		transform: scale(1);
+	}
+	45% {
+		transform: scale(1.35);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-post-reactions__btn,
+	.eap-post-reactions__btn.is-active .eap-post-reactions__emoji {
+		transition: none;
+		animation: none;
+	}
+}

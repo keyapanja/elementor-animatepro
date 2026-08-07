@@ -137,6 +137,9 @@ class EAP_Assets {
 			'post-excerpt',
 			'post-content',
 			'post-meta-info',
+			'post-comments',
+			'post-reactions',
+			'post-pagination',
 		);
 
 		foreach ( $styles as $style ) {
@@ -185,6 +188,7 @@ class EAP_Assets {
 			'nav-menu',
 			'mega-menu',
 			'animated-off-canvas',
+			'post-reactions',
 		);
 
 		foreach ( $scripts as $script ) {

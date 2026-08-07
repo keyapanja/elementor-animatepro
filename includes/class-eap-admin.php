@@ -297,6 +297,27 @@ class EAP_Admin {
 			$done['post-meta-info-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['post-comments-built'] ) ) {
+			$states['post-comments'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-comments-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['post-reactions-built'] ) ) {
+			$states['post-reactions'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-reactions-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
+		if ( empty( $done['post-pagination-built'] ) ) {
+			$states['post-pagination'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-pagination-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1072,6 +1093,9 @@ class EAP_Admin {
 			'post-excerpt',
 			'post-content',
 			'post-meta-info',
+			'post-comments',
+			'post-reactions',
+			'post-pagination',
 		);
 
 		return in_array( $widget_key, $built, true );

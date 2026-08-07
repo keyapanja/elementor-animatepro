@@ -1,0 +1,173 @@
+/* =========================================================================
+ * Post Comments
+ * Styles the native WordPress comment list (wp_list_comments) and reply form
+ * (comment_form), scoped under .eap-post-comments. Colours/typography come
+ * from the Style controls; this file provides the structural layout.
+ * ====================================================================== */
+
+.eap-post-comments__title {
+	margin: 0 0 24px;
+	line-height: 1.3;
+}
+
+.eap-post-comments__list {
+	margin: 0 0 32px;
+	padding: 0;
+	list-style: none;
+}
+
+.eap-post-comments__list ol.children {
+	margin: 20px 0 0 40px;
+	padding: 0;
+	list-style: none;
+}
+
+.eap-post-comments .comment-body {
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.eap-post-comments .comment-author {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 8px;
+}
+
+.eap-post-comments .comment-author .avatar {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.eap-post-comments .comment-author .fn {
+	font-style: normal;
+	font-weight: 600;
+}
+
+.eap-post-comments .comment-author .says {
+	display: none;
+}
+
+.eap-post-comments .comment-metadata {
+	margin-bottom: 8px;
+	font-size: 13px;
+}
+
+.eap-post-comments .comment-metadata a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-post-comments .comment-content {
+	line-height: 1.65;
+}
+
+.eap-post-comments .comment-content p:last-child {
+	margin-bottom: 0;
+}
+
+.eap-post-comments .reply {
+	margin-top: 8px;
+}
+
+.eap-post-comments .comment-reply-link {
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.eap-post-comments .comment-reply-link:hover {
+	text-decoration: underline;
+}
+
+/* --- Reply form -------------------------------------------------------- */
+
+.eap-post-comments__form {
+	margin-top: 32px;
+}
+
+.eap-post-comments .comment-reply-title {
+	margin: 0 0 16px;
+	line-height: 1.3;
+}
+
+.eap-post-comments .comment-reply-title small {
+	margin-left: 10px;
+	font-size: 60%;
+}
+
+.eap-post-comments .comment-form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.eap-post-comments .comment-form p {
+	margin: 0;
+	flex: 1 1 100%;
+}
+
+.eap-post-comments .comment-form-author,
+.eap-post-comments .comment-form-email,
+.eap-post-comments .comment-form-url {
+	flex: 1 1 200px;
+}
+
+.eap-post-comments .comment-form label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.eap-post-comments .comment-form input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]),
+.eap-post-comments .comment-form textarea {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 10px 12px;
+	font: inherit;
+	color: #111827;
+	background: #fff;
+	border: 1px solid #d1d5db;
+	border-radius: 8px;
+}
+
+.eap-post-comments .comment-form textarea {
+	min-height: 120px;
+	resize: vertical;
+}
+
+.eap-post-comments .comment-form-cookies-consent {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.eap-post-comments .comment-form-cookies-consent input {
+	flex: 0 0 auto;
+}
+
+.eap-post-comments .form-submit {
+	flex: 1 1 100%;
+	margin: 0;
+}
+
+.eap-post-comments .form-submit .submit {
+	display: inline-block;
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+	padding: 12px 26px;
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.2;
+	color: #fff;
+	background: #4f46e5;
+	border: 0;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}

@@ -112,6 +112,17 @@ blank on the canvas.
   avatar), published / modified date, categories, tags, comment count and
   reading time, each with an optional prefix and icon, joined by a chosen
   separator, with author / term archive links.
+- **Post Comments** — the native comment list and reply form (threaded), with
+  full styling for the heading, comment items and form fields / submit button.
+  The editor shows a styled sample so the layout stays designable.
+- **Post Reactions** — a row of emoji reactions (👍 ❤️ 🎉 😮 😢 and more) with
+  live counts. Visitors react **without logging in**; one reaction per visitor is
+  tracked in the browser (click again to remove, a different one to switch) and
+  counts persist to post meta via a nonce-protected AJAX endpoint.
+- **Post Pagination** — three modes: **Post Navigation** (previous / next single
+  posts, with optional titles and same-category restriction), **Numbered**
+  archive page links, or **In-Post Pages** for `<!--nextpage-->` content — all
+  fully styleable pill links.
 
 ## Admin
 
@@ -132,4 +143,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.38
+**Current version:** 1.20.39
