@@ -123,6 +123,15 @@ blank on the canvas.
   posts, with optional titles and same-category restriction), **Numbered**
   archive page links, or **In-Post Pages** for `<!--nextpage-->` content — all
   fully styleable pill links.
+- **Posts** — a query-driven **grid / list / overlay** of posts (the blog-grid
+  builder). Query source: **Latest** (post type + taxonomy include/exclude +
+  order + offset + exclude-current/sticky), **Manual** (hand-picked) or **Current
+  Query** (the current archive / search / blog page). Toggle each card element
+  (image, category badge, title, meta, excerpt, read-more) and choose pagination:
+  **none**, **numbered**, **load-more** or **infinite scroll** (Load More /
+  Infinite are AJAX and apply to the Latest source). Query building and card
+  markup live in a shared, Elementor-free class so AJAX-paged cards match the
+  first render exactly.
 
 ## Admin
 
@@ -143,4 +152,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.39
+**Current version:** 1.20.40

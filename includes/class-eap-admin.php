@@ -318,6 +318,13 @@ class EAP_Admin {
 			$done['post-pagination-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['posts-built'] ) ) {
+			$states['posts'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['posts-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1096,6 +1103,7 @@ class EAP_Admin {
 			'post-comments',
 			'post-reactions',
 			'post-pagination',
+			'posts',
 		);
 
 		return in_array( $widget_key, $built, true );

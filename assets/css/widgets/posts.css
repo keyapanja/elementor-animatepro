@@ -1,0 +1,323 @@
+/* =========================================================================
+ * Posts
+ * Query-driven grid / list / overlay of posts. Colours, gaps, image height and
+ * card styling come from the widget's Style controls; this file lays out the
+ * three layouts and provides base colours (which the controls override).
+ * Structural overrides for the list/overlay layouts use !important to beat the
+ * higher-specificity {{WRAPPER}}-scoped control CSS.
+ * ====================================================================== */
+
+.eap-posts__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-posts-cols, 3), minmax(0, 1fr));
+	column-gap: 28px;
+	row-gap: 28px;
+}
+
+.eap-posts__item {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+	background: #fff;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* --- Image ------------------------------------------------------------- */
+
+.eap-posts__image {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	line-height: 0;
+	text-decoration: none;
+}
+
+.eap-posts__img {
+	display: block;
+	width: 100%;
+	object-fit: cover;
+	transition: transform 0.5s ease;
+}
+
+.eap-posts__img-placeholder {
+	display: block;
+	width: 100%;
+	height: 100%;
+	min-height: 180px;
+	background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+}
+
+.eap-posts--zoom .eap-posts__image:hover .eap-posts__img {
+	transform: scale(1.06);
+}
+
+/* --- Body -------------------------------------------------------------- */
+
+.eap-posts__body {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	padding: 20px;
+}
+
+.eap-posts__badge {
+	align-self: flex-start;
+	display: inline-block;
+	margin-bottom: 10px;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+	color: #fff;
+	background: #4f46e5;
+	border-radius: 4px;
+	text-decoration: none;
+}
+
+.eap-posts__title {
+	margin: 0 0 10px;
+	line-height: 1.3;
+	color: #111827;
+}
+
+.eap-posts__title a {
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+.eap-posts__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 12px;
+	font-size: 14px;
+	color: #9ca3af;
+}
+
+.eap-posts__meta-sep {
+	opacity: 0.6;
+}
+
+.eap-posts__excerpt {
+	margin: 0 0 16px;
+	line-height: 1.6;
+	color: #4b5563;
+}
+
+.eap-posts__excerpt p {
+	margin: 0;
+}
+
+.eap-posts__readmore {
+	align-self: flex-start;
+	margin-top: auto;
+	display: inline-block;
+	font-weight: 600;
+	color: #4f46e5;
+	text-decoration: none;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.eap-posts__readmore:hover {
+	text-decoration: underline;
+}
+
+/* --- List layout ------------------------------------------------------- */
+
+.eap-posts--list .eap-posts__grid {
+	grid-template-columns: 1fr;
+}
+
+.eap-posts--list .eap-posts__item {
+	flex-direction: row;
+	align-items: stretch;
+}
+
+.eap-posts--list.eap-posts--img-right .eap-posts__item {
+	flex-direction: row-reverse;
+}
+
+.eap-posts--list .eap-posts__image {
+	flex: 0 0 var(--eap-posts-list-img, 40%);
+	height: auto !important;
+}
+
+.eap-posts--list .eap-posts__img {
+	width: 100%;
+	height: 100% !important;
+	object-fit: cover;
+}
+
+.eap-posts--list .eap-posts__body {
+	justify-content: center;
+}
+
+@media (max-width: 600px) {
+	.eap-posts--list .eap-posts__item {
+		flex-direction: column;
+	}
+	.eap-posts--list .eap-posts__image {
+		flex-basis: auto;
+		height: auto !important;
+	}
+	.eap-posts--list .eap-posts__img {
+		height: auto !important;
+	}
+}
+
+/* --- Overlay layout ---------------------------------------------------- */
+
+.eap-posts--overlay .eap-posts__item {
+	position: relative;
+	justify-content: flex-end;
+	min-height: 340px;
+}
+
+.eap-posts--overlay .eap-posts__image {
+	position: absolute !important;
+	inset: 0;
+	height: 100% !important;
+	z-index: 0;
+}
+
+.eap-posts--overlay .eap-posts__img {
+	width: 100%;
+	height: 100% !important;
+	object-fit: cover;
+}
+
+.eap-posts--overlay .eap-posts__item::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0) 62%);
+}
+
+.eap-posts--overlay .eap-posts__body {
+	position: relative;
+	z-index: 2;
+	flex: 0 0 auto;
+}
+
+.eap-posts--overlay .eap-posts__image .eap-posts__badge {
+	position: absolute;
+	top: 14px;
+	left: 14px;
+	z-index: 2;
+}
+
+.eap-posts--overlay .eap-posts__title,
+.eap-posts--overlay .eap-posts__excerpt,
+.eap-posts--overlay .eap-posts__meta {
+	color: #fff;
+}
+
+/* --- Pagination -------------------------------------------------------- */
+
+.eap-posts__pagination {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 36px;
+}
+
+.eap-posts__pagination .page-numbers {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 42px;
+	padding: 10px 14px;
+	line-height: 1.2;
+	color: #374151;
+	text-decoration: none;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-posts__pagination .page-numbers.current,
+.eap-posts__pagination a.page-numbers:hover {
+	color: #fff;
+	background: #4f46e5;
+	border-color: #4f46e5;
+}
+
+.eap-posts__pagination .page-numbers.dots {
+	background: transparent;
+	border-color: transparent;
+}
+
+.eap-posts__load-more {
+	-webkit-appearance: none;
+	appearance: none;
+	padding: 12px 30px;
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.2;
+	color: #374151;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-posts__load-more.is-loading {
+	opacity: 0.7;
+	pointer-events: none;
+}
+
+.eap-posts__load-more.hidden,
+.eap-posts__sentinel.hidden {
+	display: none;
+}
+
+.eap-posts__spinner {
+	display: none;
+	width: 28px;
+	height: 28px;
+	margin: 4px auto 0;
+	border: 3px solid rgba(0, 0, 0, 0.15);
+	border-top-color: #4f46e5;
+	border-radius: 50%;
+	animation: eap-posts-spin 0.7s linear infinite;
+}
+
+.eap-posts--loading .eap-posts__spinner {
+	display: block;
+}
+
+@keyframes eap-posts-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* --- Editor empty note ------------------------------------------------- */
+
+.eap-posts--empty {
+	padding: 24px;
+	color: #6b7280;
+	font-style: italic;
+	text-align: center;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-posts__item,
+	.eap-posts__img {
+		transition: none;
+	}
+	.eap-posts__spinner {
+		animation-duration: 2s;
+	}
+}

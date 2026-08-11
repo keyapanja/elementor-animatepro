@@ -140,6 +140,7 @@ class EAP_Assets {
 			'post-comments',
 			'post-reactions',
 			'post-pagination',
+			'posts',
 		);
 
 		foreach ( $styles as $style ) {
@@ -189,6 +190,7 @@ class EAP_Assets {
 			'mega-menu',
 			'animated-off-canvas',
 			'post-reactions',
+			'posts',
 		);
 
 		foreach ( $scripts as $script ) {
