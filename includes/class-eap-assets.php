@@ -141,6 +141,7 @@ class EAP_Assets {
 			'post-reactions',
 			'post-pagination',
 			'posts',
+			'post-rating',
 		);
 
 		foreach ( $styles as $style ) {

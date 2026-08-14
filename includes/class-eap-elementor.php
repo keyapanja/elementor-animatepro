@@ -86,6 +86,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-reactions.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-pagination.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-rating.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -133,6 +134,7 @@ class EAP_Elementor {
 		$post_reactions_on         = ! array_key_exists( 'post-reactions', $widget_states ) || ! empty( $widget_states['post-reactions'] );
 		$post_pagination_on        = ! array_key_exists( 'post-pagination', $widget_states ) || ! empty( $widget_states['post-pagination'] );
 		$posts_on                  = ! array_key_exists( 'posts', $widget_states ) || ! empty( $widget_states['posts'] );
+		$post_rating_on            = ! array_key_exists( 'post-rating', $widget_states ) || ! empty( $widget_states['post-rating'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -308,6 +310,10 @@ class EAP_Elementor {
 
 		if ( $posts_on ) {
 			$widgets_manager->register( new EAP_Widget_Posts() );
+		}
+
+		if ( $post_rating_on ) {
+			$widgets_manager->register( new EAP_Widget_Post_Rating() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

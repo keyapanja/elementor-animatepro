@@ -132,6 +132,11 @@ blank on the canvas.
   Infinite are AJAX and apply to the Latest source). Query building and card
   markup live in a shared, Elementor-free class so AJAX-paged cards match the
   first render exactly.
+- **Post Rating** — a read-only star rating for the current post, from a **manual**
+  editorial score, a numeric **custom field**, or the **visitor average** (the
+  aggregate the Post Rating Form collects). Fractional (half-star) precision via a
+  clipped fill overlay, star / heart / custom icon, and optional numeric value +
+  vote count.
 
 ## Admin
 
@@ -152,4 +157,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.40
+**Current version:** 1.20.41

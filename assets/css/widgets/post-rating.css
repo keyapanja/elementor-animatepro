@@ -1,0 +1,73 @@
+/* =========================================================================
+ * Post Rating
+ * Read-only star rating with fractional (half-star) precision. Two identical
+ * icon rows are stacked: an inactive "track" and an active "fill" clipped to a
+ * width percentage (--eap-rating) so any fraction renders. Sizes/colours come
+ * from the Style controls via CSS variables.
+ * ====================================================================== */
+
+.eap-post-rating {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.eap-post-rating__stars {
+	position: relative;
+	display: inline-flex;
+	line-height: 0;
+}
+
+.eap-post-rating__track,
+.eap-post-rating__fill {
+	display: inline-flex;
+	gap: var(--eap-rating-gap, 3px);
+}
+
+.eap-post-rating__fill {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: var(--eap-rating, 0%);
+	overflow: hidden;
+}
+
+.eap-post-rating__icon {
+	display: inline-flex;
+	flex: 0 0 auto;
+	font-size: var(--eap-rating-size, 22px);
+	line-height: 0;
+}
+
+.eap-post-rating__track .eap-post-rating__icon {
+	color: var(--eap-rating-inactive, #d1d5db);
+}
+
+.eap-post-rating__fill .eap-post-rating__icon {
+	color: var(--eap-rating-active, #f59e0b);
+}
+
+.eap-post-rating__icon svg {
+	display: block;
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-post-rating__icon i {
+	font-size: 1em;
+	line-height: 1;
+	color: inherit;
+}
+
+.eap-post-rating__value {
+	font-weight: 700;
+	line-height: 1;
+	color: #111827;
+}
+
+.eap-post-rating__count {
+	line-height: 1;
+	color: #9ca3af;
+}
