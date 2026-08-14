@@ -137,6 +137,11 @@ blank on the canvas.
   aggregate the Post Rating Form collects). Fractional (half-star) precision via a
   clipped fill overlay, star / heart / custom icon, and optional numeric value +
   vote count.
+- **Post Rating Form** — an interactive click-to-rate input: visitors click a star
+  (1–max) to rate the current post **without logging in**. The vote is saved to the
+  shared rating store via nonce-protected AJAX and the average updates live; one
+  vote per visitor (localStorage + a per-IP-per-post guard), after which the stars
+  lock with a thank-you. Feeds the **Post Rating** widget's Visitor Average.
 
 ## Admin
 
@@ -157,4 +162,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.41
+**Current version:** 1.20.42

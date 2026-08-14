@@ -332,6 +332,13 @@ class EAP_Admin {
 			$done['post-rating-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['post-rating-form-built'] ) ) {
+			$states['post-rating-form'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['post-rating-form-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1110,6 +1117,7 @@ class EAP_Admin {
 			'post-pagination',
 			'posts',
 			'post-rating',
+			'post-rating-form',
 		);
 
 		return in_array( $widget_key, $built, true );

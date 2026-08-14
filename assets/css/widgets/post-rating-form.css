@@ -1,0 +1,100 @@
+/* =========================================================================
+ * Post Rating Form
+ * Interactive click-to-rate stars. Fill is driven by JS classes: .is-hover
+ * (preview) and .is-active (selected); .is-hover is defined after .is-active so
+ * the hover preview wins. Colours/size come from the Style controls (CSS vars).
+ * ====================================================================== */
+
+.eap-post-rating-form {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+}
+
+.eap-post-rating-form [hidden] {
+	display: none !important;
+}
+
+.eap-post-rating-form__prompt {
+	line-height: 1.3;
+	font-weight: 600;
+}
+
+.eap-post-rating-form__stars {
+	display: inline-flex;
+	gap: 4px;
+}
+
+.eap-post-rating-form__star {
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	line-height: 0;
+	color: var(--eap-rf-inactive, #d1d5db);
+	cursor: pointer;
+	transition: color 0.15s ease, transform 0.12s ease;
+}
+
+.eap-post-rating-form__star.is-active {
+	color: var(--eap-rf-active, #f59e0b);
+}
+
+.eap-post-rating-form__star.is-hover {
+	color: var(--eap-rf-hover, #fbbf24);
+}
+
+.eap-post-rating-form:not(.is-rated) .eap-post-rating-form__star:hover {
+	transform: scale(1.12);
+}
+
+.eap-post-rating-form.is-rated .eap-post-rating-form__star {
+	cursor: default;
+}
+
+.eap-post-rating-form__icon {
+	display: inline-flex;
+	font-size: var(--eap-rf-size, 30px);
+	line-height: 0;
+}
+
+.eap-post-rating-form__icon svg {
+	display: block;
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-post-rating-form__icon i {
+	font-size: 1em;
+	line-height: 1;
+	color: inherit;
+}
+
+.eap-post-rating-form__meta {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 1.2em;
+	color: #6b7280;
+}
+
+.eap-post-rating-form__thanks {
+	font-weight: 600;
+}
+
+.eap-post-rating-form__count {
+	opacity: 0.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-post-rating-form__star {
+		transition: color 0.15s ease;
+	}
+	.eap-post-rating-form:not(.is-rated) .eap-post-rating-form__star:hover {
+		transform: none;
+	}
+}

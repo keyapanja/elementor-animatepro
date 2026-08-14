@@ -3,7 +3,7 @@
  * Plugin Name: Elementor AnimatePro
  * Plugin URI: https://placeholder.example.com/
  * Description: Blank starter shell for rebuilding Elementor AnimatePro from scratch.
- * Version: 1.20.41
+ * Version: 1.20.42
  * Author: KP
  * Text Domain: elementor-animatepro
  * Domain Path: /languages
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'EAP_VERSION', '1.20.41' );
+define( 'EAP_VERSION', '1.20.42' );
 define( 'EAP_FILE', __FILE__ );
 define( 'EAP_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EAP_URL', plugin_dir_url( __FILE__ ) );
@@ -41,6 +41,7 @@ function EAP_bootstrap() {
 	new EAP_Elementor();
 	new EAP_Reactions();
 	new EAP_Posts_Ajax();
+	new EAP_Rating();
 }
 
 add_action( 'plugins_loaded', 'EAP_bootstrap' );

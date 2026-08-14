@@ -142,6 +142,7 @@ class EAP_Assets {
 			'post-pagination',
 			'posts',
 			'post-rating',
+			'post-rating-form',
 		);
 
 		foreach ( $styles as $style ) {
@@ -192,6 +193,7 @@ class EAP_Assets {
 			'animated-off-canvas',
 			'post-reactions',
 			'posts',
+			'post-rating-form',
 		);
 
 		foreach ( $scripts as $script ) {
