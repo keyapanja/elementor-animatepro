@@ -155,6 +155,14 @@ blank on the canvas.
   mobile). Reuses the Posts engine for the query, cards and card styling, and adds
   a Timeline style section (line, dot, date pill, year band). Latest query, no
   pagination.
+- **Posts Read Later** — a no-login "save for later": visitors bookmark posts to
+  their own browser (localStorage, no account). One widget, two **Modes** — a
+  **Save button** toggle for the current post (Save ↔ Saved), or a **Reading List**
+  of the visitor's saved posts as cards (reusing the Posts card markup), each with
+  a remove ×, an empty state and an optional "Clear all". The list is filled
+  client-side via a nonce-protected AJAX endpoint returning the same
+  server-rendered cards (publish-only); the button, list and saved-count stay in
+  sync across the page.
 
 ## Admin
 
@@ -175,4 +183,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.45
+**Current version:** 1.20.46

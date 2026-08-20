@@ -90,6 +90,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-rating-form.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-advanced-posts.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -141,6 +142,7 @@ class EAP_Elementor {
 		$post_rating_form_on       = ! array_key_exists( 'post-rating-form', $widget_states ) || ! empty( $widget_states['post-rating-form'] );
 		$advanced_posts_on         = ! array_key_exists( 'advanced-posts', $widget_states ) || ! empty( $widget_states['advanced-posts'] );
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
+		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -332,6 +334,10 @@ class EAP_Elementor {
 
 		if ( $posts_timeline_on ) {
 			$widgets_manager->register( new EAP_Widget_Posts_Timeline() );
+		}
+
+		if ( $posts_read_later_on ) {
+			$widgets_manager->register( new EAP_Widget_Posts_Read_Later() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

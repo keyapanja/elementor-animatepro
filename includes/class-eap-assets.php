@@ -145,6 +145,7 @@ class EAP_Assets {
 			'post-rating-form',
 			'advanced-posts',
 			'posts-timeline',
+			'posts-read-later',
 		);
 
 		foreach ( $styles as $style ) {
@@ -197,6 +198,7 @@ class EAP_Assets {
 			'posts',
 			'post-rating-form',
 			'advanced-posts',
+			'read-later',
 		);
 
 		foreach ( $scripts as $script ) {

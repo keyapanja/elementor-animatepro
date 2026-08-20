@@ -1,0 +1,179 @@
+/* =========================================================================
+ * Posts Read Later
+ * Button mode: a bookmark toggle for the current post (Save <-> Saved).
+ * List mode: the visitor's saved posts as cards (reusing posts.css for the
+ * card + grid); this file adds the button, the list head / empty state and the
+ * per-card remove control. State lives in localStorage (read-later.js).
+ * ====================================================================== */
+
+/* --- Save button ------------------------------------------------------- */
+
+.eap-read-later__button {
+	--eap-rl-icon: 18px;
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin: 0;
+	padding: 10px 18px;
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.2;
+	color: #374151;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-read-later__button:hover {
+	border-color: #d1d5db;
+}
+
+.eap-read-later__icon {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: var(--eap-rl-icon);
+	height: var(--eap-rl-icon);
+}
+
+.eap-read-later__icon svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.eap-read-later__button.is-saved {
+	color: #4f46e5;
+	background: #eef2ff;
+	border-color: #c7d2fe;
+}
+
+/* The built-in outline bookmark fills in when saved. */
+.eap-read-later__button.is-saved .eap-read-later__icon svg path {
+	fill: currentColor;
+}
+
+/* --- List: head -------------------------------------------------------- */
+
+.eap-read-later__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 22px;
+}
+
+.eap-read-later__heading {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: #111827;
+}
+
+.eap-read-later__count {
+	color: #6b7280;
+	font-weight: 600;
+}
+
+.eap-read-later__clear {
+	-webkit-appearance: none;
+	appearance: none;
+	padding: 8px 16px;
+	font: inherit;
+	font-weight: 600;
+	line-height: 1.2;
+	color: #374151;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-read-later__clear:hover {
+	color: #fff;
+	background: #ef4444;
+	border-color: #ef4444;
+}
+
+/* --- List: empty state ------------------------------------------------- */
+
+.eap-read-later__empty {
+	margin: 0;
+	padding: 28px;
+	text-align: center;
+	color: #6b7280;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+.eap-read-later--list.is-empty .eap-read-later__grid {
+	display: none;
+}
+
+.eap-read-later--list:not(.is-empty) .eap-read-later__empty {
+	display: none;
+}
+
+.eap-read-later--list.is-empty .eap-read-later__clear {
+	display: none;
+}
+
+.eap-read-later--list.is-loading {
+	opacity: 0.6;
+	transition: opacity 0.2s ease;
+}
+
+/* --- List: card item + remove control ---------------------------------- */
+
+.eap-read-later__item {
+	position: relative;
+	display: flex;
+}
+
+.eap-read-later__item > .eap-posts__item {
+	width: 100%;
+}
+
+.eap-read-later__remove {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 3;
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	font-size: 18px;
+	line-height: 1;
+	color: #fff;
+	background: rgba(17, 24, 39, 0.6);
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.eap-read-later__remove:hover {
+	background: #ef4444;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-read-later__button,
+	.eap-read-later__clear,
+	.eap-read-later__remove,
+	.eap-read-later--list {
+		transition: none;
+	}
+}

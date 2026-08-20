@@ -353,6 +353,13 @@ class EAP_Admin {
 			$done['posts-timeline-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['posts-read-later-built'] ) ) {
+			$states['posts-read-later'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['posts-read-later-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1134,6 +1141,7 @@ class EAP_Admin {
 			'post-rating-form',
 			'advanced-posts',
 			'posts-timeline',
+			'posts-read-later',
 		);
 
 		return in_array( $widget_key, $built, true );
