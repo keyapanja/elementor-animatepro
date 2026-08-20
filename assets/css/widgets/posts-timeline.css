@@ -1,0 +1,174 @@
+/* =========================================================================
+ * Posts Timeline
+ * The Posts loop (shared EAP_Posts_Query cards) arranged down a vertical
+ * timeline: a line with dated nodes and year dividers, in an Alternating
+ * (centered, zig-zag) or One-sided (left rail) arrangement. posts.css supplies
+ * the cards; this file only draws the line / dots / date pills / year bands and
+ * the two arrangements. Alternating collapses to one-sided under 700px.
+ *
+ * Dot placement math: the rail centre is --eap-tl-line-x (one-sided) or 50%
+ * (alternating); dots are offset by half their own size so they sit centred on
+ * the line whatever the dot/line size.
+ * ====================================================================== */
+
+.eap-posts-timeline {
+	--eap-tl-line: #e5e7eb;
+	--eap-tl-line-w: 2px;
+	--eap-tl-dot: #4f46e5;
+	--eap-tl-dot-size: 16px;
+	--eap-tl-gap: 36px;
+	--eap-tl-line-x: 8px; /* one-sided: centre of the rail from the left edge */
+	--eap-tl-arm: 44px;   /* horizontal room reserved for the rail + dot */
+	position: relative;
+}
+
+.eap-posts-timeline__item {
+	position: relative;
+}
+
+.eap-posts-timeline__item:not(:last-child) {
+	margin-bottom: var(--eap-tl-gap);
+}
+
+.eap-posts-timeline__dot {
+	position: absolute;
+	top: 4px;
+	width: var(--eap-tl-dot-size);
+	height: var(--eap-tl-dot-size);
+	border-radius: 50%;
+	background: var(--eap-tl-dot);
+	z-index: 2;
+}
+
+.eap-posts-timeline__date {
+	display: inline-block;
+	margin-bottom: 12px;
+	padding: 4px 12px;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+	color: #4f46e5;
+	background: #eef2ff;
+	border-radius: 999px;
+}
+
+/* The reused card stays left-aligned even when the item is right-aligned
+   (alternating left column pushes the date pill toward the centre line). */
+.eap-posts-timeline__card {
+	position: relative;
+	z-index: 1;
+	text-align: left;
+}
+
+/* --- Year divider ------------------------------------------------------ */
+
+.eap-posts-timeline__year {
+	position: relative;
+	z-index: 2;
+	margin: 0 0 24px;
+}
+
+.eap-posts-timeline__year:not(:first-child) {
+	margin-top: 12px;
+}
+
+.eap-posts-timeline__year span {
+	display: inline-block;
+	padding: 6px 18px;
+	font-size: 15px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: #111827;
+	background: #fff;
+	border: var(--eap-tl-line-w) solid var(--eap-tl-line);
+	border-radius: 999px;
+}
+
+/* --- One-sided arrangement (line on the left) -------------------------- */
+
+.eap-posts-timeline--one::before {
+	content: "";
+	position: absolute;
+	top: 6px;
+	bottom: 6px;
+	left: calc(var(--eap-tl-line-x) - var(--eap-tl-line-w) / 2);
+	width: var(--eap-tl-line-w);
+	background: var(--eap-tl-line);
+	z-index: 0;
+}
+
+.eap-posts-timeline--one .eap-posts-timeline__item,
+.eap-posts-timeline--one .eap-posts-timeline__year {
+	padding-left: var(--eap-tl-arm);
+}
+
+.eap-posts-timeline--one .eap-posts-timeline__dot {
+	left: calc(var(--eap-tl-line-x) - var(--eap-tl-dot-size) / 2);
+}
+
+/* --- Alternating arrangement (centered line, zig-zag) ------------------ */
+
+.eap-posts-timeline--alt::before {
+	content: "";
+	position: absolute;
+	top: 6px;
+	bottom: 6px;
+	left: 50%;
+	width: var(--eap-tl-line-w);
+	margin-left: calc(var(--eap-tl-line-w) / -2);
+	background: var(--eap-tl-line);
+	z-index: 0;
+}
+
+.eap-posts-timeline--alt .eap-posts-timeline__item {
+	width: 50%;
+	box-sizing: border-box;
+}
+
+.eap-posts-timeline--alt .eap-posts-timeline__item--left {
+	padding-right: var(--eap-tl-arm);
+	text-align: right;
+}
+
+.eap-posts-timeline--alt .eap-posts-timeline__item--right {
+	margin-left: 50%;
+	padding-left: var(--eap-tl-arm);
+	text-align: left;
+}
+
+.eap-posts-timeline--alt .eap-posts-timeline__item--left .eap-posts-timeline__dot {
+	right: calc(var(--eap-tl-dot-size) / -2);
+}
+
+.eap-posts-timeline--alt .eap-posts-timeline__item--right .eap-posts-timeline__dot {
+	left: calc(var(--eap-tl-dot-size) / -2);
+}
+
+.eap-posts-timeline--alt .eap-posts-timeline__year {
+	text-align: center;
+}
+
+/* --- Mobile: alternating collapses to one-sided ------------------------ */
+
+@media (max-width: 700px) {
+	.eap-posts-timeline--alt::before {
+		left: calc(var(--eap-tl-line-x) - var(--eap-tl-line-w) / 2);
+		margin-left: 0;
+	}
+	.eap-posts-timeline--alt .eap-posts-timeline__item {
+		width: 100%;
+		margin-left: 0;
+		padding-left: var(--eap-tl-arm);
+		padding-right: 0;
+		text-align: left;
+	}
+	.eap-posts-timeline--alt .eap-posts-timeline__item--left .eap-posts-timeline__dot,
+	.eap-posts-timeline--alt .eap-posts-timeline__item--right .eap-posts-timeline__dot {
+		left: calc(var(--eap-tl-line-x) - var(--eap-tl-dot-size) / 2);
+		right: auto;
+	}
+	.eap-posts-timeline--alt .eap-posts-timeline__year {
+		text-align: left;
+		padding-left: var(--eap-tl-arm);
+	}
+}

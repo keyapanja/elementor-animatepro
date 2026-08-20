@@ -149,6 +149,12 @@ blank on the canvas.
   text hero when the lead post has no featured image) and **Masonry**.
   Reuses the Posts engine for the query, cards and styling; pagination is Load More
   or Infinite scroll.
+- **Posts Timeline** — the Posts loop laid down a vertical timeline: a line with
+  dated nodes and **year dividers**, in an **Alternating** (centered zig-zag) or
+  **One-sided** (left rail) arrangement (alternating collapses to one-sided on
+  mobile). Reuses the Posts engine for the query, cards and card styling, and adds
+  a Timeline style section (line, dot, date pill, year band). Latest query, no
+  pagination.
 
 ## Admin
 
@@ -169,4 +175,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.44
+**Current version:** 1.20.45

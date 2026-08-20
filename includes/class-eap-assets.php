@@ -144,6 +144,7 @@ class EAP_Assets {
 			'post-rating',
 			'post-rating-form',
 			'advanced-posts',
+			'posts-timeline',
 		);
 
 		foreach ( $styles as $style ) {
