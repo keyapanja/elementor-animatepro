@@ -143,6 +143,7 @@ class EAP_Assets {
 			'posts',
 			'post-rating',
 			'post-rating-form',
+			'advanced-posts',
 		);
 
 		foreach ( $styles as $style ) {
@@ -194,6 +195,7 @@ class EAP_Assets {
 			'post-reactions',
 			'posts',
 			'post-rating-form',
+			'advanced-posts',
 		);
 
 		foreach ( $scripts as $script ) {

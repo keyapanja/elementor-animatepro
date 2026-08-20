@@ -61,6 +61,7 @@ class EAP_Posts_Query {
 			'offset'          => isset( $raw['offset'] ) ? max( 0, (int) $raw['offset'] ) : 0,
 			'include_terms'   => self::int_list( isset( $raw['include_terms'] ) ? $raw['include_terms'] : array() ),
 			'exclude_terms'   => self::int_list( isset( $raw['exclude_terms'] ) ? $raw['exclude_terms'] : array() ),
+			'filter_terms'    => self::int_list( isset( $raw['filter_terms'] ) ? $raw['filter_terms'] : array() ),
 			'manual_ids'      => self::int_list( isset( $raw['manual_ids'] ) ? $raw['manual_ids'] : array() ),
 			'exclude_current' => self::truthy( isset( $raw['exclude_current'] ) ? $raw['exclude_current'] : false ),
 			'current_id'      => isset( $raw['current_id'] ) ? (int) $raw['current_id'] : 0,
@@ -169,7 +170,7 @@ class EAP_Posts_Query {
 			$args['offset'] = $spec['offset'] + ( ( $paged - 1 ) * $spec['per_page'] );
 		}
 
-		$tax_query = self::build_tax_query( $spec['include_terms'], $spec['exclude_terms'] );
+		$tax_query = self::build_tax_query( $spec['include_terms'], $spec['exclude_terms'], $spec['filter_terms'] );
 		if ( $tax_query ) {
 			$args['tax_query'] = $tax_query; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 		}
@@ -182,13 +183,15 @@ class EAP_Posts_Query {
 	}
 
 	/**
-	 * Build a tax_query from include / exclude term IDs, grouped by taxonomy.
+	 * Build a tax_query from include / exclude / filter term IDs, grouped by
+	 * taxonomy.
 	 *
 	 * @param int[] $include Term IDs to include (OR across taxonomies).
 	 * @param int[] $exclude Term IDs to exclude.
+	 * @param int[] $filter  Term IDs to AND-narrow by (e.g. an active filter tab).
 	 * @return array
 	 */
-	protected static function build_tax_query( $include, $exclude ) {
+	protected static function build_tax_query( $include, $exclude, $filter = array() ) {
 		$clauses = array();
 
 		$inc = self::group_terms( $include );
@@ -206,6 +209,19 @@ class EAP_Posts_Query {
 				$sub['relation'] = 'OR';
 			}
 			$clauses[] = 1 === count( $sub ) ? $sub[0] : $sub;
+		}
+
+		// Filter terms are ANDed as their own top-level clauses so an active tab
+		// narrows the results rather than widening them (unlike include, which is
+		// OR-grouped).
+		$fil = self::group_terms( $filter );
+		foreach ( $fil as $tax => $ids ) {
+			$clauses[] = array(
+				'taxonomy' => $tax,
+				'field'    => 'term_id',
+				'terms'    => $ids,
+				'operator' => 'IN',
+			);
 		}
 
 		$exc = self::group_terms( $exclude );

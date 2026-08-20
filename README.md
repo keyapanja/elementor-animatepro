@@ -142,6 +142,12 @@ blank on the canvas.
   shared rating store via nonce-protected AJAX and the average updates live; one
   vote per visitor (localStorage + a per-IP-per-post guard), after which the stars
   lock with a thank-you. Feeds the **Post Rating** widget's Visitor Average.
+- **Advanced Posts** — the Posts grid plus **AJAX filter tabs** and two extra
+  layouts. Pick a taxonomy and an "All + terms" tab bar filters the grid in place
+  (each tab re-queries via the shared endpoint and swaps the cards). Five layouts:
+  **Grid**, **List**, **Overlay**, **Featured** (first card large) and **Masonry**.
+  Reuses the Posts engine for the query, cards and styling; pagination is Load More
+  or Infinite scroll.
 
 ## Admin
 
@@ -162,4 +168,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.42
+**Current version:** 1.20.43
