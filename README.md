@@ -145,7 +145,8 @@ blank on the canvas.
 - **Advanced Posts** — the Posts grid plus **AJAX filter tabs** and two extra
   layouts. Pick a taxonomy and an "All + terms" tab bar filters the grid in place
   (each tab re-queries via the shared endpoint and swaps the cards). Five layouts:
-  **Grid**, **List**, **Overlay**, **Featured** (first card large) and **Masonry**.
+  **Grid**, **List**, **Overlay**, **Featured** (first card large — or a full-width
+  text hero when the lead post has no featured image) and **Masonry**.
   Reuses the Posts engine for the query, cards and styling; pagination is Load More
   or Infinite scroll.
 
@@ -168,4 +169,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.43
+**Current version:** 1.20.44

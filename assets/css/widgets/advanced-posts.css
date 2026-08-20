@@ -64,6 +64,27 @@
 	justify-content: center;
 }
 
+/* Featured first card WITH NO image (post has none, or Image is toggled off):
+   render a full-width text hero instead of an empty image/text split. Graceful
+   fallback via :has() — no markup change; browsers without :has() simply keep
+   the plain full-width card. It already spans every column, so give it height
+   and vertically centre the body, and ungroup Read More from the bottom, so it
+   reads as a deliberate feature panel. Typography stays under the Style tab. */
+.eap-posts--featured .eap-posts__grid > .eap-posts__item:first-child:not(:has(.eap-posts__image)) {
+	flex-direction: column;
+	min-height: 220px;
+}
+
+.eap-posts--featured .eap-posts__grid > .eap-posts__item:first-child:not(:has(.eap-posts__image)) .eap-posts__body {
+	justify-content: center;
+	padding-top: 36px;
+	padding-bottom: 36px;
+}
+
+.eap-posts--featured .eap-posts__grid > .eap-posts__item:first-child:not(:has(.eap-posts__image)) .eap-posts__readmore {
+	margin-top: 0;
+}
+
 @media (max-width: 700px) {
 	.eap-posts--featured .eap-posts__grid > .eap-posts__item:first-child {
 		flex-direction: column;
