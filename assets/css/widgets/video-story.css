@@ -1,0 +1,225 @@
+/* =========================================================================
+ * Video Story
+ * A grid of portrait "story" cards. Each card layers, bottom to top:
+ *   poster (img) -> video (fades in on hover/play) -> scrim gradient ->
+ *   content overlay (badge / title / excerpt / meta / play+duration).
+ * States (toggled by video-story.js):
+ *   .is-previewing -> muted background preview playing (overlays stay);
+ *   .is-playing    -> sound playback: video + native controls, overlays hidden,
+ *                     close × shown.
+ * ====================================================================== */
+
+.eap-video-story__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-vs-cols, 4), minmax(0, 1fr));
+	column-gap: 20px;
+	row-gap: 20px;
+}
+
+.eap-video-story__item {
+	position: relative;
+}
+
+.eap-video-story__media {
+	position: relative;
+	aspect-ratio: 9 / 16;
+	overflow: hidden;
+	border-radius: 10px;
+	background: #0a0a0a;
+}
+
+.eap-video-story__poster,
+.eap-video-story__video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.eap-video-story__poster--ph {
+	background: linear-gradient(135deg, #1f2937, #374151);
+}
+
+.eap-video-story__video {
+	z-index: 1;
+	background: #000;
+	opacity: 0;
+	transition: opacity 0.35s ease;
+}
+
+.eap-video-story__item.is-previewing .eap-video-story__video,
+.eap-video-story__item.is-playing .eap-video-story__video {
+	opacity: 1;
+}
+
+/* --- Scrim ------------------------------------------------------------- */
+
+.eap-video-story__scrim {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	pointer-events: none;
+	background: linear-gradient(to top, var(--eap-vs-scrim, rgba(0, 0, 0, 0.85)) 0%, rgba(0, 0, 0, 0) var(--eap-vs-scrim-h, 70%));
+	transition: opacity 0.3s ease;
+}
+
+/* --- Content overlay --------------------------------------------------- */
+
+.eap-video-story__content {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-start;
+	gap: 8px;
+	padding: 18px;
+	transition: opacity 0.3s ease;
+}
+
+.eap-video-story__item.is-playing .eap-video-story__scrim,
+.eap-video-story__item.is-playing .eap-video-story__content {
+	opacity: 0;
+	visibility: hidden;
+}
+
+.eap-video-story__badge {
+	display: inline-block;
+	padding: 4px 10px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.3;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #fff;
+	background: #e11d2a;
+	border-radius: 3px;
+}
+
+.eap-video-story__title {
+	margin: 0;
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 1.3;
+	color: #fff;
+}
+
+.eap-video-story__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-video-story__excerpt {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+.eap-video-story__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	font-size: 13px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.eap-video-story__meta-sep {
+	opacity: 0.7;
+}
+
+/* --- Play + duration --------------------------------------------------- */
+
+.eap-video-story__play {
+	--eap-vs-play: 16px;
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin: 6px 0 0;
+	padding: 0;
+	font: inherit;
+	line-height: 1;
+	color: #fff;
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+}
+
+.eap-video-story__play-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-vs-play);
+	height: var(--eap-vs-play);
+	font-size: var(--eap-vs-play);
+}
+
+.eap-video-story__play-icon svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.eap-video-story__duration {
+	font-size: 13px;
+	font-weight: 600;
+}
+
+/* --- Close (sound mode) ------------------------------------------------ */
+
+.eap-video-story__close {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	z-index: 5;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	font-size: 22px;
+	line-height: 1;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.55);
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.eap-video-story__close:hover {
+	background: rgba(0, 0, 0, 0.8);
+}
+
+.eap-video-story__item.is-playing .eap-video-story__close {
+	display: inline-flex;
+}
+
+/* --- Editor empty note ------------------------------------------------- */
+
+.eap-video-story--empty {
+	padding: 24px;
+	color: #6b7280;
+	font-style: italic;
+	text-align: center;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-video-story__video,
+	.eap-video-story__scrim,
+	.eap-video-story__content,
+	.eap-video-story__close {
+		transition: none;
+	}
+}

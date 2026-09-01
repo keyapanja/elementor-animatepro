@@ -360,6 +360,13 @@ class EAP_Admin {
 			$done['posts-read-later-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['video-story-built'] ) ) {
+			$states['video-story'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['video-story-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1142,6 +1149,7 @@ class EAP_Admin {
 			'advanced-posts',
 			'posts-timeline',
 			'posts-read-later',
+			'video-story',
 		);
 
 		return in_array( $widget_key, $built, true );
@@ -1261,6 +1269,12 @@ class EAP_Admin {
 				'label'       => __( 'Scroll Transforms', 'elementor-animatepro' ),
 				'description' => __( 'Translate, rotate, scale, and fade elements on scroll.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-image-rotate',
+			),
+			array(
+				'key'         => 'video-story-cpt',
+				'label'       => __( 'Video Story Post Type', 'elementor-animatepro' ),
+				'description' => __( 'Register a Video Story post type (title, video, poster) the Video Story widget can fetch.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-video-alt3',
 			),
 		);
 	}

@@ -163,6 +163,14 @@ blank on the canvas.
   client-side via a nonce-protected AJAX endpoint returning the same
   server-rendered cards (publish-only); the button, list and saved-count stay in
   sync across the page.
+- **Video Story** — a query-driven grid of portrait video "story" cards (poster +
+  gradient + category badge + title + byline + play & duration). **Hovering** plays
+  the card's video as a **muted background preview**; **clicking the play button**
+  unmutes it, **hides the overlays** and shows native controls (a close × restores
+  the card). Source is any post type and defaults to the bundled **Video Story**
+  post type (enable it on the Extensions page; each story stores a self-hosted
+  video in `_eap_video_url` plus a featured-image poster), with a widget-wide
+  **Fallback Video** for anything missing. Self-hosted MP4 / WebM.
 
 ## Admin
 
@@ -183,4 +191,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.46
+**Current version:** 1.20.47
