@@ -149,6 +149,17 @@ blank on the canvas.
   text hero when the lead post has no featured image) and **Masonry**.
   Reuses the Posts engine for the query, cards and styling; pagination is Load More
   or Infinite scroll.
+- **Filterable Posts** — the instant counterpart to Advanced Posts. It loads one
+  pool of posts and filters **in the browser**, with the surviving cards sliding
+  into their new positions (a FLIP transition, so the browser animates one
+  transform per card rather than being asked to move `top`/`left`). No round trip
+  per tab. Layouts: **Grid** and **Masonry**, with an optional **search box**.
+  Because it filters what it already has, the tabs are built **from the terms the
+  loaded posts actually carry** — so a tab can never open onto an empty grid (the
+  failure mode a re-querying filter has when a term has no post inside the loaded
+  range), and the counts shown on each tab are exact rather than term totals.
+  Choose it for a curated set that should feel instant; choose Advanced Posts to
+  page through a large archive.
 - **Posts Timeline** — the Posts loop laid down a vertical timeline: a line with
   dated nodes and **year dividers**, in an **Alternating** (centered zig-zag) or
   **One-sided** (left rail) arrangement (alternating collapses to one-sided on
@@ -358,4 +369,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.64
+**Current version:** 1.20.65

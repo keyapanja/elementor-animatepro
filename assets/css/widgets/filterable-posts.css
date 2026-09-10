@@ -1,0 +1,191 @@
+/*
+ * Filterable Posts.
+ *
+ * Cards come from EAP_Posts_Query and are styled by posts.css. This file owns
+ * only the filter bar, the item wrapper and the filter transition.
+ */
+
+.eap-filterable-posts {
+	--eap-fp-speed: 400ms;
+}
+
+/* --- Bar ---------------------------------------------------------------- */
+
+.eap-filterable-posts__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+}
+
+.eap-filterable-posts__filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	margin-bottom: 28px;
+}
+
+/*
+ * Two-class selector to outrank a theme's `.elementor button` (0,1,1). The same
+ * specificity trap that bit Sticky Video's close control and Posts Slider's
+ * arrows — a bare `.eap-filterable-posts__filter` (0,1,0) loses to it.
+ */
+.eap-filterable-posts .eap-filterable-posts__filter {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	margin: 0;
+	padding: 8px 18px;
+	font: inherit;
+	font-size: 14px;
+	line-height: 1.4;
+	color: #374151;
+	background: #f3f4f6;
+	border: 1px solid transparent;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+	appearance: none;
+	box-sizing: border-box;
+}
+
+.eap-filterable-posts .eap-filterable-posts__filter:hover {
+	color: #111827;
+	background: #e5e7eb;
+}
+
+.eap-filterable-posts .eap-filterable-posts__filter.is-active {
+	color: #fff;
+	background: #4f46e5;
+}
+
+.eap-filterable-posts__filter-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 18px;
+	padding: 0 5px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 1;
+	border-radius: 999px;
+	background: rgba(17, 24, 39, 0.1);
+	box-sizing: border-box;
+}
+
+.eap-filterable-posts__filter.is-active .eap-filterable-posts__filter-count {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+/* --- Search ------------------------------------------------------------- */
+
+.eap-filterable-posts__search {
+	min-width: 220px;
+	margin-bottom: 28px;
+	padding: 9px 14px;
+	font: inherit;
+	font-size: 14px;
+	color: #111827;
+	background: #fff;
+	border: 1px solid #d1d5db;
+	border-radius: 999px;
+	box-sizing: border-box;
+}
+
+.eap-filterable-posts__search:focus {
+	outline: 2px solid #4f46e5;
+	outline-offset: 1px;
+}
+
+/* --- Items -------------------------------------------------------------- */
+
+/*
+ * The wrapper is the grid child, so the card inside has to stretch to it —
+ * otherwise cards in the same row end at different heights. Same approach as
+ * Posts Slider's equal-height slides.
+ */
+.eap-filterable-posts__item {
+	display: flex;
+	min-width: 0;
+}
+
+.eap-filterable-posts__item > .eap-posts__item {
+	width: 100%;
+}
+
+/*
+ * `will-change` is applied only while a filter run is in flight (the JS adds
+ * .is-animating), so a large grid isn't holding a compositor layer per card at
+ * rest.
+ */
+.eap-filterable-posts.is-animating .eap-filterable-posts__item {
+	will-change: transform;
+}
+
+/* Filtered out. display:none is what lets the survivors reflow; the JS runs the
+   fade first and only then applies this. */
+.eap-filterable-posts__item.is-hidden {
+	display: none;
+}
+
+.eap-filterable-posts__item.is-leaving {
+	opacity: 0;
+	transform: scale(0.9);
+	transition: opacity var(--eap-fp-speed) ease, transform var(--eap-fp-speed) ease;
+	pointer-events: none;
+}
+
+.eap-filterable-posts__item.is-entering {
+	opacity: 0;
+	transform: scale(0.9);
+}
+
+.eap-filterable-posts__item.is-entered {
+	opacity: 1;
+	transform: none;
+	transition: opacity var(--eap-fp-speed) ease, transform var(--eap-fp-speed) ease;
+}
+
+/* --- Masonry ------------------------------------------------------------
+ * CSS columns rather than grid. The card order reads down each column instead
+ * of across, which is the normal trade for column-based masonry.
+ * -------------------------------------------------------------------- */
+
+.eap-filterable-posts--masonry .eap-filterable-posts__grid {
+	display: block;
+	column-count: var(--eap-posts-cols, 3);
+	column-gap: var(--eap-posts-gap, 24px);
+}
+
+.eap-filterable-posts--masonry .eap-filterable-posts__item {
+	display: block;
+	width: 100%;
+	margin-bottom: var(--eap-posts-gap, 24px);
+	break-inside: avoid;
+	-webkit-column-break-inside: avoid;
+}
+
+/* Let cards keep their natural heights so the columns actually stagger. */
+.eap-filterable-posts--masonry .eap-posts__img {
+	height: auto !important;
+}
+
+/* --- Empty state -------------------------------------------------------- */
+
+.eap-filterable-posts__empty {
+	margin: 24px 0 0;
+	text-align: center;
+	color: #6b7280;
+	font-size: 15px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-filterable-posts__item.is-leaving,
+	.eap-filterable-posts__item.is-entered {
+		transition: none;
+	}
+}

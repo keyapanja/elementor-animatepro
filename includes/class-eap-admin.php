@@ -347,6 +347,13 @@ class EAP_Admin {
 			update_option( 'eap_widget_migrations', $done, false );
 		}
 
+		if ( empty( $done['filterable-posts-built'] ) ) {
+			$states['filterable-posts'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['filterable-posts-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
 		if ( empty( $done['posts-timeline-built'] ) ) {
 			$states['posts-timeline'] = 1;
 			update_option( self::WIDGETS_OPTION, $states, false );
@@ -1015,7 +1022,6 @@ class EAP_Admin {
 					'Filterable Posts',
 					'Post Rating Form',
 					'Post Rating',
-					'Grid Hover Posts',
 					'Category Showcase',
 					'Current Date',
 					'Featured Posts',
@@ -1190,6 +1196,7 @@ class EAP_Admin {
 			'post-rating',
 			'post-rating-form',
 			'advanced-posts',
+			'filterable-posts',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
