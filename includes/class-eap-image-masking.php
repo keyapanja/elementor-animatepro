@@ -9,10 +9,10 @@ use Elementor\Controls_Manager;
 /**
  * Image Masking extension.
  *
- * Injects an "Image Masking" section into image-bearing widgets (Elementor's own
- * plus this plugin's) that masks their `<img>` elements with either a CSS
- * clip-path shape or an uploaded mask image, with separate Normal / Hover
- * states.
+ * Injects an "Image Masking" section into the Advanced tab of every element,
+ * masking its `<img>` elements with either a CSS clip-path shape or an uploaded
+ * mask image, with separate Normal / Hover states. (It cannot be limited to
+ * image widgets — see maybe_inject() — but is inert without an image.)
  *
  * This is an EXTENSION, not a widget: it has no render of its own, no CSS file
  * and no JS. Masking is pure CSS, so every control simply declares `selectors`
@@ -62,63 +62,28 @@ class EAP_Image_Masking {
 	}
 
 	/**
-	 * Widgets that get the masking section.
+	 * Add the section once, after a section every element has.
 	 *
-	 * Deliberately a curated list rather than every widget: masking only means
-	 * anything where there is an `<img>`, and adding a section to every panel is
-	 * noise. Filterable so a site can opt others in.
-	 *
-	 * @return string[]
-	 */
-	public function get_target_widgets() {
-		$widgets = array(
-			// Elementor core.
-			'image',
-			'image-box',
-			'image-gallery',
-			'image-carousel',
-			'theme-post-featured-image',
-			// This plugin.
-			'eap-image',
-			'eap-image-box',
-			'eap-image-box-slider',
-			'eap-image-gallery',
-			'eap-image-comparison',
-			'eap-image-hotspot',
-			'eap-image-accordion',
-			'eap-text-hover-image',
-			'eap-brand-slider',
-			'eap-team',
-			'eap-post-featured-image',
-		);
-
-		/**
-		 * Filter the widgets that receive the Image Masking section.
-		 *
-		 * @param string[] $widgets Widget names.
-		 */
-		return apply_filters( 'eap_image_masking_widgets', $widgets );
-	}
-
-	/**
-	 * Add the section once, after a section every widget has.
+	 * NOTE: this cannot be limited to image widgets. `_section_style` and
+	 * `_section_responsive` are registered on Elementor's COMMON controls stack
+	 * (includes/widgets/common-base.php), so the element passed here reports
+	 * get_name() === 'common' for every widget — a per-widget name check can
+	 * never match, and silently injects nowhere. The section is therefore
+	 * registered for all elements; the controls only ever emit CSS for `img`, so
+	 * it is inert on anything without an image.
 	 *
 	 * @param \Elementor\Controls_Stack $element    Element.
 	 * @param string                    $section_id Section that just closed.
 	 * @return void
 	 */
 	public function maybe_inject( $element, $section_id ) {
-		// Anchors on the Advanced tab that every widget carries; whichever fires
+		// Anchors on the Advanced tab that every element carries; whichever fires
 		// first wins, and $injected keeps it to one.
 		if ( ! in_array( $section_id, array( '_section_responsive', '_section_style' ), true ) ) {
 			return;
 		}
 
-		if ( ! is_object( $element ) || ! method_exists( $element, 'get_name' ) ) {
-			return;
-		}
-
-		if ( ! in_array( $element->get_name(), $this->get_target_widgets(), true ) ) {
+		if ( ! is_object( $element ) || ! method_exists( $element, 'start_controls_section' ) ) {
 			return;
 		}
 

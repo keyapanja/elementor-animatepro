@@ -232,14 +232,13 @@ Extensions are features that attach to *existing* widgets rather than adding new
 ones. They're toggled on the plugin's **Extensions** page (stored in the
 `eap_extension_states` option) and are simply not registered when off.
 
-- **Image Masking** — adds an **Image Masking** section to the Advanced tab of the
-  image-bearing widgets (Elementor's Image / Image Box / Galleries and this
-  plugin's image widgets). Mask the widget's images with a **clip-path shape**
-  (20 presets, or your own `polygon()` / `circle()` / `path()` value) or an
-  uploaded **mask image** with size / position / repeat — each with a separate
-  **Hover** state and a transition. Pure CSS: no extra stylesheet or script, and
-  both the `-webkit-` and unprefixed properties are emitted for Safari. The
-  target widget list is filterable via `eap_image_masking_widgets`.
+- **Image Masking** — adds an **Image Masking** section to the Advanced tab of
+  every element, masking its images with a **clip-path shape** (20 presets, or
+  your own `polygon()` / `circle()` / `path()` value) or an uploaded **mask
+  image** with size / position / repeat — each with a separate **Hover** state
+  and a transition. Pure CSS: no extra stylesheet or script, and both the
+  `-webkit-` and unprefixed properties are emitted for Safari. It only ever
+  styles `img`, so it is inert on elements without one.
 - **Advanced Tooltip** — adds an **Advanced Tooltip** section to the Advanced tab
   of **every element** — widgets, containers, sections and columns alike. The
   tooltip content can be **text, an icon, an image or a shortcode**; choose its
@@ -287,4 +286,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.57
+**Current version:** 1.20.58

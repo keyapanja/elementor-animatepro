@@ -40,6 +40,38 @@
 	box-sizing: border-box;
 }
 
+/*
+ * Extension section badge.
+ * Every extension injects its controls as a section whose control name we own,
+ * and Elementor wraps each control in `.elementor-control-{control_name}` — so
+ * the badge can be attached by name without touching the label text (which
+ * Elementor escapes, and which would also end up in translations).
+ * Add the new section's control name here when adding an extension.
+ */
+.elementor-control-eap_image_masking .elementor-panel-heading-title::after,
+.elementor-control-eap_tooltip_section .elementor-panel-heading-title::after,
+.elementor-control-eap_cd_section .elementor-panel-heading-title::after {
+	content: "EAP";
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 26px;
+	height: 15px;
+	margin-left: 7px;
+	padding: 0 4px;
+	border: 1px solid rgba(154, 165, 177, 0.75);
+	border-radius: 2px;
+	background: rgba(45, 49, 56, 0.9);
+	color: #eef2f7;
+	font-size: 8px;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	vertical-align: middle;
+	box-sizing: border-box;
+}
+
 .elementor-navigator__item.eap-structure-badge-ready {
 	position: relative;
 	padding-right: 36px;

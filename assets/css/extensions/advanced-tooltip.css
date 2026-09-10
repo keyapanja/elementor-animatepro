@@ -39,10 +39,21 @@
 	border-radius: inherit;
 }
 
+/* Icon content is scaled up from the bubble's text size — at 1em an icon-only
+   tooltip reads as a stray glyph rather than deliberate. */
 .eap-tooltip__icon {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	font-size: 1.5em;
+	line-height: 1;
+}
+
+.eap-tooltip__icon svg,
+.eap-tooltip__icon img {
+	display: block;
+	width: 1.5em;
+	height: 1.5em;
 }
 
 /* --- Placement (the small offset is what animates in) ------------------- */

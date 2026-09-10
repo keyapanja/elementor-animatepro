@@ -12,8 +12,17 @@
 
 		// getAttribute decodes the entities PHP escaped in, so this is the real
 		// markup the server rendered (text / icon / image / shortcode output).
-		const content = host.getAttribute('data-eap-tooltip');
+		const content = (host.getAttribute('data-eap-tooltip') || '').trim();
 		if (!content) {
+			return;
+		}
+
+		// Markup that renders nothing visible (an empty wrapper, a shortcode that
+		// output nothing) would otherwise show as an empty bubble.
+		const probe = document.createElement('div');
+		probe.innerHTML = content;
+		const hasVisible = probe.textContent.trim() !== '' || probe.querySelector('img, svg, i, picture, video, iframe');
+		if (!hasVisible) {
 			return;
 		}
 

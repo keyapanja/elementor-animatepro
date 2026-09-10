@@ -431,12 +431,20 @@ class EAP_Advanced_Tooltip {
 			return;
 		}
 
+		// Read every key through ?? into a local first. An element saved before a
+		// control existed (or whose stack never registered it) has no key at all,
+		// and reading it inside a ternary branch warns on every render.
+		$position = (string) ( $settings['eap_tooltip_position'] ?? 'top' );
+		if ( ! in_array( $position, array( 'top', 'bottom', 'left', 'right' ), true ) ) {
+			$position = 'top';
+		}
+
 		$element->add_render_attribute(
 			'_wrapper',
 			array(
 				'class'                => 'eap-tooltip-host',
 				'data-eap-tooltip'     => $content,
-				'data-eap-tt-position' => in_array( $settings['eap_tooltip_position'] ?? 'top', array( 'top', 'bottom', 'left', 'right' ), true ) ? $settings['eap_tooltip_position'] : 'top',
+				'data-eap-tt-position' => $position,
 				'data-eap-tt-trigger'  => 'click' === ( $settings['eap_tooltip_trigger'] ?? 'hover' ) ? 'click' : 'hover',
 				'data-eap-tt-arrow'    => 'yes' === ( $settings['eap_tooltip_arrow'] ?? 'yes' ) ? '1' : '0',
 			)
@@ -454,7 +462,7 @@ class EAP_Advanced_Tooltip {
 
 		switch ( $type ) {
 			case 'icon':
-				$icon = $settings['eap_tooltip_icon'] ?? array();
+				$icon = is_array( $settings['eap_tooltip_icon'] ?? null ) ? $settings['eap_tooltip_icon'] : array();
 				if ( empty( $icon['value'] ) || ! class_exists( '\Elementor\Icons_Manager' ) ) {
 					return '';
 				}
@@ -467,7 +475,16 @@ class EAP_Advanced_Tooltip {
 
 				ob_start();
 				\Elementor\Icons_Manager::render_icon( $icon, array( 'aria-hidden' => 'true' ) );
-				return '<span class="eap-tooltip__icon">' . ob_get_clean() . '</span>';
+				$icon_html = trim( (string) ob_get_clean() );
+
+				// render_icon() prints nothing for an unresolvable icon. Wrapping
+				// that in a span still yields "non-empty" content, which rendered
+				// an empty tooltip bubble — bail instead.
+				if ( '' === $icon_html ) {
+					return '';
+				}
+
+				return '<span class="eap-tooltip__icon">' . $icon_html . '</span>';
 
 			case 'image':
 				$url = $settings['eap_tooltip_image']['url'] ?? '';
