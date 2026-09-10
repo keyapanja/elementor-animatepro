@@ -1,9 +1,17 @@
 /* =========================================================================
  * Advanced Tooltip (extension)
+ *
  * The tooltip node is appended INSIDE the element wrapper by
  * advanced-tooltip.js, so it is positioned relative to the host and inherits
  * the {{WRAPPER}}-scoped control CSS. Show/hide is pure CSS on :hover; the JS
  * only handles the optional click trigger via .is-open.
+ *
+ * The transform is COMPOSED ONCE from variables rather than written per
+ * position. Placement supplies the centring offset (--cx/--cy) and the
+ * shift direction (--sx/--sy); the animation supplies what the hidden state
+ * looks like (--ax/--ay/--s/--rx/--ry); and the visible state resets those to
+ * rest in a SINGLE rule. Without this, 4 positions x 5 animations would need
+ * twenty hand-written pairs.
  * ====================================================================== */
 
 .eap-tooltip-host {
@@ -15,6 +23,22 @@
 	--eap-tt-offset: 12px;
 	--eap-tt-width: 220px;
 	--eap-tt-arrow: 6px;
+	--eap-tt-dur: 200ms;
+	--eap-tt-out: 0ms;
+
+	/* Centring for the chosen placement. */
+	--eap-tt-cx: 0px;
+	--eap-tt-cy: 0px;
+	/* Direction the tooltip shifts from, pointing back toward the host. */
+	--eap-tt-sx: 0px;
+	--eap-tt-sy: 0px;
+	/* The hidden state — what the animation actually applies. */
+	--eap-tt-ax: var(--eap-tt-sx);
+	--eap-tt-ay: var(--eap-tt-sy);
+	--eap-tt-s: 1;
+	--eap-tt-rx: 0deg;
+	--eap-tt-ry: 0deg;
+
 	position: absolute;
 	z-index: 99;
 	width: max-content;
@@ -29,7 +53,22 @@
 	opacity: 0;
 	visibility: hidden;
 	pointer-events: none;
-	transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+	transform:
+		perspective(700px)
+		translate(var(--eap-tt-cx), var(--eap-tt-cy))
+		translate(var(--eap-tt-ax), var(--eap-tt-ay))
+		scale(var(--eap-tt-s))
+		rotateX(var(--eap-tt-rx))
+		rotateY(var(--eap-tt-ry));
+	/*
+	 * The delay is on the BASE rule, not the visible one, so it applies only on
+	 * the way out — which is exactly what "Delay Out" means. The visible rule
+	 * zeroes it so showing stays instant.
+	 */
+	transition:
+		opacity var(--eap-tt-dur) ease var(--eap-tt-out),
+		transform var(--eap-tt-dur) ease var(--eap-tt-out),
+		visibility var(--eap-tt-dur) linear var(--eap-tt-out);
 }
 
 .eap-tooltip__image {
@@ -56,64 +95,116 @@
 	height: 1.5em;
 }
 
-/* --- Placement (the small offset is what animates in) ------------------- */
+/* --- Placement ----------------------------------------------------------
+ * Each placement sets where the bubble sits, how it is centred, and the
+ * direction that points back toward the host (used by the shift animations).
+ * transform-origin is set here too, because the Perspective animation has to
+ * hinge on the edge nearest the host.
+ * -------------------------------------------------------------------- */
 
 .eap-tooltip--top {
 	bottom: 100%;
 	left: 50%;
 	margin-bottom: var(--eap-tt-offset);
-	transform: translate(-50%, 6px);
+	--eap-tt-cx: -50%;
+	--eap-tt-sy: 8px;
+	transform-origin: bottom center;
 }
 
 .eap-tooltip--bottom {
 	top: 100%;
 	left: 50%;
 	margin-top: var(--eap-tt-offset);
-	transform: translate(-50%, -6px);
+	--eap-tt-cx: -50%;
+	--eap-tt-sy: -8px;
+	transform-origin: top center;
 }
 
 .eap-tooltip--left {
 	top: 50%;
 	right: 100%;
 	margin-right: var(--eap-tt-offset);
-	transform: translate(6px, -50%);
+	--eap-tt-cy: -50%;
+	--eap-tt-sx: 8px;
+	transform-origin: center right;
 }
 
 .eap-tooltip--right {
 	top: 50%;
 	left: 100%;
 	margin-left: var(--eap-tt-offset);
-	transform: translate(-6px, -50%);
+	--eap-tt-cy: -50%;
+	--eap-tt-sx: -8px;
+	transform-origin: center left;
+}
+
+/* --- Animations ---------------------------------------------------------
+ * Each one only has to describe the HIDDEN state.
+ *
+ * `shift-away` deliberately has no rule: the base --ax/--ay already default to
+ * the placement's shift, which starts the bubble nearer the host and moves it
+ * away as it appears. That is the default animation.
+ * -------------------------------------------------------------------- */
+
+.eap-tooltip--shift-toward {
+	--eap-tt-ax: calc(var(--eap-tt-sx) * -1);
+	--eap-tt-ay: calc(var(--eap-tt-sy) * -1);
+}
+
+.eap-tooltip--scale {
+	--eap-tt-ax: 0px;
+	--eap-tt-ay: 0px;
+	--eap-tt-s: 0.6;
+}
+
+.eap-tooltip--fade {
+	--eap-tt-ax: 0px;
+	--eap-tt-ay: 0px;
+}
+
+.eap-tooltip--perspective {
+	--eap-tt-ax: 0px;
+	--eap-tt-ay: 0px;
+}
+
+.eap-tooltip--perspective.eap-tooltip--top {
+	--eap-tt-rx: -50deg;
+}
+
+.eap-tooltip--perspective.eap-tooltip--bottom {
+	--eap-tt-rx: 50deg;
+}
+
+.eap-tooltip--perspective.eap-tooltip--left {
+	--eap-tt-ry: 50deg;
+}
+
+.eap-tooltip--perspective.eap-tooltip--right {
+	--eap-tt-ry: -50deg;
 }
 
 /* --- Visible state ------------------------------------------------------
- * Hover only applies when the host isn't in click mode, so a click tooltip
- * doesn't also open on hover.
+ * One rule for every position/animation pair: it just returns the variables
+ * to rest. Hover only applies when the host isn't in click mode, so a click
+ * tooltip doesn't also open on hover.
+ *
+ * MUST STAY BELOW the animation block. `.eap-tooltip.is-open` (0,2,0) ties
+ * with `.eap-tooltip--perspective.eap-tooltip--top` (0,2,0), so source order
+ * is what decides it — moving this above them would break Perspective on a
+ * click-triggered tooltip.
  * -------------------------------------------------------------------- */
 
 .eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip,
 .eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip,
 .eap-tooltip.is-open {
+	--eap-tt-ax: 0px;
+	--eap-tt-ay: 0px;
+	--eap-tt-s: 1;
+	--eap-tt-rx: 0deg;
+	--eap-tt-ry: 0deg;
 	opacity: 1;
 	visibility: visible;
-}
-
-.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--top,
-.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--top,
-.eap-tooltip--top.is-open,
-.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--bottom,
-.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--bottom,
-.eap-tooltip--bottom.is-open {
-	transform: translate(-50%, 0);
-}
-
-.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--left,
-.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--left,
-.eap-tooltip--left.is-open,
-.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--right,
-.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--right,
-.eap-tooltip--right.is-open {
-	transform: translate(0, -50%);
+	transition-delay: 0ms;
 }
 
 /* --- Arrow (inherits the background var) -------------------------------- */
@@ -121,35 +212,83 @@
 .eap-tooltip--arrow::after {
 	content: "";
 	position: absolute;
+}
+
+/* Sharp: the classic border triangle. */
+.eap-tooltip--arrow-sharp::after {
 	border: var(--eap-tt-arrow) solid transparent;
 }
 
-.eap-tooltip--top.eap-tooltip--arrow::after {
+.eap-tooltip--top.eap-tooltip--arrow-sharp::after {
 	top: 100%;
 	left: 50%;
 	margin-left: calc(var(--eap-tt-arrow) * -1);
 	border-top-color: var(--eap-tt-bg);
 }
 
-.eap-tooltip--bottom.eap-tooltip--arrow::after {
+.eap-tooltip--bottom.eap-tooltip--arrow-sharp::after {
 	bottom: 100%;
 	left: 50%;
 	margin-left: calc(var(--eap-tt-arrow) * -1);
 	border-bottom-color: var(--eap-tt-bg);
 }
 
-.eap-tooltip--left.eap-tooltip--arrow::after {
+.eap-tooltip--left.eap-tooltip--arrow-sharp::after {
 	top: 50%;
 	left: 100%;
 	margin-top: calc(var(--eap-tt-arrow) * -1);
 	border-left-color: var(--eap-tt-bg);
 }
 
-.eap-tooltip--right.eap-tooltip--arrow::after {
+.eap-tooltip--right.eap-tooltip--arrow-sharp::after {
 	top: 50%;
 	right: 100%;
 	margin-top: calc(var(--eap-tt-arrow) * -1);
 	border-right-color: var(--eap-tt-bg);
+}
+
+/*
+ * Round: a square rotated 45deg with ONE corner softened — the rounded corner
+ * becomes the tip. A border triangle cannot be rounded at all (it is drawn from
+ * borders, not a box), so this is the shape that can carry a radius.
+ */
+.eap-tooltip--arrow-round::after {
+	width: calc(var(--eap-tt-arrow) * 1.7);
+	height: calc(var(--eap-tt-arrow) * 1.7);
+	background: var(--eap-tt-bg);
+	transform: rotate(45deg);
+}
+
+.eap-tooltip--top.eap-tooltip--arrow-round::after {
+	top: 100%;
+	left: 50%;
+	margin-top: calc(var(--eap-tt-arrow) * -0.85);
+	margin-left: calc(var(--eap-tt-arrow) * -0.85);
+	border-radius: 0 0 calc(var(--eap-tt-arrow) * 0.5) 0;
+}
+
+.eap-tooltip--bottom.eap-tooltip--arrow-round::after {
+	bottom: 100%;
+	left: 50%;
+	margin-bottom: calc(var(--eap-tt-arrow) * -0.85);
+	margin-left: calc(var(--eap-tt-arrow) * -0.85);
+	border-radius: calc(var(--eap-tt-arrow) * 0.5) 0 0 0;
+}
+
+.eap-tooltip--left.eap-tooltip--arrow-round::after {
+	top: 50%;
+	left: 100%;
+	margin-top: calc(var(--eap-tt-arrow) * -0.85);
+	margin-left: calc(var(--eap-tt-arrow) * -0.85);
+	border-radius: 0 calc(var(--eap-tt-arrow) * 0.5) 0 0;
+}
+
+.eap-tooltip--right.eap-tooltip--arrow-round::after {
+	top: 50%;
+	right: 100%;
+	margin-top: calc(var(--eap-tt-arrow) * -0.85);
+	margin-right: calc(var(--eap-tt-arrow) * -0.85);
+	border-radius: 0 0 0 calc(var(--eap-tt-arrow) * 0.5);
 }
 
 /* A click tooltip is interactive, so it must accept pointer events. */
@@ -157,8 +296,20 @@
 	pointer-events: auto;
 }
 
+/*
+ * Reduced motion drops the travel but keeps the tooltip. The out-delay is kept
+ * too: it is a usability setting (time to reach a link inside the bubble), not
+ * decoration.
+ */
 @media (prefers-reduced-motion: reduce) {
 	.eap-tooltip {
-		transition: none;
+		--eap-tt-ax: 0px;
+		--eap-tt-ay: 0px;
+		--eap-tt-s: 1;
+		--eap-tt-rx: 0deg;
+		--eap-tt-ry: 0deg;
+		transition:
+			opacity var(--eap-tt-dur) ease var(--eap-tt-out),
+			visibility var(--eap-tt-dur) linear var(--eap-tt-out);
 	}
 }

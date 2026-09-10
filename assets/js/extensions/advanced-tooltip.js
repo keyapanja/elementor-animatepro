@@ -3,6 +3,7 @@
 	const SELECTOR = '[data-eap-tooltip]';
 
 	const POSITIONS = ['top', 'bottom', 'left', 'right'];
+	const ANIMATIONS = ['shift-away', 'shift-toward', 'scale', 'fade', 'perspective'];
 
 	const build = (host) => {
 		if (host.dataset.eapTtBound === '1') {
@@ -30,11 +31,20 @@
 		const position = POSITIONS.indexOf(rawPosition) !== -1 ? rawPosition : 'top';
 		const trigger = host.getAttribute('data-eap-tt-trigger') === 'click' ? 'click' : 'hover';
 		const arrow = host.getAttribute('data-eap-tt-arrow') === '1';
+		const arrowType = host.getAttribute('data-eap-tt-arrow-type') === 'round' ? 'round' : 'sharp';
+
+		const rawAnim = host.getAttribute('data-eap-tt-anim') || 'shift-away';
+		const anim = ANIMATIONS.indexOf(rawAnim) !== -1 ? rawAnim : 'shift-away';
 
 		host.classList.add('eap-tooltip-host');
 
+		const classes = ['eap-tooltip', 'eap-tooltip--' + position, 'eap-tooltip--' + anim];
+		if (arrow) {
+			classes.push('eap-tooltip--arrow', 'eap-tooltip--arrow-' + arrowType);
+		}
+
 		const tip = document.createElement('span');
-		tip.className = 'eap-tooltip eap-tooltip--' + position + (arrow ? ' eap-tooltip--arrow' : '');
+		tip.className = classes.join(' ');
 		tip.setAttribute('role', 'tooltip');
 		tip.innerHTML = content;
 		host.appendChild(tip);

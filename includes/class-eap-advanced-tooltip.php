@@ -261,6 +261,65 @@ class EAP_Advanced_Tooltip {
 			)
 		);
 
+		$element->add_control(
+			'eap_tooltip_arrow_type',
+			array(
+				'label'     => __( 'Arrow Type', 'elementor-animatepro' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'sharp',
+				'options'   => array(
+					'sharp' => __( 'Sharp', 'elementor-animatepro' ),
+					'round' => __( 'Round', 'elementor-animatepro' ),
+				),
+				'condition' => array(
+					'eap_tooltip_enable' => 'yes',
+					'eap_tooltip_arrow'  => 'yes',
+				),
+			)
+		);
+
+		$element->add_control(
+			'eap_tooltip_animation',
+			array(
+				'label'     => __( 'Animation', 'elementor-animatepro' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'shift-away',
+				'options'   => $this->get_animations(),
+				'condition' => array( 'eap_tooltip_enable' => 'yes' ),
+			)
+		);
+
+		$element->add_control(
+			'eap_tooltip_duration',
+			array(
+				'label'      => __( 'Duration', 'elementor-animatepro' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'ms' ),
+				'range'      => array( 'ms' => array( 'min' => 0, 'max' => 1200, 'step' => 10 ) ),
+				'default'    => array( 'size' => 200, 'unit' => 'ms' ),
+				'selectors'  => array(
+					'{{WRAPPER}} > .eap-tooltip' => '--eap-tt-dur: {{SIZE}}ms;',
+				),
+				'condition'  => array( 'eap_tooltip_enable' => 'yes' ),
+			)
+		);
+
+		$element->add_control(
+			'eap_tooltip_delay_out',
+			array(
+				'label'       => __( 'Delay Out', 'elementor-animatepro' ),
+				'type'        => Controls_Manager::SLIDER,
+				'size_units'  => array( 'ms' ),
+				'range'       => array( 'ms' => array( 'min' => 0, 'max' => 2000, 'step' => 10 ) ),
+				'default'     => array( 'size' => 0, 'unit' => 'ms' ),
+				'selectors'   => array(
+					'{{WRAPPER}} > .eap-tooltip' => '--eap-tt-out: {{SIZE}}ms;',
+				),
+				'description' => __( 'How long the tooltip lingers after the pointer leaves. Useful when the tooltip contains a link to reach.', 'elementor-animatepro' ),
+				'condition'   => array( 'eap_tooltip_enable' => 'yes' ),
+			)
+		);
+
 		$element->add_responsive_control(
 			'eap_tooltip_offset',
 			array(
@@ -439,15 +498,44 @@ class EAP_Advanced_Tooltip {
 			$position = 'top';
 		}
 
+		$animations = $this->get_animations();
+		$animation  = (string) ( $settings['eap_tooltip_animation'] ?? 'shift-away' );
+		if ( ! isset( $animations[ $animation ] ) ) {
+			$animation = 'shift-away';
+		}
+
+		$arrow      = 'yes' === ( $settings['eap_tooltip_arrow'] ?? 'yes' );
+		$arrow_type = 'round' === ( $settings['eap_tooltip_arrow_type'] ?? 'sharp' ) ? 'round' : 'sharp';
+
 		$element->add_render_attribute(
 			'_wrapper',
 			array(
-				'class'                => 'eap-tooltip-host',
-				'data-eap-tooltip'     => $content,
-				'data-eap-tt-position' => $position,
-				'data-eap-tt-trigger'  => 'click' === ( $settings['eap_tooltip_trigger'] ?? 'hover' ) ? 'click' : 'hover',
-				'data-eap-tt-arrow'    => 'yes' === ( $settings['eap_tooltip_arrow'] ?? 'yes' ) ? '1' : '0',
+				'class'                  => 'eap-tooltip-host',
+				'data-eap-tooltip'       => $content,
+				'data-eap-tt-position'   => $position,
+				'data-eap-tt-trigger'    => 'click' === ( $settings['eap_tooltip_trigger'] ?? 'hover' ) ? 'click' : 'hover',
+				'data-eap-tt-arrow'      => $arrow ? '1' : '0',
+				'data-eap-tt-arrow-type' => $arrow_type,
+				'data-eap-tt-anim'       => $animation,
 			)
+		);
+	}
+
+	/**
+	 * Tooltip entrance animations.
+	 *
+	 * The keys are the CSS modifier suffixes (`.eap-tooltip--shift-away`) and the
+	 * values the JS whitelists against, so all three stay in step from one list.
+	 *
+	 * @return array<string, string>
+	 */
+	protected function get_animations() {
+		return array(
+			'shift-away'   => __( 'Shift Away', 'elementor-animatepro' ),
+			'shift-toward' => __( 'Shift Toward', 'elementor-animatepro' ),
+			'scale'        => __( 'Scale', 'elementor-animatepro' ),
+			'fade'         => __( 'Fade', 'elementor-animatepro' ),
+			'perspective'  => __( 'Perspective', 'elementor-animatepro' ),
 		);
 	}
 

@@ -242,11 +242,21 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
 - **Advanced Tooltip** — adds an **Advanced Tooltip** section to the Advanced tab
   of **every element** — widgets, containers, sections and columns alike. The
   tooltip content can be **text, an icon, an image or a shortcode**; choose its
-  position (top / bottom / left / right), trigger (hover or click), arrow,
-  distance and max width, and style the background, text, typography, padding,
-  radius, border, shadow and z-index. The content is rendered server-side onto a
+  position (top / bottom / left / right), trigger (hover or click), and an
+  **animation** — Shift Away, Shift Toward, Scale, Fade or Perspective — with
+  **duration** and **delay out** (how long the bubble lingers, so a link inside
+  it stays reachable). The **arrow** can be **sharp or round**. Set distance and
+  max width, and style the background, text, typography, padding, radius,
+  border, shadow and z-index. The content is rendered server-side onto a
   `data-eap-tooltip` attribute and the tooltip node is built from it, so one
   mechanism works for every element type; showing/hiding is CSS.
+  The transform is composed from CSS variables — placement supplies the centring
+  and shift direction, the animation describes only the hidden state, and one
+  rule returns everything to rest — so 4 positions x 5 animations cost five short
+  rules instead of twenty pairs.
+  *Known limitation:* the tooltip is a child of the element, so an ancestor with
+  `overflow: hidden` will clip it. Moving it to a body-level portal would put it
+  outside Elementor's `{{WRAPPER}}`-scoped CSS, so it is not a one-line change.
 - **Conditional Display** — adds a **Conditional Display** section to the Advanced
   tab of **every element**, and shows or hides it per visitor. Choose **Show** or
   **Hide**, whether to match **all** conditions or **any**, then add as many
@@ -348,4 +358,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.63
+**Current version:** 1.20.64
