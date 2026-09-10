@@ -1,0 +1,160 @@
+/*
+ * Scroll Elements — a sticky section nav beside its own content.
+ */
+
+.eap-se {
+	--eap-se-nav-w: 280px;
+	--eap-se-gap: 48px;
+	--eap-se-item-gap: 12px;
+	--eap-se-radius: 12px;
+	--eap-se-sticky: 24px;
+	--eap-se-section-gap: 40px;
+	--eap-se-fg: inherit;
+	--eap-se-bg: transparent;
+	--eap-se-fg-active: #fff;
+	--eap-se-bg-active: #f4552b;
+
+	display: grid;
+	grid-template-columns: var(--eap-se-nav-w) minmax(0, 1fr);
+	gap: var(--eap-se-gap);
+	align-items: start;
+}
+
+/*
+ * Nav on the right swaps the column order with `order` rather than a reversed
+ * template, so the DOM keeps nav-then-content — which is the sensible reading
+ * and tab order either way.
+ */
+.eap-se--right {
+	grid-template-columns: minmax(0, 1fr) var(--eap-se-nav-w);
+}
+
+.eap-se--right .eap-se__nav {
+	order: 2;
+}
+
+.eap-se--right .eap-se__content {
+	order: 1;
+}
+
+.eap-se--top {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+/* --- Nav ---------------------------------------------------------------- */
+
+/*
+ * position: sticky needs the element to be able to move within its container.
+ * As a grid item with `align-items: start` on the parent it does not stretch,
+ * which is exactly what lets it stick.
+ */
+.eap-se--sticky .eap-se__nav {
+	position: sticky;
+	top: var(--eap-se-sticky);
+}
+
+.eap-se__list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--eap-se-item-gap);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.eap-se--top .eap-se__list {
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.eap-se__link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 16px 22px;
+	color: var(--eap-se-fg);
+	background: var(--eap-se-bg);
+	border: 1px solid currentColor;
+	border-radius: var(--eap-se-radius);
+	font-weight: 600;
+	text-decoration: none;
+	transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+	box-sizing: border-box;
+}
+
+.eap-se__item.is-active .eap-se__link {
+	color: var(--eap-se-fg-active);
+	background: var(--eap-se-bg-active);
+	border-color: var(--eap-se-bg-active);
+}
+
+.eap-se__link:focus-visible {
+	outline: 2px solid var(--eap-se-bg-active);
+	outline-offset: 2px;
+}
+
+.eap-se__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+}
+
+.eap-se__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-se__label {
+	min-width: 0;
+}
+
+/* --- Content ------------------------------------------------------------ */
+
+.eap-se__content {
+	display: flex;
+	flex-direction: column;
+	gap: var(--eap-se-section-gap);
+	min-width: 0;
+}
+
+/*
+ * scroll-margin-top is what makes a fragment link (or the browser restoring a
+ * #hash on load) stop clear of a fixed header — the JS applies the same offset
+ * for its own smooth scrolling, but this covers the no-JS and hard-reload paths.
+ */
+.eap-se__section {
+	scroll-margin-top: var(--eap-se-scroll-offset, 90px);
+}
+
+.eap-se__title {
+	margin: 0 0 12px;
+	line-height: 1.25;
+}
+
+.eap-se__body > :first-child {
+	margin-top: 0;
+}
+
+.eap-se__body > :last-child {
+	margin-bottom: 0;
+}
+
+/* --- Editor empty state ------------------------------------------------- */
+
+.eap-se--empty {
+	display: block;
+	padding: 22px;
+	text-align: center;
+	color: #6b7280;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-se__link {
+		transition: none;
+	}
+}

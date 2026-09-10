@@ -396,6 +396,13 @@ class EAP_Admin {
 			update_option( 'eap_widget_migrations', $done, false );
 		}
 
+		if ( empty( $done['scroll-elements-built'] ) ) {
+			$states['scroll-elements'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['scroll-elements-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
 		if ( empty( $done['posts-timeline-built'] ) ) {
 			$states['posts-timeline'] = 1;
 			update_option( self::WIDGETS_OPTION, $states, false );
@@ -1252,6 +1259,7 @@ class EAP_Admin {
 			'portfolio',
 			'toggle-switch',
 			'advanced-pricing-table',
+			'scroll-elements',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',

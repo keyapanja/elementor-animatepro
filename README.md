@@ -88,6 +88,20 @@ it**.
 - **Animated Text**, **Advanced Animated Text**, **Advanced Button**,
   **Icon Box**, **Social Icons**, **Progress Bar**, **Timeline**,
   **Services Tabs**, **One Page Nav**, **Team**, **Parallax Sections**.
+- **Scroll Elements** — a sticky section nav beside its own scrolling content,
+  with the current section highlighted as you read and smooth scrolling when a
+  nav item is clicked. Write the sections in the widget (title, optional short
+  nav label, icon, rich content); the nav, the anchors and the wiring are
+  generated. Nav on the **left, right or above**, sticky with a configurable
+  offset, and a scroll offset so a fixed header never covers the heading landed
+  on. Stacks to one column below a chosen width.
+  *Where this differs from One Page Nav:* that widget is a **nav only** — you
+  build the sections yourself, give each a CSS selector, and type those
+  selectors in, so it points at content it does not own. This one owns the
+  content, so the nav can never point at a section that was renamed or deleted
+  and there is nothing to keep in sync. Use One Page Nav for sections built
+  elsewhere on the page; use this for a self-contained document like terms, a
+  privacy policy or a spec.
 - **Social Share** — an inline row and/or a floating bar; share to Facebook, X,
   LinkedIn, WhatsApp, Telegram, Pinterest, Reddit, Tumblr, VK and email, plus
   **copy-link**, **print** and **native** (Web Share API) actions. Official
@@ -472,4 +486,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.73
+**Current version:** 1.20.74
