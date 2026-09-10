@@ -28,10 +28,12 @@ class EAP_Widget_Image_Box_Slider extends EAP_Widget_Base {
 	}
 
 	public function get_style_depends() {
-		return array(
-			'eap-core',
-			'eap-image-box',
-			'eap-image-box-slider',
+		return $this->eap_with_swiper_style(
+			array(
+				'eap-core',
+				'eap-image-box',
+				'eap-image-box-slider',
+			)
 		);
 	}
 

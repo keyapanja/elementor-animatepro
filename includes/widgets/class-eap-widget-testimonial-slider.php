@@ -26,10 +26,12 @@ class EAP_Widget_Testimonial_Slider extends EAP_Widget_Testimonial {
 	}
 
 	public function get_style_depends() {
-		return array(
-			'eap-core',
-			'eap-testimonial',
-			'eap-testimonial-slider',
+		return $this->eap_with_swiper_style(
+			array(
+				'eap-core',
+				'eap-testimonial',
+				'eap-testimonial-slider',
+			)
 		);
 	}
 

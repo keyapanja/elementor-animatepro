@@ -32,7 +32,7 @@ class EAP_Widget_Advanced_Slider extends EAP_Widget_Base {
 	}
 
 	public function get_style_depends() {
-		return $this->get_widget_style_depends( 'advanced-slider' );
+		return $this->eap_with_swiper_style( $this->get_widget_style_depends( 'advanced-slider' ) );
 	}
 
 	public function get_script_depends() {

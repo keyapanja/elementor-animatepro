@@ -43,7 +43,7 @@ class EAP_Widget_Breaking_News_Slider extends EAP_Widget_Base {
 	}
 
 	public function get_style_depends() {
-		return array( 'eap-core', 'eap-breaking-news-slider', 'elementor-icons-fa-solid' );
+		return $this->eap_with_swiper_style( array( 'eap-core', 'eap-breaking-news-slider', 'elementor-icons-fa-solid' ) );
 	}
 
 	public function get_script_depends() {

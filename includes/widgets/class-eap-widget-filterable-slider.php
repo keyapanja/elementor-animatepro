@@ -47,7 +47,7 @@ class EAP_Widget_Filterable_Slider extends EAP_Widget_Base {
 	}
 
 	public function get_style_depends() {
-		return array( 'eap-core', 'eap-posts', 'eap-filterable-slider' );
+		return $this->eap_with_swiper_style( array( 'eap-core', 'eap-posts', 'eap-filterable-slider' ) );
 	}
 
 	public function get_script_depends() {

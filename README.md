@@ -283,7 +283,14 @@ registered with Elementor, so they add no overhead.
 - Assets are cache-busted by the `EAP_VERSION` constant — bump it (plugin header
   **and** the `define()` in `elementor-animatepro.php`) whenever you change
   CSS/JS.
+- **Slider widgets must declare Elementor's Swiper stylesheet.** Elementor only
+  *registers* `e-swiper`; it is enqueued when a widget asks for it via
+  `get_style_depends()`. Wrap a slider's dependencies in
+  `eap_with_swiper_style()` (on `EAP_Widget_Base`) — without it the slider gets
+  no Swiper CSS on a page that contains no Elementor carousel, and every slide
+  stacks full-width. The `swiper` *script* is added separately, guarded by
+  `wp_script_is( 'swiper', 'registered' )`.
 
 ---
 
-**Current version:** 1.20.58
+**Current version:** 1.20.59

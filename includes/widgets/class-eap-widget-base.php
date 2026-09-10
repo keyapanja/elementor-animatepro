@@ -71,6 +71,34 @@ abstract class EAP_Widget_Base extends Widget_Base {
 	}
 
 	/**
+	 * Append Elementor's Swiper stylesheet to a widget's style dependencies.
+	 *
+	 * Elementor REGISTERS `e-swiper` but never enqueues it (includes/frontend.php)
+	 * — its own carousels pull it in through get_style_depends(), e.g. Image
+	 * Carousel returns [ 'e-swiper', 'widget-image-carousel' ]. A slider that
+	 * doesn't declare it therefore gets NO Swiper CSS on a page that happens to
+	 * contain no Elementor carousel, and every slide stacks full-width.
+	 *
+	 * `e-swiper` itself depends on the `swiper` library handle, so asking for it
+	 * pulls both. The older `swiper` handle is the fallback for Elementor builds
+	 * that predate `e-swiper`.
+	 *
+	 * @param string[] $deps Existing style handles.
+	 * @return string[]
+	 */
+	protected function eap_with_swiper_style( $deps ) {
+		$deps = (array) $deps;
+
+		if ( wp_style_is( 'e-swiper', 'registered' ) ) {
+			$deps[] = 'e-swiper';
+		} elseif ( wp_style_is( 'swiper', 'registered' ) ) {
+			$deps[] = 'swiper';
+		}
+
+		return array_values( array_unique( $deps ) );
+	}
+
+	/**
 	 * Whether Elementor is in editor edit-mode (the panel / canvas being edited).
 	 *
 	 * Dynamic widgets use this to render a sample/placeholder instead of the real
