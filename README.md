@@ -240,6 +240,14 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
   **Hover** state and a transition. Pure CSS: no extra stylesheet or script, and
   both the `-webkit-` and unprefixed properties are emitted for Safari. The
   target widget list is filterable via `eap_image_masking_widgets`.
+- **Advanced Tooltip** — adds an **Advanced Tooltip** section to the Advanced tab
+  of **every element** — widgets, containers, sections and columns alike. The
+  tooltip content can be **text, an icon, an image or a shortcode**; choose its
+  position (top / bottom / left / right), trigger (hover or click), arrow,
+  distance and max width, and style the background, text, typography, padding,
+  radius, border, shadow and z-index. The content is rendered server-side onto a
+  `data-eap-tooltip` attribute and the tooltip node is built from it, so one
+  mechanism works for every element type; showing/hiding is CSS.
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
@@ -262,4 +270,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.55
+**Current version:** 1.20.56

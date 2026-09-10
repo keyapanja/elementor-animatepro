@@ -1,0 +1,153 @@
+/* =========================================================================
+ * Advanced Tooltip (extension)
+ * The tooltip node is appended INSIDE the element wrapper by
+ * advanced-tooltip.js, so it is positioned relative to the host and inherits
+ * the {{WRAPPER}}-scoped control CSS. Show/hide is pure CSS on :hover; the JS
+ * only handles the optional click trigger via .is-open.
+ * ====================================================================== */
+
+.eap-tooltip-host {
+	position: relative;
+}
+
+.eap-tooltip {
+	--eap-tt-bg: #111827;
+	--eap-tt-offset: 12px;
+	--eap-tt-width: 220px;
+	--eap-tt-arrow: 6px;
+	position: absolute;
+	z-index: 99;
+	width: max-content;
+	max-width: var(--eap-tt-width);
+	padding: 8px 12px;
+	font-size: 13px;
+	line-height: 1.5;
+	text-align: center;
+	color: #fff;
+	background: var(--eap-tt-bg);
+	border-radius: 6px;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+
+.eap-tooltip__image {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border-radius: inherit;
+}
+
+.eap-tooltip__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* --- Placement (the small offset is what animates in) ------------------- */
+
+.eap-tooltip--top {
+	bottom: 100%;
+	left: 50%;
+	margin-bottom: var(--eap-tt-offset);
+	transform: translate(-50%, 6px);
+}
+
+.eap-tooltip--bottom {
+	top: 100%;
+	left: 50%;
+	margin-top: var(--eap-tt-offset);
+	transform: translate(-50%, -6px);
+}
+
+.eap-tooltip--left {
+	top: 50%;
+	right: 100%;
+	margin-right: var(--eap-tt-offset);
+	transform: translate(6px, -50%);
+}
+
+.eap-tooltip--right {
+	top: 50%;
+	left: 100%;
+	margin-left: var(--eap-tt-offset);
+	transform: translate(-6px, -50%);
+}
+
+/* --- Visible state ------------------------------------------------------
+ * Hover only applies when the host isn't in click mode, so a click tooltip
+ * doesn't also open on hover.
+ * -------------------------------------------------------------------- */
+
+.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip,
+.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip,
+.eap-tooltip.is-open {
+	opacity: 1;
+	visibility: visible;
+}
+
+.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--top,
+.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--top,
+.eap-tooltip--top.is-open,
+.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--bottom,
+.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--bottom,
+.eap-tooltip--bottom.is-open {
+	transform: translate(-50%, 0);
+}
+
+.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--left,
+.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--left,
+.eap-tooltip--left.is-open,
+.eap-tooltip-host:not(.eap-tooltip-host--click):hover > .eap-tooltip--right,
+.eap-tooltip-host:not(.eap-tooltip-host--click):focus-within > .eap-tooltip--right,
+.eap-tooltip--right.is-open {
+	transform: translate(0, -50%);
+}
+
+/* --- Arrow (inherits the background var) -------------------------------- */
+
+.eap-tooltip--arrow::after {
+	content: "";
+	position: absolute;
+	border: var(--eap-tt-arrow) solid transparent;
+}
+
+.eap-tooltip--top.eap-tooltip--arrow::after {
+	top: 100%;
+	left: 50%;
+	margin-left: calc(var(--eap-tt-arrow) * -1);
+	border-top-color: var(--eap-tt-bg);
+}
+
+.eap-tooltip--bottom.eap-tooltip--arrow::after {
+	bottom: 100%;
+	left: 50%;
+	margin-left: calc(var(--eap-tt-arrow) * -1);
+	border-bottom-color: var(--eap-tt-bg);
+}
+
+.eap-tooltip--left.eap-tooltip--arrow::after {
+	top: 50%;
+	left: 100%;
+	margin-top: calc(var(--eap-tt-arrow) * -1);
+	border-left-color: var(--eap-tt-bg);
+}
+
+.eap-tooltip--right.eap-tooltip--arrow::after {
+	top: 50%;
+	right: 100%;
+	margin-top: calc(var(--eap-tt-arrow) * -1);
+	border-right-color: var(--eap-tt-bg);
+}
+
+/* A click tooltip is interactive, so it must accept pointer events. */
+.eap-tooltip-host--click > .eap-tooltip.is-open {
+	pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-tooltip {
+		transition: none;
+	}
+}

@@ -1338,6 +1338,12 @@ class EAP_Admin {
 				'description' => __( 'Mask images with a clip-path shape or your own mask image, with a separate hover state.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-art',
 			),
+			array(
+				'key'         => 'advanced-tooltip',
+				'label'       => __( 'Advanced Tooltip', 'elementor-animatepro' ),
+				'description' => __( 'Add a text, icon, image or shortcode tooltip to any widget or container.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-format-status',
+			),
 		);
 	}
 }
