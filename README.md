@@ -193,6 +193,20 @@ blank on the canvas.
   captures them there instead of parsing the composed string. In the editor,
   where there is no archive context, it previews against a real category rather
   than rendering empty. CSS only, no JavaScript.
+- **Current Date** — today's date and/or the current time. Presets for date and
+  time (previewed with live values in the dropdown), or any **PHP date format**,
+  in the **site's timezone or any IANA zone** — so a contact page can show
+  another office's local time. Optional before/after text, icon and HTML tag.
+  It refreshes **in the browser**, because a server-rendered "current date" is
+  wrong the moment the page is cached — on a fully-cached site the visitor can
+  be shown yesterday. PHP renders the value (correct without JavaScript, and it
+  is what the `datetime` attribute carries) and the script re-renders on load,
+  then ticks at an interval derived from the format: every second only when the
+  format actually shows seconds, otherwise slowly enough to just catch midnight.
+  The script formats with the *same PHP format string*, so the two renderers
+  cannot drift; timezone-correct fields come from `Intl.DateTimeFormat` rather
+  than date arithmetic, which is what makes an arbitrary zone and its DST right
+  without shipping a timezone database.
 - **Posts Timeline** — the Posts loop laid down a vertical timeline: a line with
   dated nodes and **year dividers**, in an **Alternating** (centered zig-zag) or
   **One-sided** (left rail) arrangement (alternating collapses to one-sided on
@@ -413,4 +427,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.69
+**Current version:** 1.20.70

@@ -1,0 +1,48 @@
+/*
+ * Current Date. Layout only — everything visual is control-driven.
+ */
+
+.eap-current-date-wrap {
+	--eap-cd-gap: 8px;
+	--eap-cd-icon: 1em;
+}
+
+.eap-current-date {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--eap-cd-gap);
+	margin: 0;
+}
+
+.eap-current-date__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--eap-cd-icon);
+	line-height: 1;
+	/*
+	 * The row aligns on the text baseline, which an icon has none of — without
+	 * this the glyph rides high against the date beside it.
+	 */
+	align-self: center;
+}
+
+.eap-current-date__icon svg {
+	width: var(--eap-cd-icon);
+	height: var(--eap-cd-icon);
+	fill: currentColor;
+}
+
+.eap-current-date__value {
+	/*
+	 * Tabular figures stop the row jittering as digits change — a clock showing
+	 * seconds visibly twitches in a proportional face as 1s and 8s swap.
+	 */
+	font-variant-numeric: tabular-nums;
+}
+
+.eap-current-date__prefix,
+.eap-current-date__suffix {
+	opacity: 0.8;
+}
