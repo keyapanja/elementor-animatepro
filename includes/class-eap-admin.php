@@ -375,6 +375,13 @@ class EAP_Admin {
 			update_option( 'eap_widget_migrations', $done, false );
 		}
 
+		if ( empty( $done['portfolio-built'] ) ) {
+			$states['portfolio'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['portfolio-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
 		if ( empty( $done['posts-timeline-built'] ) ) {
 			$states['posts-timeline'] = 1;
 			update_option( self::WIDGETS_OPTION, $states, false );
@@ -1228,6 +1235,7 @@ class EAP_Admin {
 			'featured-posts',
 			'archive-title',
 			'current-date',
+			'portfolio',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
@@ -1364,6 +1372,12 @@ class EAP_Admin {
 				'label'       => __( 'Video Story Post Type', 'elementor-animatepro' ),
 				'description' => __( 'Register a Video Story post type (title, video, poster) the Video Story widget can fetch.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-video-alt3',
+			),
+			array(
+				'key'         => 'portfolio-cpt',
+				'label'       => __( 'Portfolio Post Type', 'elementor-animatepro' ),
+				'description' => __( 'Register a Portfolio post type with its own Project Categories and client / URL / date fields, for the Portfolio widget.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-portfolio',
 			),
 			array(
 				'key'         => 'image-masking',

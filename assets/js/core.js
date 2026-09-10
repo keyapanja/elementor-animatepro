@@ -253,6 +253,133 @@
 		window.addEventListener('elementor/frontend/init', attachHook, { once: true });
 	};
 
+	/*
+	 * Shared FLIP filter.
+	 *
+	 * Hides the items that no longer match and animates the survivors into their
+	 * new positions: measure where they are, change the DOM, measure again,
+	 * transform each back to where it was, then release it. The browser then
+	 * animates one transform per item rather than being asked to transition
+	 * top/left, which it cannot do cheaply.
+	 *
+	 * Used by Filterable Posts and Portfolio. Lives here rather than in either
+	 * widget because a second copy would drift — this logic has already needed
+	 * one subtle correctness fix (see the run-token note below).
+	 *
+	 * The caller supplies a `matches` predicate; everything about WHY an item
+	 * matches stays in the widget.
+	 */
+	const flipRuns = new WeakMap();
+
+	const flipFilter = (container, items, matches, options = {}) => {
+		const duration = typeof options.duration === 'number' ? options.duration : 400;
+		const onDone = typeof options.onDone === 'function' ? options.onDone : null;
+
+		/*
+		 * A cancelled run cannot tidy up after itself — it discovers it was
+		 * cancelled inside a timeout and returns — so each run clears the previous
+		 * one's residue before it starts. Leaving it to the cancelled run would
+		 * strand an item on `is-entering` (opacity 0) or on an inline transform
+		 * that outranks the class meant to reset it, and it would come back
+		 * invisible or offset.
+		 */
+		const clear = (item) => {
+			item.style.transition = '';
+			item.style.transform = '';
+			item.classList.remove('is-leaving', 'is-entering', 'is-entered');
+		};
+
+		const keep = items.filter(matches);
+
+		if (!duration || prefersReducedMotion()) {
+			items.forEach((item) => {
+				clear(item);
+				item.classList.toggle('is-hidden', !matches(item));
+			});
+			if (onDone) { onDone(keep); }
+			return;
+		}
+
+		const run = (flipRuns.get(container) || 0) + 1;
+		flipRuns.set(container, run);
+		container.classList.add('is-animating');
+
+		// FIRST: where the items ARE — measured before the reset below, because
+		// getBoundingClientRect() includes transforms, so an interrupted run hands
+		// over from where its items had got to rather than snapping back first.
+		const before = new Map();
+		items.forEach((item) => {
+			if (!item.classList.contains('is-hidden')) {
+				before.set(item, item.getBoundingClientRect());
+			}
+		});
+
+		items.forEach(clear);
+
+		const leaving = items.filter(
+			(item) => !item.classList.contains('is-hidden') && !matches(item)
+		);
+
+		// Fade the departing items out before they leave the flow, so the
+		// survivors do not jump while something is still painted over them.
+		leaving.forEach((item) => item.classList.add('is-leaving'));
+
+		window.setTimeout(() => {
+			if (flipRuns.get(container) !== run) { return; }
+
+			items.forEach((item) => {
+				const show = matches(item);
+				item.classList.remove('is-leaving');
+				item.classList.toggle('is-hidden', !show);
+			});
+
+			const after = new Map();
+			keep.forEach((item) => after.set(item, item.getBoundingClientRect()));
+
+			// INVERT: put each survivor back where it was.
+			keep.forEach((item) => {
+				const first = before.get(item);
+				const last = after.get(item);
+
+				if (!first) {
+					// Was not on screen before, so it fades in rather than moves.
+					item.classList.add('is-entering');
+					return;
+				}
+
+				const dx = first.left - last.left;
+				const dy = first.top - last.top;
+				if (!dx && !dy) { return; }
+
+				item.style.transition = 'none';
+				item.style.transform = `translate(${dx}px, ${dy}px)`;
+			});
+
+			// PLAY: next frame, drop the inverted transform and let it transition.
+			window.requestAnimationFrame(() => {
+				if (flipRuns.get(container) !== run) { return; }
+
+				keep.forEach((item) => {
+					if (item.classList.contains('is-entering')) {
+						item.classList.remove('is-entering');
+						item.classList.add('is-entered');
+						return;
+					}
+					if (!item.style.transform) { return; }
+					item.style.transition = `transform ${duration}ms ease`;
+					item.style.transform = '';
+				});
+
+				window.setTimeout(() => {
+					if (flipRuns.get(container) !== run) { return; }
+					items.forEach(clear);
+					container.classList.remove('is-animating');
+					if (onDone) { onDone(keep); }
+				}, duration + 40);
+			});
+		}, leaving.length ? duration : 0);
+	};
+
 	window.EAPFrontend = {
 		register(name, init) {
 			modules.set(name, init);
@@ -264,6 +391,7 @@
 		prefersReducedMotion,
 		decodeHtml,
 		getNodes,
+		flipFilter,
 		ensureFloatingLayers,
 		hasScrollTrigger,
 		ensureScrollTrigger,

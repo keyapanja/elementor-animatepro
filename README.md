@@ -207,6 +207,18 @@ blank on the canvas.
   cannot drift; timezone-correct fields come from `Intl.DateTimeFormat` rather
   than date arithmetic, which is what makes an arbitrary zone and its DST right
   without shipping a timezone database.
+- **Portfolio** — image-led project tiles for the bundled **Portfolio post type**
+  (or any post type), in a **Grid** or **Masonry** layout. Each tile is an image
+  with an overlay — title, categories, and optionally the **client** and
+  **completed date** from the project fields — revealed on hover or shown
+  always, plus action buttons for a **lightbox** and an outbound link. Tiles can
+  link to the project page, to the **Project URL** on the project, or nowhere.
+  **Filter tabs** are derived from the categories the loaded projects actually
+  carry, so a tab can never open onto an empty grid and the counts are exact.
+  Defaults to **manual ordering** (the Order field), since portfolios are curated
+  more often than chronological. The filter reflow is
+  `EAPFrontend.flipFilter()` in `core.js`, shared with Filterable Posts rather
+  than reimplemented.
 - **Posts Timeline** — the Posts loop laid down a vertical timeline: a line with
   dated nodes and **year dividers**, in an **Alternating** (centered zig-zag) or
   **One-sided** (left rail) arrangement (alternating collapses to one-sided on
@@ -386,6 +398,11 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
   links). Skipped entirely under `prefers-reduced-motion` and on touch pointers.
   *Note:* front end only by design — the editor canvas keeps the real pointer so
   the element stays draggable and resizable.
+- **Portfolio Post Type** — registers the bundled `eap_portfolio` post type used
+  by the Portfolio widget, with its **own Project Categories taxonomy** (kept
+  separate from the blog's categories, so project types don't leak into the
+  blog's archives) and a **Project Details** box holding the client, project URL
+  and completed date. Supports page attributes, so projects can be hand-ordered.
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
@@ -427,4 +444,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.70
+**Current version:** 1.20.71

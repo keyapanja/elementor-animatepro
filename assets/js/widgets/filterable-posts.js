@@ -82,126 +82,28 @@
 			return true;
 		};
 
-		/*
-		 * Everything a run applies to an item and must not outlive it.
-		 *
-		 * A cancelled run cannot tidy up after itself — it finds out it was
-		 * cancelled inside a timeout and returns — so instead each run clears the
-		 * previous one's residue before it starts. Leaving it to the cancelled run
-		 * would strand an item on `is-entering` (opacity 0) or on an inline
-		 * transform that outranks the class meant to reset it, and the card would
-		 * come back invisible or offset.
-		 */
-		const clearTransient = (item) => {
-			item.style.transition = '';
-			item.style.transform = '';
-			item.classList.remove('is-leaving', 'is-entering', 'is-entered');
-		};
-
 		const apply = () => {
-			const ms = speed();
 			const keep = items.filter(matches);
 
 			if (empty) {
 				empty.hidden = keep.length !== 0;
 			}
 
-			if (!ms) {
-				items.forEach((item) => {
-					clearTransient(item);
-					item.classList.toggle('is-hidden', !matches(item));
-				});
+			// The FLIP reflow itself lives in core.js so this widget and Portfolio
+			// share one implementation — it has already needed one subtle
+			// correctness fix, and a second copy would not have received it.
+			if (api && typeof api.flipFilter === 'function') {
+				api.flipFilter(root, items, matches, { duration: speed() });
 				return;
 			}
 
-			const run = ++running;
-			root.classList.add('is-animating');
-
-			// FIRST: where the cards currently ARE — measured before the reset
-			// below, because getBoundingClientRect() includes transforms. An
-			// interrupted run therefore hands over from where its cards had got
-			// to, instead of snapping them back first.
-			const before = new Map();
+			// No shared runtime (core.js absent): still filter, just without motion.
 			items.forEach((item) => {
-				if (!item.classList.contains('is-hidden')) {
-					before.set(item, item.getBoundingClientRect());
-				}
+				item.style.transition = '';
+				item.style.transform = '';
+				item.classList.remove('is-leaving', 'is-entering', 'is-entered');
+				item.classList.toggle('is-hidden', !matches(item));
 			});
-
-			items.forEach(clearTransient);
-
-			const leaving = items.filter(
-				(item) => !item.classList.contains('is-hidden') && !matches(item)
-			);
-
-			// Fade the departing cards out before they leave the flow, so the
-			// survivors don't jump while something is still visible on top of them.
-			leaving.forEach((item) => item.classList.add('is-leaving'));
-
-			window.setTimeout(() => {
-				if (run !== running) {
-					return;
-				}
-
-				items.forEach((item) => {
-					const show = matches(item);
-					item.classList.remove('is-leaving');
-					item.classList.toggle('is-hidden', !show);
-				});
-
-				// LAST: measure the new layout.
-				const after = new Map();
-				keep.forEach((item) => after.set(item, item.getBoundingClientRect()));
-
-				// INVERT: put each survivor back where it was.
-				keep.forEach((item) => {
-					const first = before.get(item);
-					const last = after.get(item);
-
-					if (!first) {
-						// Wasn't on screen before — this one fades in rather than moves.
-						item.classList.add('is-entering');
-						return;
-					}
-
-					const dx = first.left - last.left;
-					const dy = first.top - last.top;
-					if (!dx && !dy) {
-						return;
-					}
-
-					item.style.transition = 'none';
-					item.style.transform = `translate(${dx}px, ${dy}px)`;
-				});
-
-				// PLAY: next frame, drop the inverted transform and let it transition.
-				window.requestAnimationFrame(() => {
-					if (run !== running) {
-						return;
-					}
-
-					keep.forEach((item) => {
-						if (item.classList.contains('is-entering')) {
-							item.classList.remove('is-entering');
-							item.classList.add('is-entered');
-							return;
-						}
-						if (!item.style.transform) {
-							return;
-						}
-						item.style.transition = `transform ${ms}ms ease`;
-						item.style.transform = '';
-					});
-
-					window.setTimeout(() => {
-						if (run !== running) {
-							return;
-						}
-						items.forEach(clearTransient);
-						root.classList.remove('is-animating');
-					}, ms + 40);
-				});
-			}, leaving.length ? ms : 0);
 		};
 
 		buttons.forEach((button) => {
