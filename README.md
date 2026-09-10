@@ -178,6 +178,13 @@ blank on the canvas.
   between, speed, loop, centered slides, autoplay (delay + resume-after-
   interaction), styleable **arrows** and **pagination** (bullets / fraction /
   progress bar). Uses Elementor's bundled Swiper.
+- **Breaking News Slider** — a news **ticker**: a pinned label ("Breaking News",
+  with an optional icon and a **pulsing live dot**) beside headlines that
+  auto-advance one at a time, **horizontally** or **vertically**. Label can sit
+  left or right; each headline links to its post with an optional thumbnail,
+  category badge and date; long headlines ellipsise rather than breaking the bar.
+  Autoplay with delay + **pause on hover**, loop, speed, and optional arrows
+  (which rotate to up/down in vertical mode). Uses Elementor's bundled Swiper.
 
 ## Admin
 
@@ -198,4 +205,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.48
+**Current version:** 1.20.49

@@ -1,0 +1,242 @@
+/* =========================================================================
+ * Breaking News Slider
+ * A news ticker: [label][ticker][arrows] in one bar. The ticker is a Swiper
+ * showing one headline at a time, sliding horizontally or vertically.
+ * The bar height drives everything through --eap-bn-h (vertical Swiper REQUIRES
+ * an explicit container height, so it is set in both directions).
+ * ====================================================================== */
+
+.eap-breaking-news {
+	--eap-bn-h: 52px;
+}
+
+.eap-breaking-news__bar {
+	display: flex;
+	align-items: stretch;
+	min-height: var(--eap-bn-h);
+	background: #fff;
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+/* Explicit order so the label can swap sides without reversing the arrows. */
+.eap-breaking-news__label {
+	order: 1;
+}
+
+.eap-breaking-news__swiper {
+	order: 2;
+}
+
+.eap-breaking-news__nav {
+	order: 3;
+}
+
+.eap-breaking-news--label-right .eap-breaking-news__swiper {
+	order: 1;
+}
+
+.eap-breaking-news--label-right .eap-breaking-news__label {
+	order: 2;
+}
+
+/* --- Label -------------------------------------------------------------- */
+
+.eap-breaking-news__label {
+	--eap-bn-label-icon: 14px;
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 8px;
+	padding: 0 18px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	line-height: 1.2;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: #fff;
+	background: #e11d2a;
+}
+
+.eap-breaking-news__label-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-bn-label-icon);
+	height: var(--eap-bn-label-icon);
+	font-size: var(--eap-bn-label-icon);
+}
+
+.eap-breaking-news__label-icon svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.eap-breaking-news__pulse {
+	flex: 0 0 auto;
+	width: 8px;
+	height: 8px;
+	background: #fff;
+	border-radius: 50%;
+	animation: eap-bn-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes eap-bn-pulse {
+	0%,
+	100% {
+		opacity: 1;
+		transform: scale(1);
+	}
+	50% {
+		opacity: 0.35;
+		transform: scale(0.7);
+	}
+}
+
+/* --- Ticker ------------------------------------------------------------- */
+
+.eap-breaking-news__swiper {
+	flex: 1 1 auto;
+	min-width: 0;
+	height: var(--eap-bn-h);
+	overflow: hidden;
+}
+
+.eap-breaking-news__slide {
+	height: var(--eap-bn-h);
+}
+
+.eap-breaking-news__item {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	height: 100%;
+	padding: 0 18px;
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-breaking-news__thumb {
+	flex: 0 0 auto;
+	width: 34px;
+	height: 34px;
+	object-fit: cover;
+	border-radius: 4px;
+}
+
+.eap-breaking-news__badge {
+	flex: 0 0 auto;
+	padding: 3px 8px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	line-height: 1.3;
+	text-transform: uppercase;
+	color: #fff;
+	background: #4f46e5;
+	border-radius: 3px;
+}
+
+/* Headline takes the slack and ellipsises rather than wrapping the bar. */
+.eap-breaking-news__title {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	font-weight: 600;
+	color: #111827;
+	transition: color 0.2s ease;
+}
+
+.eap-breaking-news__date {
+	flex: 0 0 auto;
+	font-size: 13px;
+	white-space: nowrap;
+	color: #9ca3af;
+}
+
+/* --- Arrows -------------------------------------------------------------
+ * The two-class selector (0,2,0) beats a theme's `.elementor button` (0,1,1).
+ * -------------------------------------------------------------------- */
+
+.eap-breaking-news__nav {
+	--eap-bn-arrow: 30px;
+	display: flex;
+	flex: 0 0 auto;
+	align-items: center;
+	gap: 4px;
+	padding: 0 8px;
+}
+
+.eap-breaking-news .eap-breaking-news__arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-bn-arrow);
+	height: var(--eap-bn-arrow);
+	margin: 0;
+	padding: 0;
+	color: #374151;
+	background: #f3f4f6;
+	border: 0;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.eap-breaking-news .eap-breaking-news__arrow svg {
+	display: block;
+	width: 60%;
+	height: 60%;
+}
+
+/* Vertical ticker: turn the chevrons to point up / down. */
+.eap-breaking-news--vertical .eap-breaking-news__arrow svg {
+	transform: rotate(90deg);
+}
+
+.eap-breaking-news .eap-breaking-news__arrow.swiper-button-disabled {
+	opacity: 0.4;
+	pointer-events: none;
+}
+
+.eap-breaking-news .eap-breaking-news__arrow.swiper-button-lock {
+	display: none;
+}
+
+/* --- Small screens ------------------------------------------------------ */
+
+@media (max-width: 600px) {
+	.eap-breaking-news__date {
+		display: none;
+	}
+	.eap-breaking-news__label {
+		padding: 0 12px;
+		font-size: 12px;
+	}
+}
+
+/* --- Editor empty note -------------------------------------------------- */
+
+.eap-breaking-news--empty {
+	padding: 18px;
+	color: #6b7280;
+	font-style: italic;
+	text-align: center;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-breaking-news__pulse {
+		animation: none;
+	}
+	.eap-breaking-news__title,
+	.eap-breaking-news .eap-breaking-news__arrow {
+		transition: none;
+	}
+}
