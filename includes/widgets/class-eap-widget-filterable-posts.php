@@ -411,8 +411,15 @@ class EAP_Widget_Filterable_Posts extends EAP_Widget_Base {
 				'size_units' => array( 'px' ),
 				'range'      => array( 'px' => array( 'min' => 0, 'max' => 80 ) ),
 				'default'    => array( 'size' => 24, 'unit' => 'px' ),
+				/*
+				 * The gap has to be written as real properties, not only as a
+				 * variable: posts.css hardcodes `column-gap: 28px; row-gap: 28px`
+				 * on .eap-posts__grid and reads no gap variable at all, so a
+				 * variable alone would be silently ignored in Grid layout. The
+				 * variable is still set because the Masonry rules below consume it.
+				 */
 				'selectors'  => array(
-					'{{WRAPPER}}' => '--eap-posts-gap: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .eap-filterable-posts__grid' => 'column-gap: {{SIZE}}{{UNIT}}; row-gap: {{SIZE}}{{UNIT}}; --eap-posts-gap: {{SIZE}}{{UNIT}};',
 				),
 			)
 		);

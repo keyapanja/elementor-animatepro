@@ -369,4 +369,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.65
+**Current version:** 1.20.66

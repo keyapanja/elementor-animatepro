@@ -49,8 +49,26 @@
 			return Number.isFinite(raw) ? raw : 400;
 		};
 
-		// A card matches when it carries the chosen term (0 = All) AND its text
-		// contains the search string.
+		/*
+		 * Title + excerpt only — deliberately NOT the whole card.
+		 * Every card carries the same boilerplate (the "Read More" link, a
+		 * "3 Comments" meta item, a date), so searching item.textContent made
+		 * "read", "comment" and "may" each match all nine cards. Cached because
+		 * this is read for every card on every keystroke.
+		 */
+		const haystack = (item) => {
+			if (item.eapHaystack === undefined) {
+				const title = item.querySelector('.eap-posts__title');
+				const excerpt = item.querySelector('.eap-posts__excerpt');
+				item.eapHaystack = (
+					(title ? title.textContent : '') + ' ' + (excerpt ? excerpt.textContent : '')
+				).toLowerCase();
+			}
+			return item.eapHaystack;
+		};
+
+		// A card matches when it carries the chosen term (0 = All) AND its title
+		// or excerpt contains the search string.
 		const matches = (item) => {
 			if (term) {
 				const terms = (item.getAttribute('data-terms') || '').split(' ');
@@ -58,13 +76,26 @@
 					return false;
 				}
 			}
-			if (query) {
-				const title = item.textContent.toLowerCase();
-				if (title.indexOf(query) === -1) {
-					return false;
-				}
+			if (query && haystack(item).indexOf(query) === -1) {
+				return false;
 			}
 			return true;
+		};
+
+		/*
+		 * Everything a run applies to an item and must not outlive it.
+		 *
+		 * A cancelled run cannot tidy up after itself — it finds out it was
+		 * cancelled inside a timeout and returns — so instead each run clears the
+		 * previous one's residue before it starts. Leaving it to the cancelled run
+		 * would strand an item on `is-entering` (opacity 0) or on an inline
+		 * transform that outranks the class meant to reset it, and the card would
+		 * come back invisible or offset.
+		 */
+		const clearTransient = (item) => {
+			item.style.transition = '';
+			item.style.transform = '';
+			item.classList.remove('is-leaving', 'is-entering', 'is-entered');
 		};
 
 		const apply = () => {
@@ -77,7 +108,7 @@
 
 			if (!ms) {
 				items.forEach((item) => {
-					item.classList.remove('is-leaving', 'is-entering', 'is-entered');
+					clearTransient(item);
 					item.classList.toggle('is-hidden', !matches(item));
 				});
 				return;
@@ -86,13 +117,18 @@
 			const run = ++running;
 			root.classList.add('is-animating');
 
-			// FIRST: where the cards that are currently on screen sit now.
+			// FIRST: where the cards currently ARE — measured before the reset
+			// below, because getBoundingClientRect() includes transforms. An
+			// interrupted run therefore hands over from where its cards had got
+			// to, instead of snapping them back first.
 			const before = new Map();
 			items.forEach((item) => {
 				if (!item.classList.contains('is-hidden')) {
 					before.set(item, item.getBoundingClientRect());
 				}
 			});
+
+			items.forEach(clearTransient);
 
 			const leaving = items.filter(
 				(item) => !item.classList.contains('is-hidden') && !matches(item)
@@ -161,11 +197,7 @@
 						if (run !== running) {
 							return;
 						}
-						keep.forEach((item) => {
-							item.style.transition = '';
-							item.style.transform = '';
-							item.classList.remove('is-entered');
-						});
+						items.forEach(clearTransient);
 						root.classList.remove('is-animating');
 					}, ms + 40);
 				});
