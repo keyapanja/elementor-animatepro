@@ -94,6 +94,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-breaking-news-slider.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-category-slider.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -149,6 +150,7 @@ class EAP_Elementor {
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
 		$posts_slider_on           = ! array_key_exists( 'posts-slider', $widget_states ) || ! empty( $widget_states['posts-slider'] );
 		$breaking_news_on          = ! array_key_exists( 'breaking-news-slider', $widget_states ) || ! empty( $widget_states['breaking-news-slider'] );
+		$category_slider_on        = ! array_key_exists( 'category-slider', $widget_states ) || ! empty( $widget_states['category-slider'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -356,6 +358,10 @@ class EAP_Elementor {
 
 		if ( $breaking_news_on ) {
 			$widgets_manager->register( new EAP_Widget_Breaking_News_Slider() );
+		}
+
+		if ( $category_slider_on ) {
+			$widgets_manager->register( new EAP_Widget_Category_Slider() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

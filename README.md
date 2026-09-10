@@ -185,6 +185,15 @@ blank on the canvas.
   category badge and date; long headlines ellipsise rather than breaking the bar.
   Autoplay with delay + **pause on hover**, loop, speed, and optional arrows
   (which rotate to up/down in vertical mode). Uses Elementor's bundled Swiper.
+- **Category Slider** — a carousel of **taxonomy terms** (not posts): each slide
+  is a category card with an image, name and post count, linking to the term
+  archive. **Overlay** (text on the image) or **Card** (text below) layout. Since
+  core terms have no image field, the image resolves in order: a **term-meta key**
+  you name (an attachment ID or URL, so ACF / theme category-image fields work) →
+  the **newest post in that category's featured image** (zero setup) → a
+  widget-wide **Fallback Image** → a gradient placeholder. Full term query
+  (taxonomy, count, order, hide-empty, include/exclude) plus the usual slider
+  options, arrows and pagination.
 
 ## Admin
 
@@ -205,4 +214,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.49
+**Current version:** 1.20.50

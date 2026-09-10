@@ -381,6 +381,13 @@ class EAP_Admin {
 			$done['breaking-news-slider-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['category-slider-built'] ) ) {
+			$states['category-slider'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['category-slider-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1166,6 +1173,7 @@ class EAP_Admin {
 			'video-story',
 			'posts-slider',
 			'breaking-news-slider',
+			'category-slider',
 		);
 
 		return in_array( $widget_key, $built, true );

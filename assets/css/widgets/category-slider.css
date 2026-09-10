@@ -1,0 +1,259 @@
+/* =========================================================================
+ * Category Slider
+ * A Swiper carousel of taxonomy terms. Two layouts:
+ *   --overlay : image fills the card, name + count sit on a gradient scrim;
+ *   --card    : image on top, name + count on a solid card below.
+ * Overlay's structural overrides use !important to beat the higher-specificity
+ * {{WRAPPER}}-scoped image-height control CSS (same trick as posts.css).
+ * ====================================================================== */
+
+.eap-category-slider {
+	position: relative;
+}
+
+.eap-category-slider__swiper {
+	overflow: hidden;
+}
+
+.eap-category-slider .swiper-wrapper {
+	align-items: stretch;
+}
+
+.eap-category-slider__slide {
+	display: flex;
+	height: auto;
+}
+
+.eap-category-slider__item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	overflow: hidden;
+	color: inherit;
+	text-decoration: none;
+	border-radius: 12px;
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* --- Image -------------------------------------------------------------- */
+
+.eap-category-slider__image {
+	position: relative;
+	display: block;
+	height: 220px;
+	overflow: hidden;
+	line-height: 0;
+}
+
+.eap-category-slider__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.5s ease;
+}
+
+.eap-category-slider__img--ph {
+	background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+}
+
+.eap-category-slider--zoom .eap-category-slider__item:hover .eap-category-slider__img {
+	transform: scale(1.06);
+}
+
+/* --- Shared text -------------------------------------------------------- */
+
+.eap-category-slider__content {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 16px;
+}
+
+.eap-category-slider__name {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.3;
+	transition: color 0.2s ease;
+}
+
+.eap-category-slider__count {
+	align-self: flex-start;
+	display: inline-block;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+/* --- Card layout -------------------------------------------------------- */
+
+.eap-category-slider--card .eap-category-slider__item {
+	background: #fff;
+}
+
+.eap-category-slider--card .eap-category-slider__content {
+	flex: 1 1 auto;
+}
+
+.eap-category-slider--card .eap-category-slider__name {
+	color: #111827;
+}
+
+.eap-category-slider--card .eap-category-slider__count {
+	color: #6b7280;
+}
+
+/* --- Overlay layout ----------------------------------------------------- */
+
+.eap-category-slider--overlay .eap-category-slider__item {
+	justify-content: flex-end;
+	min-height: 220px;
+}
+
+.eap-category-slider--overlay .eap-category-slider__image {
+	position: absolute !important;
+	inset: 0;
+	height: 100% !important;
+	z-index: 0;
+}
+
+.eap-category-slider--overlay .eap-category-slider__item::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: linear-gradient(to top, var(--eap-cs-scrim, rgba(0, 0, 0, 0.6)) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.eap-category-slider--overlay .eap-category-slider__content {
+	position: relative;
+	z-index: 2;
+}
+
+.eap-category-slider--overlay .eap-category-slider__name {
+	color: #fff;
+}
+
+.eap-category-slider--overlay .eap-category-slider__count {
+	padding: 3px 10px;
+	color: rgba(255, 255, 255, 0.9);
+	background: rgba(255, 255, 255, 0.18);
+	border-radius: 999px;
+}
+
+/* --- Arrows -------------------------------------------------------------
+ * Outside the overflow:hidden swiper so a negative offset isn't clipped, and
+ * the two-class selector (0,2,0) beats a theme's `.elementor button` (0,1,1).
+ * -------------------------------------------------------------------- */
+
+.eap-category-slider .eap-category-slider__arrow {
+	--eap-cs-arrow: 44px;
+	--eap-cs-arrow-offset: -10px;
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-cs-arrow);
+	height: var(--eap-cs-arrow);
+	margin: 0;
+	padding: 0;
+	color: #111827;
+	background: #fff;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	transform: translateY(-50%);
+	transition: color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.eap-category-slider .eap-category-slider__arrow--prev {
+	left: var(--eap-cs-arrow-offset);
+}
+
+.eap-category-slider .eap-category-slider__arrow--next {
+	right: var(--eap-cs-arrow-offset);
+}
+
+.eap-category-slider .eap-category-slider__arrow svg {
+	display: block;
+	width: 40%;
+	height: 40%;
+}
+
+.eap-category-slider .eap-category-slider__arrow.swiper-button-disabled {
+	opacity: 0.35;
+	pointer-events: none;
+}
+
+.eap-category-slider .eap-category-slider__arrow.swiper-button-lock {
+	display: none;
+}
+
+/* --- Pagination --------------------------------------------------------- */
+
+.eap-category-slider__pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 26px;
+	line-height: 1;
+}
+
+.eap-category-slider__pagination .swiper-pagination-bullet {
+	width: 9px;
+	height: 9px;
+	margin: 0 !important;
+	background: #d1d5db;
+	opacity: 1;
+	transition: background-color 0.2s ease;
+}
+
+.eap-category-slider__pagination .swiper-pagination-bullet-active {
+	background: #4f46e5;
+}
+
+.eap-category-slider__pagination.swiper-pagination-progressbar {
+	position: relative;
+	display: block;
+	height: 4px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.eap-category-slider__pagination .swiper-pagination-progressbar-fill {
+	position: absolute;
+	inset: 0;
+	transform-origin: left top;
+	background: #4f46e5;
+}
+
+.eap-category-slider__pagination.swiper-pagination-lock {
+	display: none;
+}
+
+/* --- Editor empty note -------------------------------------------------- */
+
+.eap-category-slider--empty {
+	padding: 24px;
+	color: #6b7280;
+	font-style: italic;
+	text-align: center;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-category-slider__item,
+	.eap-category-slider__img,
+	.eap-category-slider__name,
+	.eap-category-slider .eap-category-slider__arrow {
+		transition: none;
+	}
+}
