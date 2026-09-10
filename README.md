@@ -264,6 +264,16 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
   **Caching:** conditions are evaluated server-side, so exclude pages that use
   visitor-specific conditions from full-page caching, or every visitor gets
   whichever variant was cached.
+- **Interactive Animations** — adds an **Interactive Animations** section to the
+  Advanced tab of **every element** and animates it on interaction. Trigger:
+  **Scroll** (progress linked to the element's travel through the viewport, with
+  a configurable start/end range and optional play-once), **Hover**, **Mouse
+  Move** (parallax, tracking the viewport or just the element) or **Click**
+  (toggle). Combine **Translate X/Y, Rotate, Scale, Opacity** and **Blur**, with
+  duration, delay and easing. Every control writes a CSS variable and the
+  stylesheet composes them, so Hover needs no JavaScript at all and Scroll costs
+  a single custom-property write per frame from one shared rAF pass. Respects
+  `prefers-reduced-motion` by resetting to the resting state.
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
@@ -293,4 +303,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.59
+**Current version:** 1.20.60

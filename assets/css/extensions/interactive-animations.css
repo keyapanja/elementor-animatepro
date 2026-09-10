@@ -1,0 +1,114 @@
+/* =========================================================================
+ * Interactive Animations (extension)
+ * Each control writes a CSS variable onto the element; this file composes them
+ * into one transform per trigger. The interpolation for the Scroll trigger is
+ * done here in calc() from a single 0->1 progress variable (--eap-ia-p) that the
+ * JS writes, so the runtime only ever sets one custom property per frame.
+ *
+ * `(1 - var(--eap-ia-p))` is the "distance still to travel": at p=0 the element
+ * sits at the configured offset, at p=1 it is at its resting state.
+ * ====================================================================== */
+
+.eap-ia {
+	--eap-ia-x: 0px;
+	--eap-ia-y: 0px;
+	--eap-ia-rotate: 0deg;
+	--eap-ia-scale: 1;
+	--eap-ia-opacity: 1;
+	--eap-ia-blur: 0px;
+	--eap-ia-duration: 0.6s;
+	--eap-ia-delay: 0s;
+	--eap-ia-easing: cubic-bezier(0.22, 1, 0.36, 1);
+	--eap-ia-p: 0;
+	--eap-ia-mx: 0;
+	--eap-ia-my: 0;
+	will-change: transform, opacity, filter;
+}
+
+/* --- Scroll: progress-interpolated ------------------------------------- */
+
+.eap-ia--scroll {
+	transform:
+		translate3d(
+			calc(var(--eap-ia-x) * (1 - var(--eap-ia-p))),
+			calc(var(--eap-ia-y) * (1 - var(--eap-ia-p))),
+			0
+		)
+		rotate(calc(var(--eap-ia-rotate) * (1 - var(--eap-ia-p))))
+		scale(calc(1 + (var(--eap-ia-scale) - 1) * (1 - var(--eap-ia-p))));
+	opacity: calc(1 + (var(--eap-ia-opacity) - 1) * (1 - var(--eap-ia-p)));
+	filter: blur(calc(var(--eap-ia-blur) * (1 - var(--eap-ia-p))));
+}
+
+/* --- Hover: no JS at all ----------------------------------------------- */
+
+.eap-ia--hover {
+	transition:
+		transform var(--eap-ia-duration) var(--eap-ia-easing) var(--eap-ia-delay),
+		opacity var(--eap-ia-duration) var(--eap-ia-easing) var(--eap-ia-delay),
+		filter var(--eap-ia-duration) var(--eap-ia-easing) var(--eap-ia-delay);
+}
+
+.eap-ia--hover:hover,
+.eap-ia--hover:focus-within {
+	transform:
+		translate3d(var(--eap-ia-x), var(--eap-ia-y), 0)
+		rotate(var(--eap-ia-rotate))
+		scale(var(--eap-ia-scale));
+	opacity: var(--eap-ia-opacity);
+	filter: blur(var(--eap-ia-blur));
+}
+
+/* --- Click: the JS only toggles .is-active ----------------------------- */
+
+.eap-ia--click {
+	cursor: pointer;
+	transition:
+		transform var(--eap-ia-duration) var(--eap-ia-easing) var(--eap-ia-delay),
+		opacity var(--eap-ia-duration) var(--eap-ia-easing) var(--eap-ia-delay),
+		filter var(--eap-ia-duration) var(--eap-ia-easing) var(--eap-ia-delay);
+}
+
+.eap-ia--click.is-active {
+	transform:
+		translate3d(var(--eap-ia-x), var(--eap-ia-y), 0)
+		rotate(var(--eap-ia-rotate))
+		scale(var(--eap-ia-scale));
+	opacity: var(--eap-ia-opacity);
+	filter: blur(var(--eap-ia-blur));
+}
+
+/* --- Mouse move: pointer offset drives the transform -------------------
+ * A short transition smooths the pointer sampling without lagging behind it.
+ * -------------------------------------------------------------------- */
+
+.eap-ia--mousemove {
+	transition: transform var(--eap-ia-duration) var(--eap-ia-easing);
+}
+
+.eap-ia--mousemove {
+	transform:
+		translate3d(
+			calc(var(--eap-ia-x) * var(--eap-ia-mx)),
+			calc(var(--eap-ia-y) * var(--eap-ia-my)),
+			0
+		)
+		rotate(calc(var(--eap-ia-rotate) * var(--eap-ia-mx)));
+}
+
+/* --- Accessibility ------------------------------------------------------
+ * Reset to the resting state rather than merely dropping the transition, so
+ * nothing is left permanently offset or invisible.
+ * -------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-ia,
+	.eap-ia--hover:hover,
+	.eap-ia--hover:focus-within,
+	.eap-ia--click.is-active {
+		transform: none !important;
+		opacity: 1 !important;
+		filter: none !important;
+		transition: none !important;
+	}
+}

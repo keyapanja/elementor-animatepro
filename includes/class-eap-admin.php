@@ -1350,6 +1350,12 @@ class EAP_Admin {
 				'description' => __( 'Show or hide any element by user, role, page, date, device, browser, URL or country.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-visibility',
 			),
+			array(
+				'key'         => 'interactive-animations',
+				'label'       => __( 'Interactive Animations', 'elementor-animatepro' ),
+				'description' => __( 'Animate any element on scroll, hover, click or with the mouse.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-image-filter',
+			),
 		);
 	}
 }
