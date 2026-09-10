@@ -1344,6 +1344,12 @@ class EAP_Admin {
 				'description' => __( 'Add a text, icon, image or shortcode tooltip to any widget or container.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-format-status',
 			),
+			array(
+				'key'         => 'conditional-display',
+				'label'       => __( 'Conditional Display', 'elementor-animatepro' ),
+				'description' => __( 'Show or hide any element by user, role, page, date, device, browser, URL or country.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-visibility',
+			),
 		);
 	}
 }

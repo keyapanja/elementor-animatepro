@@ -248,6 +248,23 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
   radius, border, shadow and z-index. The content is rendered server-side onto a
   `data-eap-tooltip` attribute and the tooltip node is built from it, so one
   mechanism works for every element type; showing/hiding is CSS.
+- **Conditional Display** — adds a **Conditional Display** section to the Advanced
+  tab of **every element**, and shows or hides it per visitor. Choose **Show** or
+  **Hide**, whether to match **all** conditions or **any**, then add as many
+  conditions as you like: **Login Status, User Role, Specific User, Page Type,
+  Post Type, Specific Post/Page, Taxonomy Term, Date & Time** (after / before /
+  between), **Day of Week, Browser, Operating System, Device, Query String, URL /
+  Referrer** and **Country** — each invertible with *is* / *is not*.
+  The element's markup is suppressed entirely rather than hidden with CSS, so
+  restricted content never reaches the page source. Conditions are skipped in the
+  editor so hidden elements stay editable.
+  *Country* reads a header a geo-aware proxy already set (Cloudflare, CloudFront,
+  or `GEOIP_COUNTRY_CODE`) — **no external lookup is made and no visitor IP
+  leaves the site**; supply your own via the `eap_conditional_display_country`
+  filter.
+  **Caching:** conditions are evaluated server-side, so exclude pages that use
+  visitor-specific conditions from full-page caching, or every visitor gets
+  whichever variant was cached.
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
@@ -270,4 +287,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.56
+**Current version:** 1.20.57
