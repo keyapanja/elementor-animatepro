@@ -1356,6 +1356,12 @@ class EAP_Admin {
 				'description' => __( 'Animate any element on scroll, hover, click or with the mouse.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-image-filter',
 			),
+			array(
+				'key'         => 'hover-interaction',
+				'label'       => __( 'Hover Interaction', 'elementor-animatepro' ),
+				'description' => __( 'Give any element a hover state: opacity, filters, offset, 3D transform and cursor tilt.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-image-flip-horizontal',
+			),
 		);
 	}
 }

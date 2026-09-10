@@ -1,0 +1,157 @@
+/*
+ * EAP Hover Interaction.
+ *
+ * The controls only ever write CSS VARIABLES; this file composes them into a
+ * single transform / filter / opacity, ONCE. The hover state is therefore just
+ * `{{WRAPPER}}:hover { --eap-hi-*: … }` written by Elementor — no duplicated
+ * composition, which is what keeps ~32 paired controls to this one short file.
+ */
+
+/*
+ * Per-element defaults.
+ *
+ * :where() has ZERO specificity, and that is the entire point:
+ *
+ *  - Elementor writes its values at {{WRAPPER}} — (0,1,0) on the front end and
+ *    (0,3,0) in the editor, where {{WRAPPER}} expands to
+ *    `.elementor-<doc> .elementor-element.elementor-element-<id>`. A plain
+ *    `.eap-hi-active` reset would TIE with the front-end form and the winner
+ *    would come down to stylesheet order. :where() can never win, so Elementor
+ *    always does.
+ *
+ *  - Re-declaring the variables on each element still blocks INHERITANCE, which
+ *    is the real job here: without it, a widget inside a hover-enabled container
+ *    would inherit that container's hovered values and apply them a second time.
+ */
+:where(.eap-hi-active) {
+	--eap-hi-opacity: 1;
+
+	--eap-hi-blur: 0px;
+	--eap-hi-contrast: 100%;
+	--eap-hi-grayscale: 0%;
+	--eap-hi-invert: 0%;
+	--eap-hi-saturate: 100%;
+	--eap-hi-sepia: 0%;
+
+	--eap-hi-top: 0px;
+	--eap-hi-left: 0px;
+
+	--eap-hi-rx: 0deg;
+	--eap-hi-ry: 0deg;
+	--eap-hi-rz: 0deg;
+	--eap-hi-sx: 1;
+	--eap-hi-sy: 1;
+	--eap-hi-kx: 0deg;
+	--eap-hi-ky: 0deg;
+
+	/* Written by the JS while the cursor is over a tilt-enabled element. */
+	--eap-hi-tilt-x: 0deg;
+	--eap-hi-tilt-y: 0deg;
+	--eap-hi-tilt-max: 12;
+
+	--eap-hi-duration: 0.4s;
+	--eap-hi-delay: 0s;
+	--eap-hi-easing: ease;
+	--eap-hi-perspective: 1000px;
+}
+
+/*
+ * The composed rule.
+ *
+ * Target: `.elementor-widget-container` rather than the wrapper, mirroring
+ * Elementor's own `.e-transform .elementor-widget-container`. Keeping the
+ * wrapper untransformed means the hover hit-area does not move, so an element
+ * that scales down cannot shrink out from under the cursor and start flickering
+ * between its two states. Containers and sections have no widget container, so
+ * they take the transform themselves — the same fallback Elementor uses.
+ *
+ * `>` (rather than Elementor's descendant combinator) is required here: the
+ * extension can be enabled on a CONTAINER, and a descendant match would then
+ * transform every nested widget's container as well.
+ *
+ * The class is doubled to reach (0,3,0). Elementor's `.e-transform
+ * .elementor-widget-container` is (0,2,0), so a single class would tie with it
+ * and let stylesheet order decide which transform survives when both this
+ * extension and Elementor's Transform are used on one element.
+ */
+.eap-hi-active.eap-hi-active > .elementor-widget-container,
+.eap-hi-active.eap-hi-active:not(:has(> .elementor-widget-container)) {
+	opacity: var(--eap-hi-opacity, 1);
+	filter:
+		blur(var(--eap-hi-blur, 0px))
+		contrast(var(--eap-hi-contrast, 100%))
+		grayscale(var(--eap-hi-grayscale, 0%))
+		invert(var(--eap-hi-invert, 0%))
+		saturate(var(--eap-hi-saturate, 100%))
+		sepia(var(--eap-hi-sepia, 0%));
+	/*
+	 * Each axis is listed as its own function instead of being summed inside a
+	 * calc(). Successive rotations about one axis compose anyway, and this way a
+	 * variable that is set without a unit somewhere else can never invalidate the
+	 * whole declaration and collapse the element to `transform: none`.
+	 *
+	 * The trailing `--e-transform-*` entries are ELEMENTOR'S own Transform
+	 * controls, folded in so that using both features on one element stacks them
+	 * rather than having one silently replace the other.
+	 */
+	transform:
+		perspective(var(--eap-hi-perspective, 1000px))
+		translate3d(var(--eap-hi-left, 0px), var(--eap-hi-top, 0px), 0)
+		rotateX(var(--eap-hi-rx, 0deg))
+		rotateX(var(--eap-hi-tilt-x, 0deg))
+		rotateY(var(--eap-hi-ry, 0deg))
+		rotateY(var(--eap-hi-tilt-y, 0deg))
+		rotateZ(var(--eap-hi-rz, 0deg))
+		scaleX(var(--eap-hi-sx, 1))
+		scaleY(var(--eap-hi-sy, 1))
+		skewX(var(--eap-hi-kx, 0deg))
+		skewY(var(--eap-hi-ky, 0deg))
+		translate(var(--e-transform-translate, 0px))
+		translateX(var(--e-transform-translateX, 0px))
+		translateY(var(--e-transform-translateY, 0px))
+		rotateX(var(--e-transform-rotateX, 0deg))
+		rotateY(var(--e-transform-rotateY, 0deg))
+		rotateZ(var(--e-transform-rotateZ, 0deg))
+		scaleX(var(--e-transform-flipX, 1))
+		scaleY(var(--e-transform-flipY, 1))
+		scaleX(var(--e-transform-scaleX, var(--e-transform-scale, 1)))
+		scaleY(var(--e-transform-scaleY, var(--e-transform-scale, 1)))
+		skewX(var(--e-transform-skewX, 0deg))
+		skewY(var(--e-transform-skewY, 0deg));
+	transform-style: preserve-3d;
+	transition:
+		opacity var(--eap-hi-duration, 0.4s) var(--eap-hi-easing, ease) var(--eap-hi-delay, 0s),
+		filter var(--eap-hi-duration, 0.4s) var(--eap-hi-easing, ease) var(--eap-hi-delay, 0s),
+		transform var(--eap-hi-duration, 0.4s) var(--eap-hi-easing, ease) var(--eap-hi-delay, 0s);
+}
+
+/* Tilt is a per-frame effect, so it is worth a compositor layer. */
+.eap-hi-active.eap-hi-tilt-active > .elementor-widget-container,
+.eap-hi-active.eap-hi-tilt-active:not(:has(> .elementor-widget-container)) {
+	will-change: transform;
+}
+
+/*
+ * While the cursor is inside a tilting element the transform must track it
+ * almost immediately — the configured duration is meant for the entry and exit,
+ * and applying it per frame turns the tilt into rubber. Only the transform's
+ * timing is shortened; opacity and filter keep the author's settings, hence the
+ * three-value longhands (they line up with the transition list above).
+ */
+.eap-hi-active.eap-hi--tilting > .elementor-widget-container,
+.eap-hi-active.eap-hi--tilting:not(:has(> .elementor-widget-container)) {
+	transition-duration: var(--eap-hi-duration, 0.4s), var(--eap-hi-duration, 0.4s), 0.1s;
+	transition-delay: var(--eap-hi-delay, 0s), var(--eap-hi-delay, 0s), 0s;
+	transition-timing-function: var(--eap-hi-easing, ease), var(--eap-hi-easing, ease), linear;
+}
+
+/*
+ * Keep the destination, drop the travel. The hover result still reads as a state
+ * change; it just arrives without motion.
+ */
+@media (prefers-reduced-motion: reduce) {
+	.eap-hi-active.eap-hi-active > .elementor-widget-container,
+	.eap-hi-active.eap-hi-active:not(:has(> .elementor-widget-container)) {
+		transition: none;
+	}
+}

@@ -274,6 +274,23 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
   stylesheet composes them, so Hover needs no JavaScript at all and Scroll costs
   a single custom-property write per frame from one shared rAF pass. Respects
   `prefers-reduced-motion` by resetting to the resting state.
+- **Hover Interaction** — adds a **Hover Interaction** section to the Advanced tab
+  of **every element**, with a **Normal** and a **Hover** value for each effect:
+  **Opacity**, **Filter** (blur, contrast, grayscale, invert, saturate, sepia),
+  **Offset** (top/left) and **Transform** (rotate X/Y/Z, scale X/Y, skew X/Y),
+  plus duration, delay, easing and perspective. **Cursor Tilt** leans the element
+  in 3D towards the pointer (hover only, adds to the rotation above, reversible).
+  **Show Hover State in Editor** holds the hover state open on the canvas so it
+  can be tuned without keeping the mouse still.
+  Each control writes a CSS variable and the stylesheet composes them once, so
+  hover itself needs no JavaScript — the tilt is the only scripted part, and it
+  binds by document-level delegation. Elementor's own `--e-transform-*` variables
+  are folded into the same composition, so its Transform controls and this
+  extension stack instead of overwriting one another. Respects
+  `prefers-reduced-motion` (keeps the hover result, drops the travel) and skips
+  the tilt on touch pointers.
+  *Note:* `scaleZ` only affects 3D-transformed descendants and `skewZ` does not
+  exist in CSS, so neither is offered.
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
@@ -293,6 +310,18 @@ registered with Elementor, so they add no overhead.
 - Assets are cache-busted by the `EAP_VERSION` constant — bump it (plugin header
   **and** the `define()` in `elementor-animatepro.php`) whenever you change
   CSS/JS.
+- **Extensions that need a class on the element must use `prefix_class`, not
+  `add_render_attribute( '_wrapper', … )`.** On the editor canvas the element
+  wrapper is created by Backbone, and its `className()` is only
+  `elementor-element elementor-element-edit-mode <uniqueID>` — anything PHP adds
+  to `_wrapper` is absent until the page is reloaded. `prefix_class` is applied
+  by *both* `element-base.php` (front end) and the editor view (which swaps the
+  class live as the control changes), so it is the only mechanism that behaves
+  the same in both. Corollary: state carried this way is readable at event time,
+  so prefer document-level delegation over a scan at render time — toggling a
+  control in the editor changes the class without re-rendering the element.
+  `elementor-element-edit-mode` is also a reliable "canvas only" hook for
+  editor-only styling.
 - **Slider widgets must declare Elementor's Swiper stylesheet.** Elementor only
   *registers* `e-swiper`; it is enqueued when a widget asks for it via
   `get_style_depends()`. Wrap a slider's dependencies in
@@ -303,4 +332,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.60
+**Current version:** 1.20.61
