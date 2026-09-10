@@ -1,0 +1,192 @@
+/* =========================================================================
+ * Filterable Slider
+ * Advanced Posts' filter tabs above a Posts Slider carousel. Cards and their
+ * Card / Overlay styling come from posts.css via the eap-posts--grid|overlay
+ * wrapper modifier; this file adds the tab bar, slide sizing, arrows,
+ * pagination and the filtering/empty states.
+ * ====================================================================== */
+
+.eap-filterable-slider {
+	position: relative;
+}
+
+/* --- Filter tabs -------------------------------------------------------- */
+
+.eap-filterable-slider__filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-bottom: 28px;
+}
+
+.eap-filterable-slider .eap-filterable-slider__filter {
+	-webkit-appearance: none;
+	appearance: none;
+	margin: 0;
+	padding: 8px 18px;
+	font: inherit;
+	line-height: 1.2;
+	color: #374151;
+	background: #f3f4f6;
+	border: 0;
+	border-radius: 30px;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.eap-filterable-slider .eap-filterable-slider__filter.is-active {
+	color: #fff;
+	background: #4f46e5;
+}
+
+/* --- Slider ------------------------------------------------------------- */
+
+.eap-filterable-slider__swiper {
+	overflow: hidden;
+	transition: opacity 0.2s ease;
+}
+
+.eap-filterable-slider.is-filtering .eap-filterable-slider__swiper {
+	opacity: 0.4;
+}
+
+.eap-filterable-slider .swiper-wrapper {
+	align-items: stretch;
+}
+
+.eap-filterable-slider__slide {
+	display: flex;
+	height: auto;
+}
+
+.eap-filterable-slider__slide > .eap-posts__item {
+	width: 100%;
+}
+
+/* --- Empty result ------------------------------------------------------- */
+
+.eap-filterable-slider__empty {
+	margin: 0;
+	padding: 28px;
+	text-align: center;
+	color: #6b7280;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+.eap-filterable-slider__empty[hidden] {
+	display: none;
+}
+
+/* Nothing to page through when a term came back empty. */
+.eap-filterable-slider.is-empty .eap-filterable-slider__swiper,
+.eap-filterable-slider.is-empty .eap-filterable-slider__arrow,
+.eap-filterable-slider.is-empty .eap-filterable-slider__pagination {
+	display: none;
+}
+
+/* --- Arrows -------------------------------------------------------------
+ * Outside the overflow:hidden swiper so a negative offset isn't clipped, and
+ * the two-class selector (0,2,0) beats a theme's `.elementor button` (0,1,1).
+ * -------------------------------------------------------------------- */
+
+.eap-filterable-slider .eap-filterable-slider__arrow {
+	--eap-fs-arrow: 44px;
+	--eap-fs-arrow-offset: -10px;
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-fs-arrow);
+	height: var(--eap-fs-arrow);
+	margin: 0;
+	padding: 0;
+	color: #111827;
+	background: #fff;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	transform: translateY(-50%);
+	transition: color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.eap-filterable-slider .eap-filterable-slider__arrow--prev {
+	left: var(--eap-fs-arrow-offset);
+}
+
+.eap-filterable-slider .eap-filterable-slider__arrow--next {
+	right: var(--eap-fs-arrow-offset);
+}
+
+.eap-filterable-slider .eap-filterable-slider__arrow svg {
+	display: block;
+	width: 40%;
+	height: 40%;
+}
+
+.eap-filterable-slider .eap-filterable-slider__arrow.swiper-button-disabled {
+	opacity: 0.35;
+	pointer-events: none;
+}
+
+.eap-filterable-slider .eap-filterable-slider__arrow.swiper-button-lock {
+	display: none;
+}
+
+/* --- Pagination --------------------------------------------------------- */
+
+.eap-filterable-slider__pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 26px;
+	line-height: 1;
+}
+
+.eap-filterable-slider__pagination .swiper-pagination-bullet {
+	width: 9px;
+	height: 9px;
+	margin: 0 !important;
+	background: #d1d5db;
+	opacity: 1;
+	transition: background-color 0.2s ease;
+}
+
+.eap-filterable-slider__pagination .swiper-pagination-bullet-active {
+	background: #4f46e5;
+}
+
+.eap-filterable-slider__pagination.swiper-pagination-progressbar {
+	position: relative;
+	display: block;
+	height: 4px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.eap-filterable-slider__pagination .swiper-pagination-progressbar-fill {
+	position: absolute;
+	inset: 0;
+	transform-origin: left top;
+	background: #4f46e5;
+}
+
+.eap-filterable-slider__pagination.swiper-pagination-lock {
+	display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-filterable-slider__swiper,
+	.eap-filterable-slider .eap-filterable-slider__filter,
+	.eap-filterable-slider .eap-filterable-slider__arrow {
+		transition: none;
+	}
+}

@@ -201,6 +201,14 @@ blank on the canvas.
   provider and video ID are parsed server-side, so the browser only assembles an
   embed URL. YouTube boxes use YouTube's own thumbnail when no poster is set, and
   the slider's autoplay pauses whenever a video starts.
+- **Filterable Slider** — the Advanced Posts **filter tabs** on top of a Posts
+  Slider carousel: pick a taxonomy and an "All + terms" tab bar re-queries and
+  rebuilds the slides in place. Filtering rides the **same AJAX endpoint** as
+  Advanced Posts (via the shared `filter_terms` field) rather than hiding
+  pre-rendered slides — so each tab returns the latest posts *of that term*
+  instead of leaving a tab empty. Card / Overlay layouts and all card styling
+  come from the Posts widget; full slider options, arrows, pagination and an
+  empty-state message.
 
 ## Admin
 
@@ -221,4 +229,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.51
+**Current version:** 1.20.52
