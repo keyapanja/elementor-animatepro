@@ -94,6 +94,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-archive-title.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-current-date.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-portfolio.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-toggle-switch.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
@@ -160,6 +161,7 @@ class EAP_Elementor {
 		$archive_title_on          = ! array_key_exists( 'archive-title', $widget_states ) || ! empty( $widget_states['archive-title'] );
 		$current_date_on           = ! array_key_exists( 'current-date', $widget_states ) || ! empty( $widget_states['current-date'] );
 		$portfolio_on              = ! array_key_exists( 'portfolio', $widget_states ) || ! empty( $widget_states['portfolio'] );
+		$toggle_switch_on          = ! array_key_exists( 'toggle-switch', $widget_states ) || ! empty( $widget_states['toggle-switch'] );
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
 		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
@@ -378,6 +380,10 @@ class EAP_Elementor {
 
 		if ( $portfolio_on ) {
 			$widgets_manager->register( new EAP_Widget_Portfolio() );
+		}
+
+		if ( $toggle_switch_on ) {
+			$widgets_manager->register( new EAP_Widget_Toggle_Switch() );
 		}
 
 		if ( $posts_timeline_on ) {

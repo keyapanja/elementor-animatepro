@@ -1,0 +1,142 @@
+/*
+ * Toggle Switch.
+ *
+ * `.eap-ts-hidden` is applied to the widget's TARGETS, which live anywhere on
+ * the page — hence the unscoped rule near the bottom.
+ */
+
+.eap-toggle-switch-wrap {
+	--eap-ts-w: 56px;
+	--eap-ts-h: 30px;
+	--eap-ts-gap: 12px;
+	--eap-ts-radius: 999px;
+	--eap-ts-off: #d1d5db;
+	--eap-ts-on: #4f46e5;
+	--eap-ts-knob: #fff;
+}
+
+.eap-toggle-switch {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: var(--eap-ts-gap);
+}
+
+/* --- Switch ------------------------------------------------------------- */
+
+/*
+ * Two-class selector so a theme's `.elementor button` (0,1,1) cannot take over
+ * the track's size, background or radius — the trap that bit Sticky Video's
+ * close control and Posts Slider's arrows.
+ */
+.eap-toggle-switch .eap-toggle-switch__control {
+	position: relative;
+	flex: 0 0 auto;
+	width: var(--eap-ts-w);
+	height: var(--eap-ts-h);
+	padding: 0;
+	background: var(--eap-ts-off);
+	border: 0;
+	border-radius: var(--eap-ts-radius);
+	cursor: pointer;
+	transition: background-color 0.25s ease;
+	appearance: none;
+}
+
+.eap-toggle-switch-wrap.is-on .eap-toggle-switch__control {
+	background: var(--eap-ts-on);
+}
+
+.eap-toggle-switch__control:focus-visible {
+	outline: 2px solid var(--eap-ts-on);
+	outline-offset: 3px;
+}
+
+.eap-toggle-switch__knob {
+	position: absolute;
+	top: 50%;
+	/*
+	 * Inset by a proportion of the track height so the knob keeps its margin at
+	 * any size the author picks, rather than a fixed 3px that looks wrong on a
+	 * 60px track.
+	 */
+	left: calc(var(--eap-ts-h) * 0.1);
+	width: calc(var(--eap-ts-h) * 0.8);
+	height: calc(var(--eap-ts-h) * 0.8);
+	border-radius: 50%;
+	background: var(--eap-ts-knob);
+	box-shadow: 0 1px 3px rgba(17, 24, 39, 0.3);
+	transform: translateY(-50%);
+	transition: left 0.25s ease;
+}
+
+.eap-toggle-switch-wrap.is-on .eap-toggle-switch__knob {
+	left: calc(var(--eap-ts-w) - var(--eap-ts-h) * 0.9);
+}
+
+.eap-toggle-switch__label {
+	cursor: pointer;
+	opacity: 0.65;
+	transition: opacity 0.2s ease, color 0.2s ease;
+	user-select: none;
+}
+
+.eap-toggle-switch__label.is-active {
+	opacity: 1;
+	font-weight: 600;
+}
+
+/* --- Pills -------------------------------------------------------------- */
+
+.eap-toggle-switch__pills {
+	display: inline-flex;
+	padding: 4px;
+	background: #f3f4f6;
+	border-radius: var(--eap-ts-radius);
+}
+
+.eap-toggle-switch .eap-toggle-switch__pill {
+	margin: 0;
+	padding: 9px 22px;
+	font: inherit;
+	color: #374151;
+	background: transparent;
+	border: 0;
+	border-radius: var(--eap-ts-radius);
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+	appearance: none;
+}
+
+.eap-toggle-switch .eap-toggle-switch__pill.is-active {
+	color: #fff;
+	background: #111827;
+}
+
+.eap-toggle-switch__pill:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -2px;
+}
+
+/* --- Targets ------------------------------------------------------------
+ * Unscoped on purpose: these classes land on elements elsewhere on the page,
+ * not inside the widget.
+ * -------------------------------------------------------------------- */
+
+.eap-ts-animated {
+	transition: opacity 0.25s ease;
+}
+
+.eap-ts-hidden {
+	display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-toggle-switch__control,
+	.eap-toggle-switch__knob,
+	.eap-toggle-switch__pill,
+	.eap-ts-animated {
+		transition: none;
+	}
+}

@@ -29,6 +29,19 @@ it**.
 - **Content Toggle** — a nested two-state switch (e.g. Monthly / Yearly) where
   each state is a droppable Elementor container; supports `#hash` deep-linking
   to open a specific option.
+- **Toggle Switch** — a standalone two-state control that drives **other**
+  elements on the page: **show one target and hide the other** (a pricing table
+  built as two ordinary containers), **toggle a class** on anything a selector
+  matches, or **dark mode** (a class on `<html>`, remembered). Rendered as a
+  switch with labels either side, or as two pills. Optionally remembers the
+  choice, and switches sharing a storage key stay in step — including on the
+  same page, where the browser's own `storage` event does not fire.
+  *Where this differs from Content Toggle:* that one **contains** its states as
+  nested droppable containers; this one contains nothing and points at elements
+  elsewhere. Reach for this when the two states are sections you have already
+  built, when they are not adjacent, or when the thing being switched isn't
+  content at all. The control is a real `<button role="switch">`, so it is
+  focusable, operable with Space/Enter and announced correctly.
 - **Image Accordion** — horizontal or vertical, hover or click.
 - **Price Box** — a pricing card (header + icon, price with discount/period,
   feature list with tooltips, corner/circular ribbon, CTA + footer note).
@@ -444,4 +457,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.71
+**Current version:** 1.20.72
