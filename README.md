@@ -77,6 +77,24 @@ it**.
 ### Media
 - **Sticky Video** — YouTube / Vimeo / self-hosted; **floats to a corner while
   playing** when scrolled out of view (single synced player, closable).
+- **Filterable Gallery** — hand-picked media with **filter tabs, search, a
+  lightbox and Load More**. Three layouts (**Overlay** caption over the image,
+  **Card** caption below, **Harmonic** cards with wide feature tiles) over
+  **Grid** or **Masonry**. The tabs are **derived from the categories typed on
+  the items**, not maintained as a second list: EA's equivalent has a tab
+  repeater plus a free-text control name per item that the author keeps in sync
+  by hand, where one typo silently drops an item out of every tab. Here a tab
+  can never open onto an empty grid, and the counts are exact. **Load More
+  batches follow the active filter** — switching to a tab with ten matches shows
+  the first batch of those ten, not whichever of them happened to fall in the
+  first batch overall — and the **lightbox walks only what is currently
+  visible**, so the arrows never wander into filtered-out or not-yet-loaded
+  items. Items can carry a video URL, which the lightbox plays instead of the
+  image (a file becomes a `<video>`, anything else an embed iframe). The filter
+  reflow is `EAPFrontend.flipFilter()` in `core.js`, shared with Portfolio and
+  Filterable Posts. Reach for **Image Gallery** when the set needs no filtering,
+  and **Portfolio** or **Filterable Posts** when the content already lives in
+  the database as posts with terms.
 - **Image Box**, **Image Box Slider**, **Image Gallery**, **Image**,
   **Image Comparison**, **Image Hotspot**, **Text Hover Image**.
 
@@ -486,4 +504,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.75
+**Current version:** 1.20.76

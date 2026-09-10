@@ -1,0 +1,509 @@
+/*
+ * Filterable Gallery.
+ *
+ * Three layouts (overlay / card / harmonic) over two grid modes (grid /
+ * masonry) from ONE markup tree: the caption is always a sibling of the media,
+ * and the overlay layout lifts it over the image with position rather than
+ * moving it in the DOM. That keeps the figure/figcaption relationship intact
+ * for assistive tech in every layout.
+ *
+ * Filter states (is-hidden / is-leaving / is-entered) are written by
+ * EAPFrontend.flipFilter() in core.js, shared with Portfolio and Filterable
+ * Posts.
+ */
+
+/*
+ * `hidden` is only a UA-stylesheet rule (`[hidden] { display: none }`), so ANY
+ * author `display` declaration outranks it. The lightbox, its arrows and the
+ * Load More button are all display:flex AND toggled through .hidden — without
+ * this they keep painting while the script believes them closed.
+ */
+.eap-fg [hidden],
+.eap-fg-lightbox[hidden],
+.eap-fg-lightbox [hidden] {
+	display: none !important;
+}
+
+/*
+ * `.screen-reader-text` is a THEME convention, not something WordPress
+ * guarantees on the front end, so a theme that omits it would print the search
+ * label and the link labels as visible text. Defined here rather than assumed.
+ */
+.eap-fg .screen-reader-text {
+	position: absolute !important;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.eap-fg {
+	--eap-fg-cols: 3;
+	--eap-fg-gap: 20px;
+	--eap-fg-media-h: 260px;
+	--eap-fg-speed: 400ms;
+	--eap-fg-bar-align: center;
+	--eap-fg-filter-gap: 8px;
+	--eap-fg-icon-size: 16px;
+	--eap-fg-icon-box: 40px;
+
+	position: relative;
+}
+
+/* --- Bar: filters + search --------------------------------------------- */
+
+.eap-fg__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: var(--eap-fg-bar-align);
+	gap: 12px var(--eap-fg-filter-gap);
+	margin-bottom: var(--eap-fg-gap);
+}
+
+.eap-fg__filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: var(--eap-fg-bar-align);
+	gap: var(--eap-fg-filter-gap);
+}
+
+.eap-fg__filter {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 8px 16px;
+	border: 1px solid transparent;
+	border-radius: 999px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: color var(--eap-fg-speed) ease, background-color var(--eap-fg-speed) ease, border-color var(--eap-fg-speed) ease;
+}
+
+/* Zero specificity so any Elementor control colour wins, while still giving
+ * an unstyled widget a visible active state. */
+:where(.eap-fg__filter.is-active) {
+	background: #111;
+	color: #fff;
+}
+
+.eap-fg__filter-count {
+	font-size: 0.8em;
+	opacity: 0.65;
+}
+
+.eap-fg__search {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 12px;
+	border: 1px solid rgba(127, 127, 127, 0.35);
+	border-radius: 999px;
+}
+
+.eap-fg__search-input {
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	outline: none;
+	min-width: 12ch;
+}
+
+/* --- Grid -------------------------------------------------------------- */
+
+.eap-fg__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-fg-cols), minmax(0, 1fr));
+	gap: var(--eap-fg-gap);
+}
+
+/*
+ * Masonry uses CSS columns, matching Portfolio. Items flow top-to-bottom
+ * within a column rather than left-to-right, which is the tradeoff for
+ * natural heights without a layout library.
+ */
+.eap-fg--masonry .eap-fg__grid {
+	display: block;
+	column-count: var(--eap-fg-cols);
+	column-gap: var(--eap-fg-gap);
+}
+
+.eap-fg--masonry .eap-fg__item {
+	width: 100%;
+	margin: 0 0 var(--eap-fg-gap);
+	break-inside: avoid;
+	-webkit-column-break-inside: avoid;
+}
+
+/* Harmonic feature tiles span two columns; a real grid only. */
+.eap-fg--grid .eap-fg__item.is-feature {
+	grid-column: span 2;
+}
+
+/*
+ * Dense packing, because a two-column tile that meets a single free column
+ * wraps to the next row and leaves that column EMPTY — a hole in the middle of
+ * the grid, not just a ragged last row. Dense backfills it with the next tile
+ * that fits. Visual order then diverges from DOM order, which is fine for
+ * independent tiles: focus order still follows the DOM.
+ */
+.eap-fg--harmonic .eap-fg__grid {
+	grid-auto-flow: row dense;
+}
+
+/* At one column a span of 2 would overflow the track. */
+@media (max-width: 767px) {
+	.eap-fg--grid .eap-fg__item.is-feature {
+		grid-column: auto;
+	}
+}
+
+/* --- Item -------------------------------------------------------------- */
+
+.eap-fg__item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	overflow: hidden;
+	transition: transform var(--eap-fg-speed) ease, box-shadow var(--eap-fg-speed) ease;
+}
+
+.eap-fg__media {
+	position: relative;
+	overflow: hidden;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.eap-fg__media.is-clickable {
+	cursor: zoom-in;
+}
+
+.eap-fg__img,
+.eap-fg__media img {
+	display: block;
+	width: 100%;
+	height: var(--eap-fg-media-h);
+	object-fit: cover;
+	transition: transform var(--eap-fg-speed) ease;
+}
+
+/* Natural proportions are the point of masonry. */
+.eap-fg--masonry .eap-fg__img,
+.eap-fg--masonry .eap-fg__media img {
+	height: auto;
+}
+
+.eap-fg__overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(17, 17, 17, 0.45);
+	opacity: 0;
+	transition: opacity var(--eap-fg-speed) ease;
+	pointer-events: none;
+}
+
+.eap-fg__item:hover .eap-fg__overlay,
+.eap-fg__item:focus-within .eap-fg__overlay {
+	opacity: 1;
+}
+
+/* --- Actions ----------------------------------------------------------- */
+
+.eap-fg__actions {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	opacity: 0;
+	transition: opacity var(--eap-fg-speed) ease;
+	/* The overlay sits above the image; actions above the overlay. */
+	z-index: 2;
+	pointer-events: none;
+}
+
+.eap-fg__item:hover .eap-fg__actions,
+.eap-fg__item:focus-within .eap-fg__actions {
+	opacity: 1;
+}
+
+.eap-fg__action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-fg-icon-box);
+	height: var(--eap-fg-icon-box);
+	border: 0;
+	border-radius: 50%;
+	background: #fff;
+	color: #111;
+	font-size: var(--eap-fg-icon-size);
+	text-decoration: none;
+	cursor: pointer;
+	transform: translateY(6px);
+	transition: transform var(--eap-fg-speed) ease, background-color var(--eap-fg-speed) ease, color var(--eap-fg-speed) ease;
+	/* Re-enable clicks the container turned off. */
+	pointer-events: auto;
+}
+
+.eap-fg__item:hover .eap-fg__action,
+.eap-fg__item:focus-within .eap-fg__action {
+	transform: none;
+}
+
+.eap-fg__action svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-fg__action i {
+	font-size: inherit;
+}
+
+/* --- Caption ----------------------------------------------------------- */
+
+.eap-fg__body {
+	padding: 14px 16px;
+}
+
+.eap-fg__title {
+	margin: 0;
+	font-size: 1.05em;
+	line-height: 1.3;
+}
+
+.eap-fg__text {
+	margin-top: 6px;
+	line-height: 1.5;
+	opacity: 0.85;
+}
+
+/*
+ * Overlay layout: the caption sits over the foot of the image. It is still a
+ * figcaption following its media in the DOM.
+ */
+.eap-fg--overlay .eap-fg__body {
+	position: absolute;
+	inset: auto 0 0 0;
+	z-index: 3;
+	color: #fff;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+	transform: translateY(8px);
+	opacity: 0;
+	transition: opacity var(--eap-fg-speed) ease, transform var(--eap-fg-speed) ease;
+	pointer-events: none;
+}
+
+.eap-fg--overlay .eap-fg__item:hover .eap-fg__body,
+.eap-fg--overlay .eap-fg__item:focus-within .eap-fg__body {
+	opacity: 1;
+	transform: none;
+}
+
+/* --- Hover effects ------------------------------------------------------ */
+
+.eap-fg--hover-zoom .eap-fg__item:hover .eap-fg__img,
+.eap-fg--hover-zoom .eap-fg__item:hover .eap-fg__media img,
+.eap-fg--hover-both .eap-fg__item:hover .eap-fg__img,
+.eap-fg--hover-both .eap-fg__item:hover .eap-fg__media img {
+	transform: scale(1.08);
+}
+
+.eap-fg--hover-lift .eap-fg__item:hover,
+.eap-fg--hover-both .eap-fg__item:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+/* --- Filter states (driven by core.js flipFilter) ----------------------- */
+
+.eap-fg__item.is-hidden {
+	display: none;
+}
+
+.eap-fg__item.is-leaving {
+	opacity: 0;
+	transform: scale(0.92);
+}
+
+.eap-fg__item.is-entered {
+	animation: eap-fg-in var(--eap-fg-speed) ease both;
+}
+
+@keyframes eap-fg-in {
+	from {
+		opacity: 0;
+		transform: scale(0.92);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* --- Empty / load more -------------------------------------------------- */
+
+.eap-fg__empty {
+	margin: 24px 0 0;
+	text-align: center;
+}
+
+.eap-fg__more {
+	display: flex;
+	justify-content: center;
+	margin-top: var(--eap-fg-gap);
+}
+
+.eap-fg__more-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 12px 26px;
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+	transition: color var(--eap-fg-speed) ease, background-color var(--eap-fg-speed) ease, border-color var(--eap-fg-speed) ease;
+}
+
+.eap-fg__more-icon {
+	display: inline-flex;
+	font-size: 0.9em;
+}
+
+.eap-fg__nomore {
+	margin: 0;
+	opacity: 0.7;
+}
+
+.eap-fg--empty {
+	padding: 28px;
+	border: 1px dashed rgba(127, 127, 127, 0.5);
+	text-align: center;
+}
+
+/* --- Lightbox ----------------------------------------------------------- */
+
+.eap-fg-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4vmin;
+	background: rgba(0, 0, 0, 0.9);
+}
+
+.eap-fg-lightbox__figure {
+	margin: 0;
+	max-width: min(1100px, 100%);
+	max-height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+}
+
+.eap-fg-lightbox__img,
+.eap-fg-lightbox__video {
+	max-width: 100%;
+	max-height: 78vh;
+	display: block;
+	border-radius: 4px;
+}
+
+.eap-fg-lightbox__frame {
+	width: min(1100px, 88vw);
+	aspect-ratio: 16 / 9;
+	max-height: 78vh;
+	border: 0;
+	border-radius: 4px;
+}
+
+.eap-fg-lightbox__caption {
+	color: #fff;
+	text-align: center;
+	font-size: 0.95rem;
+}
+
+.eap-fg-lightbox__close,
+.eap-fg-lightbox__nav {
+	position: absolute;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.12);
+	color: #fff;
+	cursor: pointer;
+}
+
+.eap-fg-lightbox__close {
+	top: 3vmin;
+	right: 3vmin;
+}
+
+.eap-fg-lightbox__nav--prev {
+	left: 3vmin;
+}
+
+.eap-fg-lightbox__nav--next {
+	right: 3vmin;
+}
+
+.eap-fg-lightbox__close:hover,
+.eap-fg-lightbox__nav:hover {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+.eap-fg-lightbox__close svg,
+.eap-fg-lightbox__nav svg {
+	width: 22px;
+	height: 22px;
+}
+
+.eap-fg-lightbox__counter {
+	position: absolute;
+	bottom: 3vmin;
+	left: 50%;
+	transform: translateX(-50%);
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-fg__item,
+	.eap-fg__img,
+	.eap-fg__media img,
+	.eap-fg__overlay,
+	.eap-fg__actions,
+	.eap-fg__action,
+	.eap-fg__body,
+	.eap-fg__filter,
+	.eap-fg__more-btn {
+		transition: none;
+	}
+
+	.eap-fg__item.is-entered {
+		animation: none;
+	}
+}
