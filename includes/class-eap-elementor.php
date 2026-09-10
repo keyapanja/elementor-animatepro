@@ -98,6 +98,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-box-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-filterable-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-loop-grid.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-loop-carousel.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -157,6 +158,7 @@ class EAP_Elementor {
 		$video_box_slider_on       = ! array_key_exists( 'video-box-slider', $widget_states ) || ! empty( $widget_states['video-box-slider'] );
 		$filterable_slider_on      = ! array_key_exists( 'filterable-slider', $widget_states ) || ! empty( $widget_states['filterable-slider'] );
 		$loop_grid_on              = ! array_key_exists( 'loop-grid', $widget_states ) || ! empty( $widget_states['loop-grid'] );
+		$loop_carousel_on          = ! array_key_exists( 'loop-carousel', $widget_states ) || ! empty( $widget_states['loop-carousel'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -380,6 +382,10 @@ class EAP_Elementor {
 
 		if ( $loop_grid_on ) {
 			$widgets_manager->register( new EAP_Widget_Loop_Grid() );
+		}
+
+		if ( $loop_carousel_on ) {
+			$widgets_manager->register( new EAP_Widget_Loop_Carousel() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

@@ -30,13 +30,6 @@ use Elementor\Group_Control_Typography;
  */
 class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 
-	/**
-	 * Re-entry guard: a loop template containing a Loop Grid would recurse.
-	 *
-	 * @var bool
-	 */
-	protected static $rendering = false;
-
 	public function get_name() {
 		return 'eap-loop-grid';
 	}
@@ -86,7 +79,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'label'       => __( 'Item Template', 'elementor-animatepro' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => '',
-				'options'     => $this->get_template_options(),
+				'options'     => $this->eap_get_template_options(),
 				'label_block' => true,
 				'description' => __( 'A saved Elementor template rendered once per post. Build it from the Dynamic widgets (Post Title, Post Featured Image, …) so each item shows its own post.', 'elementor-animatepro' ),
 			)
@@ -542,11 +535,6 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 		$settings = $this->get_settings_for_display();
 		$editor   = $this->eap_is_editor();
 
-		// A loop template that itself contains a Loop Grid would recurse forever.
-		if ( self::$rendering ) {
-			return;
-		}
-
 		$template_id = isset( $settings['template_id'] ) ? (int) $settings['template_id'] : 0;
 
 		if ( ! $template_id || ! get_post( $template_id ) ) {
@@ -586,13 +574,17 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 			return;
 		}
 
+		// A template that contains this (or another) loop widget pointing back at
+		// it would recurse forever. Shared, template-ID-keyed guard on the base.
+		if ( ! $this->eap_template_guard_enter( $template_id ) ) {
+			return;
+		}
+
 		// Enqueue the template's generated CSS once, so each iteration can render
 		// content without re-inlining styles.
-		$this->enqueue_template_css( $template_id );
+		$this->eap_enqueue_template_css( $template_id );
 
 		$this->add_render_attribute( 'wrapper', 'class', array( 'eap-widget', 'eap-loop-grid' ) );
-
-		self::$rendering = true;
 		?>
 		<div <?php $this->print_render_attribute_string( 'wrapper' ); ?>>
 			<div class="eap-loop-grid__grid">
@@ -605,7 +597,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 					<div class="eap-loop-grid__item">
 						<?php
 						// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor-rendered template content.
-						echo $this->render_template( $template_id );
+						echo $this->eap_render_template( $template_id );
 						?>
 					</div>
 					<?php
@@ -616,36 +608,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 		</div>
 		<?php
 		wp_reset_postdata();
-		self::$rendering = false;
-	}
-
-	/**
-	 * Render the chosen template for the current post.
-	 *
-	 * @param int $template_id Template ID.
-	 * @return string
-	 */
-	protected function render_template( $template_id ) {
-		if ( ! class_exists( '\Elementor\Plugin' ) || ! isset( \Elementor\Plugin::$instance->frontend ) ) {
-			return '';
-		}
-
-		return \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $template_id, false );
-	}
-
-	/**
-	 * Enqueue a template's generated CSS file.
-	 *
-	 * @param int $template_id Template ID.
-	 * @return void
-	 */
-	protected function enqueue_template_css( $template_id ) {
-		if ( ! class_exists( '\Elementor\Core\Files\CSS\Post' ) ) {
-			return;
-		}
-
-		$css = \Elementor\Core\Files\CSS\Post::create( $template_id );
-		$css->enqueue();
+		$this->eap_template_guard_leave( $template_id );
 	}
 
 	/**
@@ -689,39 +652,4 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 		echo '</nav>';
 	}
 
-	/**
-	 * Saved Elementor templates, labelled with their template type.
-	 *
-	 * @return array<string, string>
-	 */
-	protected function get_template_options() {
-		$options = array( '' => __( '— Select a template —', 'elementor-animatepro' ) );
-
-		if ( ! post_type_exists( 'elementor_library' ) ) {
-			return $options;
-		}
-
-		$templates = get_posts(
-			array(
-				'post_type'      => 'elementor_library',
-				'post_status'    => 'publish',
-				'posts_per_page' => 100,
-				'orderby'        => 'title',
-				'order'          => 'ASC',
-			)
-		);
-
-		foreach ( $templates as $template ) {
-			$type  = get_post_meta( $template->ID, '_elementor_template_type', true );
-			$label = '' !== $template->post_title ? $template->post_title : sprintf( '#%d', $template->ID );
-
-			if ( $type ) {
-				$label .= ' (' . ucwords( str_replace( array( '-', '_' ), ' ', $type ) ) . ')';
-			}
-
-			$options[ $template->ID ] = $label;
-		}
-
-		return $options;
-	}
 }

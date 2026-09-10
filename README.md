@@ -219,6 +219,12 @@ blank on the canvas.
   responsive columns and gaps, item background/border/radius/shadow/hover, and
   optional numbered pagination. Guards against a template that contains a Loop
   Grid recursing forever.
+- **Loop Carousel** — the same per-post template rendering as **Loop Grid**, but
+  as a Swiper carousel: each slide is your saved template rendered with that
+  post's context. Same query controls, plus per-breakpoint slides, space
+  between, speed, loop, centered slides, autoplay (delay + pause on hover),
+  arrows and pagination. Both loop widgets share a template-ID-keyed recursion
+  guard, so a template that points back at either one can't loop forever.
 
 ## Admin
 
@@ -239,4 +245,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.53
+**Current version:** 1.20.54

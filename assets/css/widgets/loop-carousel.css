@@ -1,0 +1,149 @@
+/* =========================================================================
+ * Loop Carousel
+ * A Swiper carousel whose SLIDE MARKUP is a user-built Elementor template, so
+ * this file styles only the slide/item wrapper, arrows and pagination —
+ * everything inside an item is styled by that template's own Elementor CSS.
+ * ====================================================================== */
+
+.eap-loop-carousel {
+	position: relative;
+}
+
+.eap-loop-carousel__swiper {
+	overflow: hidden;
+}
+
+.eap-loop-carousel .swiper-wrapper {
+	align-items: stretch;
+}
+
+.eap-loop-carousel__slide {
+	display: flex;
+	height: auto;
+}
+
+.eap-loop-carousel__item {
+	position: relative;
+	width: 100%;
+	min-width: 0; /* lets a template's content shrink inside the slide */
+}
+
+/* Elementor wraps rendered template content in .elementor; make it fill the
+   slide so an item's own height/stretch settings behave. */
+.eap-loop-carousel__item > .elementor {
+	height: 100%;
+}
+
+/* --- Arrows -------------------------------------------------------------
+ * Outside the overflow:hidden swiper so a negative offset isn't clipped, and
+ * the two-class selector (0,2,0) beats a theme's `.elementor button` (0,1,1).
+ * -------------------------------------------------------------------- */
+
+.eap-loop-carousel .eap-loop-carousel__arrow {
+	--eap-lc-arrow: 44px;
+	--eap-lc-arrow-offset: -10px;
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-lc-arrow);
+	height: var(--eap-lc-arrow);
+	margin: 0;
+	padding: 0;
+	color: #111827;
+	background: #fff;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	transform: translateY(-50%);
+	transition: color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.eap-loop-carousel .eap-loop-carousel__arrow--prev {
+	left: var(--eap-lc-arrow-offset);
+}
+
+.eap-loop-carousel .eap-loop-carousel__arrow--next {
+	right: var(--eap-lc-arrow-offset);
+}
+
+.eap-loop-carousel .eap-loop-carousel__arrow svg {
+	display: block;
+	width: 40%;
+	height: 40%;
+}
+
+.eap-loop-carousel .eap-loop-carousel__arrow.swiper-button-disabled {
+	opacity: 0.35;
+	pointer-events: none;
+}
+
+.eap-loop-carousel .eap-loop-carousel__arrow.swiper-button-lock {
+	display: none;
+}
+
+/* --- Pagination --------------------------------------------------------- */
+
+.eap-loop-carousel__pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 26px;
+	line-height: 1;
+}
+
+.eap-loop-carousel__pagination .swiper-pagination-bullet {
+	width: 9px;
+	height: 9px;
+	margin: 0 !important;
+	background: #d1d5db;
+	opacity: 1;
+	transition: background-color 0.2s ease;
+}
+
+.eap-loop-carousel__pagination .swiper-pagination-bullet-active {
+	background: #4f46e5;
+}
+
+.eap-loop-carousel__pagination.swiper-pagination-progressbar {
+	position: relative;
+	display: block;
+	height: 4px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.eap-loop-carousel__pagination .swiper-pagination-progressbar-fill {
+	position: absolute;
+	inset: 0;
+	transform-origin: left top;
+	background: #4f46e5;
+}
+
+.eap-loop-carousel__pagination.swiper-pagination-lock {
+	display: none;
+}
+
+/* --- Notices (no template chosen / no posts) ---------------------------- */
+
+.eap-loop-carousel--notice {
+	padding: 24px;
+	color: #6b7280;
+	font-style: italic;
+	text-align: center;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-loop-carousel .eap-loop-carousel__arrow,
+	.eap-loop-carousel__pagination .swiper-pagination-bullet {
+		transition: none;
+	}
+}

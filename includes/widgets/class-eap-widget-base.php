@@ -85,6 +85,115 @@ abstract class EAP_Widget_Base extends Widget_Base {
 	}
 
 	/**
+	 * Templates currently mid-render, keyed by ID.
+	 *
+	 * Shared by every loop widget (Loop Grid, Loop Carousel, …) so recursion is
+	 * caught ACROSS widget types too: a Loop Carousel whose item template holds a
+	 * Loop Grid pointing back at it would otherwise never terminate. Keying by
+	 * template ID also catches A -> B -> A template chains, which a per-widget
+	 * boolean cannot.
+	 *
+	 * @var array<int, bool>
+	 */
+	protected static $eap_rendering_templates = array();
+
+	/**
+	 * Claim a template for rendering.
+	 *
+	 * @param int $template_id Template ID.
+	 * @return bool False when it is already being rendered further up the stack.
+	 */
+	protected function eap_template_guard_enter( $template_id ) {
+		$template_id = (int) $template_id;
+
+		if ( isset( self::$eap_rendering_templates[ $template_id ] ) ) {
+			return false;
+		}
+
+		self::$eap_rendering_templates[ $template_id ] = true;
+
+		return true;
+	}
+
+	/**
+	 * Release a template claimed by eap_template_guard_enter().
+	 *
+	 * @param int $template_id Template ID.
+	 * @return void
+	 */
+	protected function eap_template_guard_leave( $template_id ) {
+		unset( self::$eap_rendering_templates[ (int) $template_id ] );
+	}
+
+	/**
+	 * Saved Elementor templates, labelled with their template type.
+	 *
+	 * @return array<string, string>
+	 */
+	protected function eap_get_template_options() {
+		$options = array( '' => __( '— Select a template —', 'elementor-animatepro' ) );
+
+		if ( ! post_type_exists( 'elementor_library' ) ) {
+			return $options;
+		}
+
+		$templates = get_posts(
+			array(
+				'post_type'      => 'elementor_library',
+				'post_status'    => 'publish',
+				'posts_per_page' => 100,
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+			)
+		);
+
+		foreach ( $templates as $template ) {
+			$type  = get_post_meta( $template->ID, '_elementor_template_type', true );
+			$label = '' !== $template->post_title ? $template->post_title : sprintf( '#%d', $template->ID );
+
+			if ( $type ) {
+				$label .= ' (' . ucwords( str_replace( array( '-', '_' ), ' ', $type ) ) . ')';
+			}
+
+			$options[ $template->ID ] = $label;
+		}
+
+		return $options;
+	}
+
+	/**
+	 * Enqueue a template's generated CSS file.
+	 *
+	 * Called ONCE before a loop: passing $with_css to
+	 * get_builder_content_for_display() would re-inline the whole stylesheet on
+	 * every iteration instead.
+	 *
+	 * @param int $template_id Template ID.
+	 * @return void
+	 */
+	protected function eap_enqueue_template_css( $template_id ) {
+		if ( ! class_exists( '\Elementor\Core\Files\CSS\Post' ) ) {
+			return;
+		}
+
+		\Elementor\Core\Files\CSS\Post::create( (int) $template_id )->enqueue();
+	}
+
+	/**
+	 * Render a saved template for the CURRENT post in the loop.
+	 *
+	 * @param int $template_id Template ID.
+	 * @return string
+	 */
+	protected function eap_render_template( $template_id ) {
+		if ( ! class_exists( '\Elementor\Plugin' ) || ! isset( \Elementor\Plugin::$instance->frontend ) ) {
+			return '';
+		}
+
+		return \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( (int) $template_id, false );
+	}
+
+	/**
 	 * Resolve the "current post" for a dynamic widget.
 	 *
 	 * Front-end: the post in the loop (get_the_ID) or the queried object. In the

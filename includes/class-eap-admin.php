@@ -409,6 +409,13 @@ class EAP_Admin {
 			$done['loop-grid-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['loop-carousel-built'] ) ) {
+			$states['loop-carousel'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['loop-carousel-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1198,6 +1205,7 @@ class EAP_Admin {
 			'video-box-slider',
 			'filterable-slider',
 			'loop-grid',
+			'loop-carousel',
 		);
 
 		return in_array( $widget_key, $built, true );

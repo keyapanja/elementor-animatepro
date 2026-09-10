@@ -153,6 +153,7 @@ class EAP_Assets {
 			'video-box-slider',
 			'filterable-slider',
 			'loop-grid',
+			'loop-carousel',
 		);
 
 		foreach ( $styles as $style ) {
@@ -212,6 +213,7 @@ class EAP_Assets {
 			'category-slider',
 			'video-box-slider',
 			'filterable-slider',
+			'loop-carousel',
 		);
 
 		foreach ( $scripts as $script ) {
