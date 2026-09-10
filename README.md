@@ -210,6 +210,16 @@ blank on the canvas.
   come from the Posts widget; full slider options, arrows, pagination and an
   empty-state message.
 
+### Advanced
+- **Loop Grid** — a query-driven grid that repeats **a saved Elementor template**
+  once per post, instead of the plugin's fixed card markup. Design the item
+  yourself out of the **Dynamic** widgets above (Post Title, Post Featured Image,
+  Post Excerpt, Post Meta Info, …) and each iteration renders it with that post as
+  the current post, so those widgets resolve per item. Full query controls,
+  responsive columns and gaps, item background/border/radius/shadow/hover, and
+  optional numbered pagination. Guards against a template that contains a Loop
+  Grid recursing forever.
+
 ## Admin
 
 The plugin's admin page lets you enable or disable each widget individually
@@ -229,4 +239,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.52
+**Current version:** 1.20.53

@@ -1,0 +1,82 @@
+/* =========================================================================
+ * Loop Grid
+ * A grid whose ITEM MARKUP is a user-built Elementor template, so this file
+ * deliberately styles only the grid and the item wrapper — everything inside an
+ * item is styled by that template's own Elementor CSS.
+ * ====================================================================== */
+
+.eap-loop-grid__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-lg-cols, 3), minmax(0, 1fr));
+	column-gap: 28px;
+	row-gap: 28px;
+}
+
+.eap-loop-grid__item {
+	position: relative;
+	min-width: 0; /* lets a template's content shrink inside the grid cell */
+	transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Elementor wraps rendered template content in .elementor; make it fill the
+   cell so an item's own height/stretch settings behave inside the grid. */
+.eap-loop-grid__item > .elementor {
+	height: 100%;
+}
+
+/* --- Pagination --------------------------------------------------------- */
+
+.eap-loop-grid__pagination {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 36px;
+}
+
+.eap-loop-grid__pagination .page-numbers {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 42px;
+	padding: 10px 14px;
+	line-height: 1.2;
+	color: #374151;
+	text-decoration: none;
+	background: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-loop-grid__pagination .page-numbers.current,
+.eap-loop-grid__pagination a.page-numbers:hover {
+	color: #fff;
+	background: #4f46e5;
+	border-color: #4f46e5;
+}
+
+.eap-loop-grid__pagination .page-numbers.dots {
+	background: transparent;
+	border-color: transparent;
+}
+
+/* --- Notices (no template chosen / no posts) ---------------------------- */
+
+.eap-loop-grid--notice {
+	padding: 24px;
+	color: #6b7280;
+	font-style: italic;
+	text-align: center;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-loop-grid__item,
+	.eap-loop-grid__pagination .page-numbers {
+		transition: none;
+	}
+}
