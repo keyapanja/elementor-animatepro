@@ -226,6 +226,23 @@ blank on the canvas.
   arrows and pagination. Both loop widgets share a template-ID-keyed recursion
   guard, so a template that points back at either one can't loop forever.
 
+## Extensions
+
+Extensions are features that attach to *existing* widgets rather than adding new
+ones. They're toggled on the plugin's **Extensions** page (stored in the
+`eap_extension_states` option) and are simply not registered when off.
+
+- **Image Masking** — adds an **Image Masking** section to the Advanced tab of the
+  image-bearing widgets (Elementor's Image / Image Box / Galleries and this
+  plugin's image widgets). Mask the widget's images with a **clip-path shape**
+  (20 presets, or your own `polygon()` / `circle()` / `path()` value) or an
+  uploaded **mask image** with size / position / repeat — each with a separate
+  **Hover** state and a transition. Pure CSS: no extra stylesheet or script, and
+  both the `-webkit-` and unprefixed properties are emitted for Safari. The
+  target widget list is filterable via `eap_image_masking_widgets`.
+- **Video Story Post Type** — registers the bundled Video Story post type used by
+  the Video Story widget (see above).
+
 ## Admin
 
 The plugin's admin page lets you enable or disable each widget individually
@@ -245,4 +262,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.54
+**Current version:** 1.20.55

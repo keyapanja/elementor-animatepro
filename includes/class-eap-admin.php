@@ -1332,6 +1332,12 @@ class EAP_Admin {
 				'description' => __( 'Register a Video Story post type (title, video, poster) the Video Story widget can fetch.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-video-alt3',
 			),
+			array(
+				'key'         => 'image-masking',
+				'label'       => __( 'Image Masking', 'elementor-animatepro' ),
+				'description' => __( 'Mask images with a clip-path shape or your own mask image, with a separate hover state.', 'elementor-animatepro' ),
+				'icon'        => 'dashicons-art',
+			),
 		);
 	}
 }
