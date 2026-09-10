@@ -179,6 +179,20 @@ blank on the canvas.
   first. CSS only, no JavaScript.
   *Not to be confused with* Advanced Posts' **Featured layout**, which is a wide
   lead card above a uniform grid — use that one if that is the shape you want.
+- **Archive Title** — the heading for whatever archive is being viewed: category,
+  tag, taxonomy, author, date, post-type archive, **search results**, the blog
+  page or a **404** (the last three are cases WordPress's own archive title does
+  not cover — they all fall through to a bare "Archives" there). The **prefix**
+  ("Category:", "Tag:", "Author:"…) can be kept, hidden or replaced, and it is a
+  **separate element from the title**, so the two can be given different
+  typography and colour, or the prefix put on its own line. Optionally shows the
+  **result count** and the archive **description** (term description, author bio
+  or post-type description), with a word trim and max width.
+  It does not reimplement WordPress's logic: `get_the_archive_title()` computes
+  the title and prefix separately and passes both to its filter, so the widget
+  captures them there instead of parsing the composed string. In the editor,
+  where there is no archive context, it previews against a real category rather
+  than rendering empty. CSS only, no JavaScript.
 - **Posts Timeline** — the Posts loop laid down a vertical timeline: a line with
   dated nodes and **year dividers**, in an **Alternating** (centered zig-zag) or
   **One-sided** (left rail) arrangement (alternating collapses to one-sided on
@@ -399,4 +413,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.68
+**Current version:** 1.20.69

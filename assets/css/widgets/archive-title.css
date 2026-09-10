@@ -1,0 +1,79 @@
+/*
+ * Archive Title. CSS only.
+ *
+ * The prefix, title and count are separate spans so each can be styled on its
+ * own — that separation is the point of the widget.
+ */
+
+.eap-archive-title-wrap {
+	--eap-at-gap: 8px;
+}
+
+.eap-archive-title {
+	margin: 0;
+}
+
+/*
+ * The gap sits on the prefix rather than between all three parts, because the
+ * prefix can be switched to its own line — a flex gap would then leave a stray
+ * horizontal space, and margin-inline-end collapses correctly when the prefix
+ * becomes a block.
+ */
+.eap-archive-title__prefix {
+	margin-inline-end: var(--eap-at-gap);
+	font-weight: 400;
+	opacity: 0.75;
+}
+
+.eap-archive-title__text {
+	/* Inherits the heading's own typography until the Title controls override. */
+	color: inherit;
+}
+
+.eap-archive-title__count {
+	display: inline-flex;
+	align-items: center;
+	margin-inline-start: var(--eap-at-gap);
+	padding: 2px 10px;
+	font-size: 0.5em;
+	font-weight: 600;
+	line-height: 1.8;
+	color: #374151;
+	background: rgba(17, 24, 39, 0.08);
+	border-radius: 999px;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.eap-archive-title__description {
+	margin-top: 12px;
+	color: #4b5563;
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+/*
+ * The description comes from a term description or author bio, which may hold
+ * markup (it is run through wp_kses_post), so tidy the block it can produce.
+ */
+.eap-archive-title__description > :first-child {
+	margin-top: 0;
+}
+
+.eap-archive-title__description > :last-child {
+	margin-bottom: 0;
+}
+
+/*
+ * Alignment is written to the WRAPPER, so text-align simply inherits down to
+ * both the heading and this block. The inline margins are what a description
+ * with a max-width needs in order to sit under the title instead of staying
+ * flush left; the control supplies them through --eap-at-desc-mi.
+ *
+ * NOT an attribute selector on an inline style: Elementor writes control CSS to
+ * a GENERATED STYLESHEET, never to a style attribute, so `[style*="center"]`
+ * would have matched nothing.
+ */
+.eap-archive-title__description {
+	margin-inline: var(--eap-at-desc-mi, 0 auto);
+}

@@ -91,6 +91,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-advanced-posts.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-filterable-posts.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-featured-posts.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-archive-title.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
@@ -154,6 +155,7 @@ class EAP_Elementor {
 		$advanced_posts_on         = ! array_key_exists( 'advanced-posts', $widget_states ) || ! empty( $widget_states['advanced-posts'] );
 		$filterable_posts_on       = ! array_key_exists( 'filterable-posts', $widget_states ) || ! empty( $widget_states['filterable-posts'] );
 		$featured_posts_on         = ! array_key_exists( 'featured-posts', $widget_states ) || ! empty( $widget_states['featured-posts'] );
+		$archive_title_on          = ! array_key_exists( 'archive-title', $widget_states ) || ! empty( $widget_states['archive-title'] );
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
 		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
@@ -360,6 +362,10 @@ class EAP_Elementor {
 
 		if ( $featured_posts_on ) {
 			$widgets_manager->register( new EAP_Widget_Featured_Posts() );
+		}
+
+		if ( $archive_title_on ) {
+			$widgets_manager->register( new EAP_Widget_Archive_Title() );
 		}
 
 		if ( $posts_timeline_on ) {
