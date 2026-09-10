@@ -1,0 +1,271 @@
+/*
+ * Category Showcase — taxonomy terms as a showcase grid. CSS only.
+ */
+
+.eap-category-showcase {
+	--eap-cs-cols: 4;
+	--eap-cs-gap: 20px;
+	--eap-cs-h: 220px;
+	--eap-cs-h-featured: 340px;
+	--eap-cs-radius: 12px;
+	--eap-cs-scrim: rgba(17, 24, 39, 0.55);
+	--eap-cs-ph-from: #6366f1;
+	--eap-cs-ph-to: #0ea5e9;
+}
+
+.eap-category-showcase__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-cs-cols), minmax(0, 1fr));
+	/*
+	 * Real gap properties, not only a variable. posts.css taught this the hard
+	 * way: a stylesheet that hardcodes its gap ignores a variable entirely.
+	 */
+	column-gap: var(--eap-cs-gap);
+	row-gap: var(--eap-cs-gap);
+}
+
+.eap-category-showcase__item {
+	position: relative;
+	display: flex;
+	overflow: hidden;
+	border-radius: var(--eap-cs-radius);
+	text-decoration: none;
+	background: #f3f4f6;
+	transition: transform 0.28s ease, box-shadow 0.28s ease;
+	box-sizing: border-box;
+}
+
+/* --- Image -------------------------------------------------------------- */
+
+.eap-category-showcase__image {
+	display: block;
+	width: 100%;
+	line-height: 0;
+	overflow: hidden;
+}
+
+.eap-category-showcase__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.5s ease;
+}
+
+.eap-category-showcase__img--ph {
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(135deg, var(--eap-cs-ph-from), var(--eap-cs-ph-to));
+}
+
+/* --- Content ------------------------------------------------------------ */
+
+.eap-category-showcase__content {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	padding: 18px;
+}
+
+.eap-category-showcase__name {
+	margin: 0;
+	font-size: 18px;
+	line-height: 1.3;
+	color: #111827;
+}
+
+.eap-category-showcase__count {
+	display: inline-flex;
+	align-items: center;
+	padding: 2px 9px;
+	font-size: 12px;
+	line-height: 1.6;
+	color: #374151;
+	background: rgba(17, 24, 39, 0.08);
+	border-radius: 999px;
+}
+
+.eap-category-showcase__desc {
+	font-size: 13px;
+	line-height: 1.55;
+	color: #4b5563;
+}
+
+/* --- Overlay style ------------------------------------------------------
+ * Text sits on a scrim over a filling image.
+ * -------------------------------------------------------------------- */
+
+.eap-category-showcase--overlay .eap-category-showcase__item {
+	height: var(--eap-cs-h);
+	align-items: flex-end;
+}
+
+/*
+ * `!important` is load-bearing here. The Tile Height control writes a
+ * {{WRAPPER}}-scoped rule, and Elementor's generated CSS outranks this
+ * stylesheet — without it the absolute fill loses to the authored height and the
+ * image stops covering the tile. (Same trap as Category Slider's overlay.)
+ */
+.eap-category-showcase--overlay .eap-category-showcase__image {
+	position: absolute !important;
+	inset: 0 !important;
+	height: 100% !important;
+	width: 100% !important;
+}
+
+.eap-category-showcase--overlay .eap-category-showcase__item::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to top, var(--eap-cs-scrim) 0%, rgba(0, 0, 0, 0) 65%);
+	pointer-events: none;
+}
+
+.eap-category-showcase--overlay .eap-category-showcase__content {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+}
+
+/* Light text on the scrim. Kept OUT of the controls' defaults on purpose — a
+   control default would emit scoped CSS that beats this. */
+.eap-category-showcase--overlay .eap-category-showcase__name {
+	color: #fff;
+}
+
+.eap-category-showcase--overlay .eap-category-showcase__desc {
+	color: rgba(255, 255, 255, 0.82);
+}
+
+.eap-category-showcase--overlay .eap-category-showcase__count {
+	color: #fff;
+	background: rgba(255, 255, 255, 0.22);
+}
+
+/* --- Card style --------------------------------------------------------- */
+
+.eap-category-showcase--card .eap-category-showcase__item {
+	flex-direction: column;
+	background: #fff;
+}
+
+.eap-category-showcase--card .eap-category-showcase__image {
+	height: var(--eap-cs-h);
+	flex: 0 0 auto;
+}
+
+.eap-category-showcase--card .eap-category-showcase__content {
+	flex: 1 1 auto;
+}
+
+/* --- Featured ----------------------------------------------------------
+ * The first tile spans the full row and gets its own height.
+ * -------------------------------------------------------------------- */
+
+.eap-category-showcase--featured .eap-category-showcase__item.is-featured {
+	grid-column: 1 / -1;
+}
+
+.eap-category-showcase--featured.eap-category-showcase--overlay .eap-category-showcase__item.is-featured {
+	height: var(--eap-cs-h-featured);
+}
+
+.eap-category-showcase--featured.eap-category-showcase--card .eap-category-showcase__item.is-featured .eap-category-showcase__image {
+	height: var(--eap-cs-h-featured);
+}
+
+.eap-category-showcase--featured .eap-category-showcase__item.is-featured .eap-category-showcase__name {
+	font-size: 26px;
+}
+
+/* --- Masonry -----------------------------------------------------------
+ * CSS columns, so tiles keep their natural image heights and stagger. Order
+ * reads down each column rather than across — the normal trade for
+ * column-based masonry.
+ * -------------------------------------------------------------------- */
+
+.eap-category-showcase--masonry .eap-category-showcase__grid {
+	display: block;
+	column-count: var(--eap-cs-cols);
+	column-gap: var(--eap-cs-gap);
+}
+
+.eap-category-showcase--masonry .eap-category-showcase__item {
+	width: 100%;
+	margin-bottom: var(--eap-cs-gap);
+	break-inside: avoid;
+	-webkit-column-break-inside: avoid;
+}
+
+/* Natural heights are the whole point of masonry, so the fixed tile height and
+   the absolute overlay fill are both released here. */
+.eap-category-showcase--masonry.eap-category-showcase--overlay .eap-category-showcase__item {
+	height: auto;
+	min-height: 160px;
+}
+
+.eap-category-showcase--masonry .eap-category-showcase__img {
+	height: auto;
+}
+
+.eap-category-showcase--masonry.eap-category-showcase--overlay .eap-category-showcase__image {
+	position: relative !important;
+	inset: auto !important;
+	height: auto !important;
+}
+
+.eap-category-showcase--masonry.eap-category-showcase--overlay .eap-category-showcase__content {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+/* --- Imageless ---------------------------------------------------------
+ * A term with no resolvable image still has to read as a deliberate tile
+ * rather than an empty box — the gradient becomes the tile and the content
+ * centres in it. (Same fallback thinking as the Advanced Posts text hero.)
+ * -------------------------------------------------------------------- */
+
+.eap-category-showcase--overlay .eap-category-showcase__item.is-imageless {
+	align-items: center;
+}
+
+.eap-category-showcase--overlay .eap-category-showcase__item.is-imageless::after {
+	background: rgba(17, 24, 39, 0.25);
+}
+
+.eap-category-showcase__item.is-imageless .eap-category-showcase__content {
+	justify-content: center;
+}
+
+/* --- Hover -------------------------------------------------------------- */
+
+.eap-category-showcase--hover-zoom .eap-category-showcase__item:hover .eap-category-showcase__img,
+.eap-category-showcase--hover-both .eap-category-showcase__item:hover .eap-category-showcase__img {
+	transform: scale(1.07);
+}
+
+.eap-category-showcase--hover-lift .eap-category-showcase__item:hover,
+.eap-category-showcase--hover-both .eap-category-showcase__item:hover {
+	transform: translateY(-6px);
+	box-shadow: 0 18px 36px rgba(17, 24, 39, 0.18);
+}
+
+/* --- Editor empty state ------------------------------------------------- */
+
+.eap-category-showcase--empty {
+	padding: 22px;
+	text-align: center;
+	color: #6b7280;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-category-showcase__item,
+	.eap-category-showcase__img {
+		transition: none;
+	}
+}

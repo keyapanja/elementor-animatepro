@@ -940,7 +940,7 @@ class EAP_Widget_Category_Slider extends EAP_Widget_Base {
 					foreach ( $terms as $term ) :
 						$link  = get_term_link( $term );
 						$link  = is_wp_error( $link ) ? '#' : $link;
-						$image = $this->get_term_image( $term, $img_cfg );
+						$image = $this->eap_get_term_image( $term, $img_cfg );
 						?>
 						<div class="swiper-slide eap-category-slider__slide">
 							<a class="eap-category-slider__item" href="<?php echo esc_url( $link ); ?>">
@@ -979,71 +979,6 @@ class EAP_Widget_Category_Slider extends EAP_Widget_Base {
 		<?php
 	}
 
-	/**
-	 * Resolve a term's image: named term-meta (ID or URL) -> newest post's
-	 * featured image in that term -> widget fallback -> '' (CSS placeholder).
-	 *
-	 * @param WP_Term $term Term.
-	 * @param array   $cfg  Image config.
-	 * @return string Image URL, or '' when there is none.
-	 */
-	protected function get_term_image( $term, $cfg ) {
-		// 1. A named term-meta field (ACF / theme category-image fields).
-		if ( '' !== $cfg['meta_key'] ) {
-			$value = get_term_meta( $term->term_id, $cfg['meta_key'], true );
-
-			if ( is_array( $value ) && isset( $value['url'] ) ) {
-				$value = $value['url'];
-			}
-
-			if ( is_numeric( $value ) ) {
-				$url = wp_get_attachment_image_url( (int) $value, $cfg['size'] );
-				if ( $url ) {
-					return $url;
-				}
-			} elseif ( is_string( $value ) && '' !== trim( $value ) ) {
-				return trim( $value );
-			}
-		}
-
-		// 2. The newest post in this term that actually has a featured image.
-		if ( $cfg['auto'] ) {
-			$posts = get_posts(
-				array(
-					'post_type'      => 'any',
-					'post_status'    => 'publish',
-					'posts_per_page' => 1,
-					'fields'         => 'ids',
-					'orderby'        => 'date',
-					'order'          => 'DESC',
-					'no_found_rows'  => true,
-					'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
-						array(
-							'taxonomy' => $cfg['taxonomy'],
-							'field'    => 'term_id',
-							'terms'    => array( (int) $term->term_id ),
-						),
-					),
-					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-						array(
-							'key'     => '_thumbnail_id',
-							'compare' => 'EXISTS',
-						),
-					),
-				)
-			);
-
-			if ( ! empty( $posts ) ) {
-				$url = get_the_post_thumbnail_url( (int) $posts[0], $cfg['size'] );
-				if ( $url ) {
-					return $url;
-				}
-			}
-		}
-
-		// 3. The widget-wide fallback.
-		return $cfg['fallback'];
-	}
 
 	/**
 	 * Coerce a control value to a list of positive ints.

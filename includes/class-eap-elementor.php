@@ -96,6 +96,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-breaking-news-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-category-slider.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-category-showcase.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-box-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-filterable-slider.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-loop-grid.php';
@@ -157,6 +158,7 @@ class EAP_Elementor {
 		$posts_slider_on           = ! array_key_exists( 'posts-slider', $widget_states ) || ! empty( $widget_states['posts-slider'] );
 		$breaking_news_on          = ! array_key_exists( 'breaking-news-slider', $widget_states ) || ! empty( $widget_states['breaking-news-slider'] );
 		$category_slider_on        = ! array_key_exists( 'category-slider', $widget_states ) || ! empty( $widget_states['category-slider'] );
+		$category_showcase_on      = ! array_key_exists( 'category-showcase', $widget_states ) || ! empty( $widget_states['category-showcase'] );
 		$video_box_slider_on       = ! array_key_exists( 'video-box-slider', $widget_states ) || ! empty( $widget_states['video-box-slider'] );
 		$filterable_slider_on      = ! array_key_exists( 'filterable-slider', $widget_states ) || ! empty( $widget_states['filterable-slider'] );
 		$loop_grid_on              = ! array_key_exists( 'loop-grid', $widget_states ) || ! empty( $widget_states['loop-grid'] );
@@ -376,6 +378,10 @@ class EAP_Elementor {
 
 		if ( $category_slider_on ) {
 			$widgets_manager->register( new EAP_Widget_Category_Slider() );
+		}
+
+		if ( $category_showcase_on ) {
+			$widgets_manager->register( new EAP_Widget_Category_Showcase() );
 		}
 
 		if ( $video_box_slider_on ) {

@@ -205,6 +205,17 @@ blank on the canvas.
   widget-wide **Fallback Image** → a gradient placeholder. Full term query
   (taxonomy, count, order, hide-empty, include/exclude) plus the usual slider
   options, arrows and pagination.
+- **Category Showcase** — the same taxonomy terms as a **static showcase grid**,
+  the counterpart to Category Slider. Three layouts: **Grid**, **Masonry** (CSS
+  columns, so tiles keep their natural image heights) and **Featured**, where the
+  first term spans the full width as a lead tile with its own height. **Overlay**
+  or **Card** style, with post count, optional term description, content
+  alignment, and Zoom / Lift hover effects. Term images resolve through the same
+  four-step chain as Category Slider — the two share
+  `EAP_Widget_Base::eap_get_term_image()`, so images configured for one work in
+  the other. A term that resolves no image at all still reads as a deliberate
+  tile: it gets the gradient placeholder with its content centred rather than an
+  empty box. CSS only, no JavaScript.
 - **Video Box Slider** — a carousel of hand-authored **video boxes** (poster +
   play button + title/description, with optional badge and duration). Supports
   **YouTube, Vimeo and self-hosted** MP4/WebM; clicking play opens the video in a
@@ -369,4 +380,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.66
+**Current version:** 1.20.67

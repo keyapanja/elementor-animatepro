@@ -256,6 +256,94 @@ abstract class EAP_Widget_Base extends Widget_Base {
 	}
 
 	/**
+	 * Resolve a taxonomy term's image.
+	 *
+	 * Core WP terms have NO image field, so this walks a four-step chain:
+	 *   1. a named term-meta key (accepts an attachment ID, a raw URL, or the
+	 *      `array( 'url' => … )` shape an ACF image field returns),
+	 *   2. the featured image of the newest post in that term — queried with
+	 *      `_thumbnail_id EXISTS` so it lands on a post that actually HAS one,
+	 *      which is what makes the widget look right on a site with no term
+	 *      images configured,
+	 *   3. a widget-wide fallback image,
+	 *   4. '' — the caller renders a CSS gradient placeholder.
+	 *
+	 * Step 2 costs one query PER TERM, hence the `auto` switch.
+	 *
+	 * Shared by Category Slider and Category Showcase; `eap_`-prefixed because
+	 * several widgets already define their own unprefixed helpers.
+	 *
+	 * @param WP_Term $term Term.
+	 * @param array   $cfg  { meta_key, auto, fallback, size, taxonomy }.
+	 * @return string Image URL, or '' when there is none.
+	 */
+	protected function eap_get_term_image( $term, $cfg ) {
+		$cfg = array_merge(
+			array(
+				'meta_key' => '',
+				'auto'     => true,
+				'fallback' => '',
+				'size'     => 'medium_large',
+				'taxonomy' => 'category',
+			),
+			(array) $cfg
+		);
+
+		if ( '' !== $cfg['meta_key'] ) {
+			$value = get_term_meta( $term->term_id, $cfg['meta_key'], true );
+
+			if ( is_array( $value ) && isset( $value['url'] ) ) {
+				$value = $value['url'];
+			}
+
+			if ( is_numeric( $value ) ) {
+				$url = wp_get_attachment_image_url( (int) $value, $cfg['size'] );
+				if ( $url ) {
+					return $url;
+				}
+			} elseif ( is_string( $value ) && '' !== trim( $value ) ) {
+				return trim( $value );
+			}
+		}
+
+		if ( $cfg['auto'] ) {
+			$posts = get_posts(
+				array(
+					'post_type'      => 'any',
+					'post_status'    => 'publish',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'orderby'        => 'date',
+					'order'          => 'DESC',
+					'no_found_rows'  => true,
+					'tax_query'      => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
+						array(
+							'taxonomy' => $cfg['taxonomy'],
+							'field'    => 'term_id',
+							'terms'    => array( (int) $term->term_id ),
+						),
+					),
+					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+						array(
+							'key'     => '_thumbnail_id',
+							'compare' => 'EXISTS',
+						),
+					),
+				)
+			);
+
+			if ( ! empty( $posts ) ) {
+				$url = get_the_post_thumbnail_url( (int) $posts[0], $cfg['size'] );
+				if ( $url ) {
+					return $url;
+				}
+			}
+		}
+
+		return (string) $cfg['fallback'];
+	}
+
+	/**
 	 * Add alignment control.
 	 *
 	 * @return void
