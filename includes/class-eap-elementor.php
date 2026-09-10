@@ -92,6 +92,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-slider.php';
 
 		$widget_states = get_option( EAP_Admin::WIDGETS_OPTION, array() );
 		$widget_states = is_array( $widget_states ) ? $widget_states : array();
@@ -145,6 +146,7 @@ class EAP_Elementor {
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
 		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
+		$posts_slider_on           = ! array_key_exists( 'posts-slider', $widget_states ) || ! empty( $widget_states['posts-slider'] );
 
 		if ( $image_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Image_Box() );
@@ -344,6 +346,10 @@ class EAP_Elementor {
 
 		if ( $video_story_on ) {
 			$widgets_manager->register( new EAP_Widget_Video_Story() );
+		}
+
+		if ( $posts_slider_on ) {
+			$widgets_manager->register( new EAP_Widget_Posts_Slider() );
 		}
 
 		// Content Toggle and Animated Off-Canvas are nested widgets — only load

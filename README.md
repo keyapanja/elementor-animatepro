@@ -171,6 +171,13 @@ blank on the canvas.
   post type (enable it on the Extensions page; each story stores a self-hosted
   video in `_eap_video_url` plus a featured-image poster), with a widget-wide
   **Fallback Video** for anything missing. Self-hosted MP4 / WebM.
+- **Posts Slider** — the Posts loop as a **Swiper carousel** (the first of the
+  Slider group). Same query controls, and the slides reuse the Posts card markup
+  and styling, so **Card** and **Overlay** layouts come straight from the Posts
+  widget. Per-breakpoint slides-per-view (desktop / tablet / mobile), space
+  between, speed, loop, centered slides, autoplay (delay + resume-after-
+  interaction), styleable **arrows** and **pagination** (bullets / fraction /
+  progress bar). Uses Elementor's bundled Swiper.
 
 ## Admin
 
@@ -191,4 +198,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.47
+**Current version:** 1.20.48

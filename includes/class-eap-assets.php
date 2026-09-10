@@ -147,6 +147,7 @@ class EAP_Assets {
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
+			'posts-slider',
 		);
 
 		foreach ( $styles as $style ) {
@@ -201,6 +202,7 @@ class EAP_Assets {
 			'advanced-posts',
 			'read-later',
 			'video-story',
+			'posts-slider',
 		);
 
 		foreach ( $scripts as $script ) {

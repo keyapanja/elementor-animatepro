@@ -367,6 +367,13 @@ class EAP_Admin {
 			$done['video-story-built'] = 1;
 			update_option( 'eap_widget_migrations', $done, false );
 		}
+
+		if ( empty( $done['posts-slider-built'] ) ) {
+			$states['posts-slider'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['posts-slider-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
 	}
 
 	/**
@@ -1150,6 +1157,7 @@ class EAP_Admin {
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
+			'posts-slider',
 		);
 
 		return in_array( $widget_key, $built, true );

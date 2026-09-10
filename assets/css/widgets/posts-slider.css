@@ -1,0 +1,140 @@
+/* =========================================================================
+ * Posts Slider
+ * The Posts cards (posts.css) in a Swiper carousel. Card / overlay styling all
+ * comes from posts.css via the `eap-posts--grid|overlay` wrapper modifier; this
+ * file only handles slide sizing, the arrows and the pagination.
+ *
+ * The arrows sit OUTSIDE `.eap-posts-slider__swiper` (which needs
+ * overflow:hidden) so a negative offset isn't clipped.
+ * ====================================================================== */
+
+.eap-posts-slider {
+	position: relative;
+}
+
+.eap-posts-slider__swiper {
+	overflow: hidden;
+}
+
+/* Equal-height slides so cards line up regardless of content length. */
+.eap-posts-slider .swiper-wrapper {
+	align-items: stretch;
+}
+
+.eap-posts-slider__slide {
+	display: flex;
+	height: auto;
+}
+
+.eap-posts-slider__slide > .eap-posts__item {
+	width: 100%;
+}
+
+/* --- Arrows ------------------------------------------------------------
+ * The two-class selector (0,2,0) deliberately beats a theme's
+ * `.elementor button {…}` (0,1,1) rules, which otherwise flatten the shape.
+ * -------------------------------------------------------------------- */
+
+.eap-posts-slider .eap-posts-slider__arrow {
+	--eap-ps-arrow: 44px;
+	--eap-ps-arrow-icon: 18px;
+	--eap-ps-arrow-offset: -10px;
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-ps-arrow);
+	height: var(--eap-ps-arrow);
+	margin: 0;
+	padding: 0;
+	color: #111827;
+	background: #fff;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+	cursor: pointer;
+	transform: translateY(-50%);
+	transition: color 0.2s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.eap-posts-slider .eap-posts-slider__arrow--prev {
+	left: var(--eap-ps-arrow-offset);
+}
+
+.eap-posts-slider .eap-posts-slider__arrow--next {
+	right: var(--eap-ps-arrow-offset);
+}
+
+.eap-posts-slider .eap-posts-slider__arrow svg {
+	display: block;
+	width: var(--eap-ps-arrow-icon);
+	height: var(--eap-ps-arrow-icon);
+}
+
+.eap-posts-slider .eap-posts-slider__arrow.swiper-button-disabled {
+	opacity: 0.35;
+	pointer-events: none;
+}
+
+/* Swiper adds this when there is nothing to scroll. */
+.eap-posts-slider .eap-posts-slider__arrow.swiper-button-lock {
+	display: none;
+}
+
+/* --- Pagination --------------------------------------------------------
+ * The element is a sibling of the swiper (not `.swiper-pagination`), so it
+ * stays in normal flow instead of being absolutely positioned by Swiper.
+ * -------------------------------------------------------------------- */
+
+.eap-posts-slider__pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin-top: 26px;
+	line-height: 1;
+}
+
+.eap-posts-slider__pagination .swiper-pagination-bullet {
+	width: 9px;
+	height: 9px;
+	margin: 0 !important;
+	background: #d1d5db;
+	opacity: 1;
+	transition: background-color 0.2s ease;
+}
+
+.eap-posts-slider__pagination .swiper-pagination-bullet-active {
+	background: #4f46e5;
+}
+
+/* Progress-bar type needs re-anchoring, since Swiper's own rule assumes an
+   absolutely positioned `.swiper-pagination` inside the container. */
+.eap-posts-slider__pagination.swiper-pagination-progressbar {
+	position: relative;
+	display: block;
+	height: 4px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.eap-posts-slider__pagination .swiper-pagination-progressbar-fill {
+	position: absolute;
+	inset: 0;
+	transform-origin: left top;
+	background: #4f46e5;
+}
+
+.eap-posts-slider__pagination.swiper-pagination-lock {
+	display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-posts-slider .eap-posts-slider__arrow,
+	.eap-posts-slider__pagination .swiper-pagination-bullet {
+		transition: none;
+	}
+}
