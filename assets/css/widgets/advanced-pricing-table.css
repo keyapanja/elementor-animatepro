@@ -1,0 +1,356 @@
+/*
+ * Advanced Pricing Table.
+ *
+ * The whole point is that feature rows LINE UP across plans, even when one cell
+ * says "Unlimited storage for every workspace" and its neighbour is a tick. That
+ * is done with a single grid and per-column subgrid — see the grid block below.
+ */
+
+.eap-apt {
+	--eap-apt-cols: 3;
+	--eap-apt-gap: 20px;
+	--eap-apt-row: 46px;
+	--eap-apt-radius: 14px;
+	--eap-apt-pad: 26px 24px;
+	--eap-apt-bg: #fff;
+	--eap-apt-hl-bg: #111827;
+	--eap-apt-hl-fg: #fff;
+	--eap-apt-feature: #374151;
+	--eap-apt-yes: #059669;
+	--eap-apt-no: #d1d5db;
+	--eap-apt-divider: rgba(17, 24, 39, 0.09);
+	--eap-apt-btn-fg: #fff;
+	--eap-apt-btn-bg: #4f46e5;
+	--eap-apt-btn-radius: 8px;
+}
+
+/* --- Billing toggle ----------------------------------------------------- */
+
+.eap-apt__billing {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin-bottom: 24px;
+}
+
+.eap-apt__billing-pills {
+	display: inline-flex;
+	padding: 4px;
+	background: #f3f4f6;
+	border-radius: 999px;
+}
+
+/* Two-class selector so a theme's `.elementor button` cannot take this over. */
+.eap-apt .eap-apt__billing-pill {
+	margin: 0;
+	padding: 8px 20px;
+	font: inherit;
+	font-size: 14px;
+	color: #374151;
+	background: transparent;
+	border: 0;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+	appearance: none;
+}
+
+.eap-apt .eap-apt__billing-pill.is-active {
+	color: #fff;
+	background: #111827;
+}
+
+.eap-apt__billing-note {
+	font-size: 13px;
+	color: #059669;
+	font-weight: 600;
+}
+
+/* --- Grid --------------------------------------------------------------- */
+
+/*
+ * A horizontal scroller so a wide comparison never squashes its columns into
+ * unreadable slivers on a mid-width screen. The grid inside keeps its own
+ * minimum column width.
+ */
+.eap-apt__scroll {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+/*
+ * ONE grid for the whole table, with each column as a SUBGRID.
+ *
+ * This is the mechanism that makes rows line up, and it replaced a per-column
+ * flex layout that did not. Two ways that failed, both caught by measuring:
+ *   - a fixed `min-height` per row is only a floor, so a value that wraps
+ *     ("Unlimited storage for every workspace") grew its own row and pushed
+ *     everything below it out of step with the neighbouring plans;
+ *   - the feature column's head has no price line, so it was shorter than the
+ *     plan heads and its whole column started offset.
+ * Subgrid solves both at once: row heights are decided once by the parent, so
+ * the tallest head sizes every head and the tallest cell sizes that row in
+ * every column.
+ *
+ * Rows are: head, one per feature, foot.
+ */
+.eap-apt__grid {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-apt-cols), minmax(190px, 1fr));
+	grid-template-rows: auto repeat(var(--eap-apt-rows, 1), auto) auto;
+	gap: var(--eap-apt-gap);
+	align-items: stretch;
+}
+
+/* --- Plan --------------------------------------------------------------- */
+
+.eap-apt__plan,
+.eap-apt__feature-column {
+	position: relative;
+	display: grid;
+	/* Span every row of the parent and inherit its row sizing. */
+	grid-row: 1 / -1;
+	grid-template-rows: subgrid;
+	padding: var(--eap-apt-pad);
+	box-sizing: border-box;
+}
+
+.eap-apt__plan {
+	background: var(--eap-apt-bg);
+	border-radius: var(--eap-apt-radius);
+}
+
+/*
+ * Without subgrid the columns fall back to sizing their own rows, which is the
+ * behaviour this replaced — so keep long values on one line there rather than
+ * letting a wrap silently break the alignment.
+ */
+@supports not (grid-template-rows: subgrid) {
+	.eap-apt__cell {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+.eap-apt__plan.is-highlighted {
+	background: var(--eap-apt-hl-bg);
+	color: var(--eap-apt-hl-fg);
+}
+
+/*
+ * Inside a highlighted plan the greys would disappear against the dark
+ * background, so everything inherits instead. currentColor keeps the tick
+ * legible without the author needing a second set of colour controls.
+ */
+.eap-apt__plan.is-highlighted .eap-apt__name,
+.eap-apt__plan.is-highlighted .eap-apt__amount,
+.eap-apt__plan.is-highlighted .eap-apt__period,
+.eap-apt__plan.is-highlighted .eap-apt__description,
+.eap-apt__plan.is-highlighted .eap-apt__cell,
+.eap-apt__plan.is-highlighted .eap-apt__feature-name,
+/*
+ * The ROW has to be in this list, not just its children. The row sets
+ * `color: var(--eap-apt-feature)`, and the tick is drawn in currentColor — so
+ * without this the tick inherited the grey meant for a white card and was
+ * effectively invisible on the dark highlighted plan.
+ */
+.eap-apt__plan.is-highlighted .eap-apt__row {
+	color: inherit;
+}
+
+.eap-apt__plan.is-highlighted .eap-apt__icon--yes,
+.eap-apt__plan.is-highlighted .eap-apt__icon--no {
+	color: currentColor;
+}
+
+/* The cross should still read as "not included" — dimmed, but visible. */
+.eap-apt__plan.is-highlighted .eap-apt__icon--no {
+	opacity: 0.45;
+}
+
+.eap-apt__plan.is-highlighted .eap-apt__row {
+	border-color: rgba(255, 255, 255, 0.16);
+}
+
+.eap-apt__badge {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	padding: 4px 14px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: #111827;
+	background: #fbbf24;
+	border-radius: 999px;
+	transform: translate(-50%, -50%);
+	white-space: nowrap;
+}
+
+/* --- Head --------------------------------------------------------------- */
+
+.eap-apt__head {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding-bottom: 18px;
+}
+
+.eap-apt__name {
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.eap-apt__description {
+	font-size: 13px;
+	color: #6b7280;
+}
+
+.eap-apt__price {
+	display: flex;
+	align-items: baseline;
+	gap: 4px;
+	margin-top: 6px;
+	flex-wrap: wrap;
+}
+
+.eap-apt__amount {
+	font-size: 34px;
+	font-weight: 700;
+	line-height: 1.1;
+	/* Tabular figures so switching $19 -> $190 does not jiggle the row. */
+	font-variant-numeric: tabular-nums;
+}
+
+.eap-apt__period {
+	font-size: 14px;
+	color: #6b7280;
+}
+
+/* --- Rows --------------------------------------------------------------- */
+
+/*
+ * min-height is a comfortable FLOOR, not the alignment mechanism — the parent
+ * grid decides the real height of each row (see the grid block above). Relying
+ * on it for alignment is exactly what failed before subgrid.
+ */
+.eap-apt__row {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: var(--eap-apt-row);
+	padding: 4px 0;
+	border-top: 1px solid var(--eap-apt-divider);
+	color: var(--eap-apt-feature);
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+.eap-apt__row:first-child {
+	border-top: 0;
+}
+
+.eap-apt__cell {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+	text-align: center;
+}
+
+.eap-apt__icon {
+	width: 20px;
+	height: 20px;
+}
+
+.eap-apt__icon--yes {
+	color: var(--eap-apt-yes);
+}
+
+.eap-apt__icon--no {
+	color: var(--eap-apt-no);
+}
+
+/* Cards that repeat the feature name put it left and the value right. */
+.eap-apt--labelled .eap-apt__row {
+	justify-content: space-between;
+	text-align: left;
+}
+
+.eap-apt--labelled .eap-apt__feature-name {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.eap-apt__feature-name[title] {
+	cursor: help;
+	border-bottom: 1px dotted currentColor;
+}
+
+/* --- Feature column (table layout) -------------------------------------- */
+
+.eap-apt__feature-column .eap-apt__row {
+	justify-content: flex-start;
+	text-align: left;
+}
+
+.eap-apt__feature-column .eap-apt__name {
+	font-size: 15px;
+	color: #6b7280;
+}
+
+/* --- Foot --------------------------------------------------------------- */
+
+.eap-apt__foot {
+	padding-top: 18px;
+	/*
+	 * Reserves the button's height in the feature column too, so a table's rows
+	 * stay level all the way to the bottom edge.
+	 */
+	min-height: 22px;
+}
+
+.eap-apt .eap-apt__button {
+	display: block;
+	width: 100%;
+	padding: 12px 18px;
+	font: inherit;
+	font-weight: 600;
+	text-align: center;
+	text-decoration: none;
+	color: var(--eap-apt-btn-fg);
+	background: var(--eap-apt-btn-bg);
+	border: 0;
+	border-radius: var(--eap-apt-btn-radius);
+	cursor: pointer;
+	transition: filter 0.2s ease;
+	box-sizing: border-box;
+}
+
+.eap-apt .eap-apt__button:hover {
+	filter: brightness(0.93);
+}
+
+/* --- Editor empty state ------------------------------------------------- */
+
+.eap-apt--empty {
+	padding: 22px;
+	text-align: center;
+	color: #6b7280;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-apt .eap-apt__billing-pill,
+	.eap-apt .eap-apt__button {
+		transition: none;
+	}
+}

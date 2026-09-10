@@ -45,6 +45,21 @@ it**.
 - **Image Accordion** — horizontal or vertical, hover or click.
 - **Price Box** — a pricing card (header + icon, price with discount/period,
   feature list with tooltips, corner/circular ribbon, CTA + footer note).
+- **Advanced Pricing Table** — a multi-plan **comparison**, where every plan is
+  scored against one shared feature list. **Plan Cards** or a **Comparison
+  Table** with a leading column of feature names; a highlighted plan with a
+  badge; and a built-in **billing toggle** that swaps every plan between its
+  price and an alternate (monthly / yearly), with no request.
+  Because Elementor repeaters cannot nest, each plan's values are one per line,
+  positionally matched to the feature list — the same approach Data Table uses.
+  `yes` / `no` render a tick or a cross; anything else renders as text, so
+  "10 GB" or "Unlimited" work too.
+  *Where this differs from Price Box:* that widget is a single card, and the way
+  to build a table with it is to drop several into columns — which looks right
+  until the feature lists differ, and then the rows stop lining up. Here the rows
+  align **by construction**: the whole table is one CSS grid and each column is a
+  `subgrid`, so a value that wraps onto two lines grows that row in *every* plan
+  rather than knocking one column out of step. Use Price Box for a lone plan.
 - **Data Table** — build in-panel (columns + rows) or paste **CSV/TSV**, with
   optional **sort / search / pagination** and responsive horizontal-scroll or
   stacked-card modes.
@@ -457,4 +472,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.72
+**Current version:** 1.20.73
