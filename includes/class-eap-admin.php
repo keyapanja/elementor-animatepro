@@ -1094,7 +1094,6 @@ class EAP_Admin {
 					'Toggle Switch',
 					'Advanced Pricing Table',
 					'Scroll Elements',
-					'Advanced Portfolio',
 					'Filterable Gallery',
 					'Breadcrumbs',
 					'Table Of Content',
