@@ -291,6 +291,22 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
   the tilt on touch pointers.
   *Note:* `scaleZ` only affects 3D-transformed descendants and `skewZ` does not
   exist in CSS, so neither is offered.
+- **Custom Cursor** — replaces the pointer while it is over an element. Adds a
+  **Custom Cursor** section to the Advanced tab of **every element**, with a
+  **Normal** and a **Pointer** state (the latter used over links, buttons and
+  fields inside the element), each of which can be **Default, Circle, Icon,
+  Image** or **SVG Code** with its own size, colour, background, border, radius
+  and opacity. **Enable Trail** adds one of eight motion effects — Ink Trail,
+  Trail Particles, Phantom Smoke, Spirit Echo, Glow Blocks, Chroma Orbs, Frost
+  Sparkles, Dot Comet — with a trail colour and size. Plus follow speed, blend
+  mode, z-index and an option to keep the real cursor visible.
+  One shared cursor node is created per page and adopts whichever element the
+  pointer is over, so many enabled elements still cost one node and one
+  animation frame loop — which runs only while a cursor is on screen. Pasted SVG
+  is sanitised through a `wp_kses` allowlist (no scripts, event handlers or
+  links). Skipped entirely under `prefers-reduced-motion` and on touch pointers.
+  *Note:* front end only by design — the editor canvas keeps the real pointer so
+  the element stays draggable and resizable.
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
@@ -332,4 +348,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.62
+**Current version:** 1.20.63

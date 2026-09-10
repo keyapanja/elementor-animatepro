@@ -1,0 +1,218 @@
+/*
+ * EAP Custom Cursor.
+ *
+ * One shared root is created per page by custom-cursor.js and adopts whichever
+ * element the pointer is over, so a page with twenty cursor-enabled elements
+ * still has one node. Everything the controls set arrives as a CSS variable on
+ * that root, which is why there is no per-element CSS here at all.
+ */
+
+.eap-cc-root {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+	pointer-events: none;
+	z-index: var(--eap-cc-z, 99999);
+}
+
+/* The cursor itself. */
+.eap-cc-dot {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-cc-size, 32px);
+	height: var(--eap-cc-size, 32px);
+	margin-top: calc(var(--eap-cc-size, 32px) / -2);
+	margin-left: calc(var(--eap-cc-size, 32px) / -2);
+	border-radius: var(--eap-cc-radius, 50%);
+	color: var(--eap-cc-color, #111827);
+	background: var(--eap-cc-bg, transparent);
+	border: var(--eap-cc-bw, 0px) solid var(--eap-cc-bc, transparent);
+	opacity: 0;
+	mix-blend-mode: var(--eap-cc-blend, normal);
+	/*
+	 * Only opacity/scale are transitioned. Position is written every frame by
+	 * the rAF loop, so transitioning transform would fight it and smear.
+	 */
+	transition: opacity 0.18s ease, width 0.18s ease, height 0.18s ease;
+	box-sizing: border-box;
+	overflow: hidden;
+	will-change: transform;
+}
+
+.eap-cc-dot.is-visible {
+	opacity: var(--eap-cc-opacity, 1);
+}
+
+/* Icon / SVG fill the dot and inherit its colour. */
+.eap-cc-dot svg {
+	width: 60%;
+	height: 60%;
+	fill: currentColor;
+	stroke: currentColor;
+	stroke-width: 0;
+}
+
+.eap-cc-dot i,
+.eap-cc-dot span {
+	font-size: calc(var(--eap-cc-size, 32px) * 0.5);
+	line-height: 1;
+	color: currentColor;
+}
+
+/* Image cursors fill the dot edge to edge. */
+.eap-cc-dot img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	display: block;
+}
+
+/*
+ * `!important` is load-bearing rather than lazy: a link's own `cursor: pointer`
+ * would otherwise reappear the moment the pointer crossed onto it, flickering
+ * the real arrow back over the custom one. The class is added and removed by JS,
+ * so it is only ever on an element that opted in.
+ */
+.eap-cc-hide,
+.eap-cc-hide * {
+	cursor: none !important;
+}
+
+/* =======================================================================
+ * TRAIL
+ *
+ * Every effect is the same spawned node with a different animation. The JS sets
+ * the per-particle values (--tx/--ty end offset, --s size, --r rotation,
+ * --h hue shift) so the keyframes stay declarative and no trigonometry has to
+ * happen in CSS.
+ * ==================================================================== */
+
+.eap-cc-p {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: var(--s, 16px);
+	height: var(--s, 16px);
+	margin-top: calc(var(--s, 16px) / -2);
+	margin-left: calc(var(--s, 16px) / -2);
+	border-radius: 50%;
+	background: var(--eap-cc-trail-color, #6366f1);
+	pointer-events: none;
+	will-change: transform, opacity;
+}
+
+/* Ink Trail — heavy, slow-fading blots that read as a wet stroke. */
+.eap-cc-p--ink {
+	filter: blur(1px);
+	animation: eap-cc-ink 900ms ease-out forwards;
+}
+
+@keyframes eap-cc-ink {
+	0% { transform: scale(1); opacity: 0.85; }
+	100% { transform: scale(0.2); opacity: 0; }
+}
+
+/* Trail Particles — small dots flicked outwards. */
+.eap-cc-p--particles {
+	animation: eap-cc-particles 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes eap-cc-particles {
+	0% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+	100% { transform: translate3d(var(--tx, 0), var(--ty, 0), 0) scale(0.1); opacity: 0; }
+}
+
+/* Phantom Smoke — big soft puffs that swell and drift upward. */
+.eap-cc-p--smoke {
+	filter: blur(6px);
+	animation: eap-cc-smoke 1400ms ease-out forwards;
+}
+
+@keyframes eap-cc-smoke {
+	0% { transform: translate3d(0, 0, 0) scale(0.4); opacity: 0.5; }
+	100% { transform: translate3d(var(--tx, 0), calc(var(--ty, 0px) - 40px), 0) scale(2.2); opacity: 0; }
+}
+
+/* Spirit Echo — concentric rings expanding out of the cursor. */
+.eap-cc-p--echo {
+	background: transparent;
+	border: 2px solid var(--eap-cc-trail-color, #6366f1);
+	animation: eap-cc-echo 900ms ease-out forwards;
+}
+
+@keyframes eap-cc-echo {
+	0% { transform: scale(0.3); opacity: 0.9; }
+	100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* Glow Blocks — squares that tumble and glow out. */
+.eap-cc-p--blocks {
+	border-radius: 2px;
+	box-shadow: 0 0 12px var(--eap-cc-trail-color, #6366f1);
+	animation: eap-cc-blocks 800ms ease-out forwards;
+}
+
+@keyframes eap-cc-blocks {
+	0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 0.95; }
+	100% { transform: translate3d(var(--tx, 0), var(--ty, 0), 0) rotate(var(--r, 180deg)) scale(0.2); opacity: 0; }
+}
+
+/* Chroma Orbs — hue-cycling bubbles. The trail colour is ignored here on
+   purpose; the effect IS the colour shift. */
+.eap-cc-p--orbs {
+	background: hsl(var(--h, 0) 90% 62%);
+	box-shadow: 0 0 16px hsl(var(--h, 0) 90% 62% / 0.7);
+	animation: eap-cc-orbs 1000ms ease-out forwards;
+}
+
+@keyframes eap-cc-orbs {
+	0% { transform: translate3d(0, 0, 0) scale(0.6); opacity: 0.9; }
+	50% { transform: translate3d(calc(var(--tx, 0px) / 2), calc(var(--ty, 0px) / 2), 0) scale(1.15); opacity: 0.7; }
+	100% { transform: translate3d(var(--tx, 0), var(--ty, 0), 0) scale(0.2); opacity: 0; }
+}
+
+/* Frost Sparkles — four-point twinkles. The star is drawn with a clip-path so
+   it needs no extra markup. */
+.eap-cc-p--frost {
+	border-radius: 0;
+	clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+	animation: eap-cc-frost 900ms ease-in-out forwards;
+}
+
+@keyframes eap-cc-frost {
+	0% { transform: translate3d(0, 0, 0) scale(0) rotate(0deg); opacity: 0; }
+	35% { transform: translate3d(calc(var(--tx, 0px) / 3), calc(var(--ty, 0px) / 3), 0) scale(1) rotate(45deg); opacity: 1; }
+	100% { transform: translate3d(var(--tx, 0), var(--ty, 0), 0) scale(0) rotate(var(--r, 160deg)); opacity: 0; }
+}
+
+/* Dot Comet — a tight tail of shrinking dots directly behind the cursor. */
+.eap-cc-p--comet {
+	animation: eap-cc-comet 500ms linear forwards;
+}
+
+@keyframes eap-cc-comet {
+	0% { transform: scale(1); opacity: 0.9; }
+	100% { transform: scale(0); opacity: 0; }
+}
+
+/*
+ * A decorative pointer is exactly the kind of motion this setting asks to be
+ * spared, and hiding the real cursor for it would be worse than useless. The JS
+ * checks the same query and never engages, so this is belt and braces.
+ */
+@media (prefers-reduced-motion: reduce) {
+	.eap-cc-root {
+		display: none;
+	}
+
+	.eap-cc-hide,
+	.eap-cc-hide * {
+		cursor: auto !important;
+	}
+}

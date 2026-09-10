@@ -52,7 +52,8 @@
 .elementor-control-eap_tooltip_section .elementor-panel-heading-title::after,
 .elementor-control-eap_cd_section .elementor-panel-heading-title::after,
 .elementor-control-eap_ia_section .elementor-panel-heading-title::after,
-.elementor-control-eap_hi_section .elementor-panel-heading-title::after {
+.elementor-control-eap_hi_section .elementor-panel-heading-title::after,
+.elementor-control-eap_cc_section .elementor-panel-heading-title::after {
 	content: "EAP";
 	display: inline-flex;
 	align-items: center;

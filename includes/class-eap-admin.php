@@ -1305,7 +1305,7 @@ class EAP_Admin {
 			array(
 				'key'         => 'custom-cursor',
 				'label'       => __( 'Custom Cursor', 'elementor-animatepro' ),
-				'description' => __( 'Attach cursor-followers and hover-aware pointer content.', 'elementor-animatepro' ),
+				'description' => __( 'Replace the pointer over any element — circle, icon, image or SVG, with a separate hover state and eight trail effects.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-editor-customchar',
 			),
 			array(
