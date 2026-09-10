@@ -194,6 +194,13 @@ blank on the canvas.
   widget-wide **Fallback Image** → a gradient placeholder. Full term query
   (taxonomy, count, order, hide-empty, include/exclude) plus the usual slider
   options, arrows and pagination.
+- **Video Box Slider** — a carousel of hand-authored **video boxes** (poster +
+  play button + title/description, with optional badge and duration). Supports
+  **YouTube, Vimeo and self-hosted** MP4/WebM; clicking play opens the video in a
+  **lightbox** (Esc / backdrop / × to close) or swaps it in **inline**. The
+  provider and video ID are parsed server-side, so the browser only assembles an
+  embed URL. YouTube boxes use YouTube's own thumbnail when no poster is set, and
+  the slider's autoplay pauses whenever a video starts.
 
 ## Admin
 
@@ -214,4 +221,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.50
+**Current version:** 1.20.51
