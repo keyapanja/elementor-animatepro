@@ -90,6 +90,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-post-rating-form.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-advanced-posts.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-filterable-posts.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-featured-posts.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
@@ -152,6 +153,7 @@ class EAP_Elementor {
 		$post_rating_form_on       = ! array_key_exists( 'post-rating-form', $widget_states ) || ! empty( $widget_states['post-rating-form'] );
 		$advanced_posts_on         = ! array_key_exists( 'advanced-posts', $widget_states ) || ! empty( $widget_states['advanced-posts'] );
 		$filterable_posts_on       = ! array_key_exists( 'filterable-posts', $widget_states ) || ! empty( $widget_states['filterable-posts'] );
+		$featured_posts_on         = ! array_key_exists( 'featured-posts', $widget_states ) || ! empty( $widget_states['featured-posts'] );
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
 		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
@@ -354,6 +356,10 @@ class EAP_Elementor {
 
 		if ( $filterable_posts_on ) {
 			$widgets_manager->register( new EAP_Widget_Filterable_Posts() );
+		}
+
+		if ( $featured_posts_on ) {
+			$widgets_manager->register( new EAP_Widget_Featured_Posts() );
 		}
 
 		if ( $posts_timeline_on ) {

@@ -160,6 +160,25 @@ blank on the canvas.
   range), and the counts shown on each tab are exact rather than term totals.
   Choose it for a curated set that should feel instant; choose Advanced Posts to
   page through a large archive.
+- **Featured Posts** — an **editorial hero block**: one or two lead stories given
+  real visual weight, with the rest as supporting items. Arrangements: **Hero +
+  Side List** (hero either side, supporting items as a stacked list or small
+  cards), **Two Co-Leads**, and **Mosaic** (hero beside a 2-up grid). The hero
+  can be **Overlay** (text on a scrim over the image) or a card, and hero and
+  supporting items have **separate element toggles**, so the hero can carry an
+  excerpt and read-more while the list stays compact.
+  Source is what makes it "featured": **Sticky Posts** (the posts you marked
+  "stick to the top of the blog", falling back to the latest so the block is
+  never empty), a **Meta Flag** (any custom field that is set and truthy — pairs
+  with an ACF true/false field), **Hand-picked**, or Latest. Sticky, Meta and
+  Hand-picked all resolve to an ID list and go through the shared publish-only
+  path, so none of them can surface a draft or private post.
+  Both sections render through `EAP_Posts_Query::render_card()` with *different*
+  display specs and their own `.eap-posts--{layout}` modifier, so there is no
+  duplicated card markup. Stacks to one column below a configurable width, hero
+  first. CSS only, no JavaScript.
+  *Not to be confused with* Advanced Posts' **Featured layout**, which is a wide
+  lead card above a uniform grid — use that one if that is the shape you want.
 - **Posts Timeline** — the Posts loop laid down a vertical timeline: a line with
   dated nodes and **year dividers**, in an **Alternating** (centered zig-zag) or
   **One-sided** (left rail) arrangement (alternating collapses to one-sided on
@@ -380,4 +399,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.67
+**Current version:** 1.20.68

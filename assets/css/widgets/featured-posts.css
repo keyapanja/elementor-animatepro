@@ -1,0 +1,195 @@
+/*
+ * Featured Posts — an editorial hero block.
+ *
+ * Cards come from EAP_Posts_Query and are styled by posts.css. This file owns
+ * only the two-section arrangement and the hero's extra visual weight.
+ */
+
+.eap-featured-posts {
+	--eap-fp-gap: 24px;
+	--eap-fp-hero-w: 1.6fr;
+	--eap-fp-hero-h: 420px;
+	--eap-fp-scrim: rgba(17, 24, 39, 0.72);
+	--eap-fp-stack: 782px;
+
+	display: grid;
+	grid-template-columns: var(--eap-fp-hero-w) 1fr;
+	gap: var(--eap-fp-gap);
+	align-items: start;
+}
+
+/*
+ * Hero on the right = swap the column order. `order` rather than
+ * `direction: rtl` or a reversed template, so the DOM order (hero first) stays
+ * correct for reading order and keyboard focus.
+ */
+.eap-featured-posts--hero-right {
+	grid-template-columns: 1fr var(--eap-fp-hero-w);
+}
+
+.eap-featured-posts--hero-right .eap-featured-posts__hero {
+	order: 2;
+}
+
+.eap-featured-posts--hero-right .eap-featured-posts__side {
+	order: 1;
+}
+
+/* Two co-leads: one section, two equal columns, no side list. */
+.eap-featured-posts--duo {
+	grid-template-columns: 1fr;
+}
+
+.eap-featured-posts--duo .eap-featured-posts__hero .eap-posts__grid {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: var(--eap-fp-gap);
+}
+
+/* --- Sections ----------------------------------------------------------- */
+
+.eap-featured-posts__hero,
+.eap-featured-posts__side {
+	min-width: 0;
+}
+
+.eap-featured-posts__hero .eap-posts__grid,
+.eap-featured-posts__side .eap-posts__grid {
+	column-gap: var(--eap-fp-gap);
+	row-gap: var(--eap-fp-gap);
+}
+
+/* The hero is a single column unless it is holding two co-leads. */
+.eap-featured-posts:not(.eap-featured-posts--duo) .eap-featured-posts__hero .eap-posts__grid {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+/* --- Hero weight --------------------------------------------------------
+ * The hero's whole job is to look bigger than the supporting items.
+ * -------------------------------------------------------------------- */
+
+.eap-featured-posts__hero .eap-posts__item {
+	min-height: var(--eap-fp-hero-h);
+}
+
+/*
+ * In overlay style the image has to fill the tile. `!important` is load-bearing:
+ * the Minimum Height control writes a {{WRAPPER}}-scoped rule and Elementor's
+ * generated CSS outranks this stylesheet, so without it the fill loses and the
+ * image stops covering. (Same trap as Category Slider and Category Showcase.)
+ */
+.eap-featured-posts__hero.eap-posts--overlay .eap-posts__item {
+	position: relative;
+}
+
+.eap-featured-posts__hero.eap-posts--overlay .eap-posts__image {
+	position: absolute !important;
+	inset: 0 !important;
+	height: 100% !important;
+	width: 100% !important;
+}
+
+.eap-featured-posts__hero.eap-posts--overlay .eap-posts__img {
+	height: 100%;
+	object-fit: cover;
+}
+
+.eap-featured-posts__hero.eap-posts--overlay .eap-posts__item::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to top, var(--eap-fp-scrim) 0%, rgba(0, 0, 0, 0) 70%);
+	pointer-events: none;
+}
+
+.eap-featured-posts__hero.eap-posts--overlay .eap-posts__body {
+	position: relative;
+	z-index: 1;
+	margin-top: auto;
+}
+
+.eap-featured-posts__hero .eap-posts__title {
+	font-size: 30px;
+	line-height: 1.22;
+}
+
+.eap-featured-posts--duo .eap-featured-posts__hero .eap-posts__title {
+	font-size: 24px;
+}
+
+/* --- Supporting items --------------------------------------------------- */
+
+.eap-featured-posts__side .eap-posts__item {
+	min-height: 0;
+}
+
+.eap-featured-posts__side .eap-posts__title {
+	font-size: 16px;
+	line-height: 1.35;
+}
+
+/*
+ * A list-style side column is a stack of rows, so its images want a fixed,
+ * modest height rather than the tall aspect a grid card gets.
+ */
+.eap-featured-posts__side.eap-posts--list .eap-posts__img {
+	height: 100%;
+	min-height: 84px;
+	object-fit: cover;
+}
+
+/* --- Mosaic ------------------------------------------------------------
+ * Supporting items become a 2-up grid of small cards beside the hero.
+ * -------------------------------------------------------------------- */
+
+.eap-featured-posts--mosaic .eap-featured-posts__side .eap-posts__grid {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.eap-featured-posts--mosaic .eap-featured-posts__side .eap-posts__img {
+	height: 120px;
+	object-fit: cover;
+}
+
+/* --- Stacking ----------------------------------------------------------
+ * A container query would be better than a media query here — the widget can
+ * sit in a narrow column on a wide screen — but Elementor writes the breakpoint
+ * as a variable and container queries cannot be driven by one, so the viewport
+ * is what the author gets to choose.
+ * -------------------------------------------------------------------- */
+
+@media (max-width: 782px) {
+	.eap-featured-posts,
+	.eap-featured-posts--hero-right {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.eap-featured-posts--hero-right .eap-featured-posts__hero,
+	.eap-featured-posts--hero-right .eap-featured-posts__side {
+		order: 0;
+	}
+
+	.eap-featured-posts--duo .eap-featured-posts__hero .eap-posts__grid,
+	.eap-featured-posts--mosaic .eap-featured-posts__side .eap-posts__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.eap-featured-posts__hero .eap-posts__item {
+		min-height: 300px;
+	}
+
+	.eap-featured-posts__hero .eap-posts__title {
+		font-size: 22px;
+	}
+}
+
+/* --- Editor empty state ------------------------------------------------- */
+
+.eap-featured-posts--empty {
+	display: block;
+	padding: 22px;
+	text-align: center;
+	color: #6b7280;
+	background: #f9fafb;
+	border: 1px dashed #d1d5db;
+	border-radius: 10px;
+}
