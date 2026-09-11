@@ -1,0 +1,235 @@
+/*
+ * Vertical Marquee.
+ *
+ * Each column's track is its list plus an identical copy. Every list carries
+ * the item gap as bottom padding (not the track as a flex gap), so the track
+ * is exactly two list-heights and translating it by -50% moves precisely one
+ * list — the loop has no seam. The script sets the duration from the list's
+ * measured height, so speed is pixels per second.
+ *
+ * Until the script has built the columns — and always without it — the page
+ * shows the source list as an ordinary scrollable list.
+ */
+
+.eap-vm [hidden] {
+	display: none !important;
+}
+
+.eap-vm {
+	--eap-vm-cols: 3;
+	--eap-vm-height: 520px;
+	--eap-vm-gap: 16px;
+	--eap-vm-col-gap: 16px;
+	--eap-vm-fade: 64px;
+
+	position: relative;
+}
+
+.eap-vm__viewport {
+	display: grid;
+	grid-template-columns: repeat(var(--eap-vm-cols), minmax(0, 1fr));
+	column-gap: var(--eap-vm-col-gap);
+	height: var(--eap-vm-height);
+	overflow: hidden;
+}
+
+.eap-vm--fade .eap-vm__viewport {
+	-webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--eap-vm-fade), #000 calc(100% - var(--eap-vm-fade)), transparent 100%);
+	mask-image: linear-gradient(to bottom, transparent 0, #000 var(--eap-vm-fade), #000 calc(100% - var(--eap-vm-fade)), transparent 100%);
+}
+
+/* No script (or not yet): the one list, scrollable, across the full width. */
+.eap-vm__source {
+	grid-column: 1 / -1;
+	display: flex;
+	flex-direction: column;
+	gap: var(--eap-vm-gap);
+	margin: 0;
+	padding: 0;
+	overflow-y: auto;
+	list-style: none;
+}
+
+.eap-vm__column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.eap-vm__track {
+	display: flex;
+	flex-direction: column;
+	animation: eap-vm-up var(--eap-vm-duration, 30s) linear infinite;
+	animation-delay: calc(var(--eap-vm-duration, 30s) * var(--eap-vm-phase, 0) * -1);
+	will-change: transform;
+}
+
+.eap-vm__track.is-down {
+	animation-name: eap-vm-down;
+}
+
+.eap-vm__list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--eap-vm-gap);
+	margin: 0;
+	padding: 0 0 var(--eap-vm-gap);
+	list-style: none;
+}
+
+@keyframes eap-vm-up {
+	from {
+		transform: translate3d(0, 0, 0);
+	}
+
+	to {
+		transform: translate3d(0, -50%, 0);
+	}
+}
+
+@keyframes eap-vm-down {
+	from {
+		transform: translate3d(0, -50%, 0);
+	}
+
+	to {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* Hover (when chosen), keyboard focus anywhere inside, or the button. */
+.eap-vm.is-paused .eap-vm__track,
+.eap-vm--hover-pause:hover .eap-vm__track,
+.eap-vm:focus-within .eap-vm__track {
+	animation-play-state: paused;
+}
+
+/* Reduced motion: still columns the visitor scrolls. */
+.eap-vm.is-still .eap-vm__track {
+	animation: none;
+}
+
+.eap-vm.is-still .eap-vm__column {
+	overflow-y: auto;
+}
+
+/* --- Items -------------------------------------------------------------- */
+
+.eap-vm__item {
+	margin: 0;
+	padding: 0;
+}
+
+.eap-vm__card {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	box-sizing: border-box;
+	padding: 18px 20px;
+	border: 1px solid rgba(127, 127, 127, 0.22);
+	border-radius: 12px;
+	background: rgba(127, 127, 127, 0.06);
+	color: inherit;
+	text-decoration: none;
+}
+
+a.eap-vm__card:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.eap-vm__img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.eap-vm__item--card .eap-vm__img {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.eap-vm__item--image .eap-vm__card {
+	padding: 0;
+	overflow: hidden;
+}
+
+.eap-vm__item--image .eap-vm__img {
+	width: 100%;
+}
+
+.eap-vm__title {
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.eap-vm__item--text .eap-vm__title {
+	font-size: 1.3em;
+	line-height: 1.25;
+}
+
+.eap-vm__text {
+	line-height: 1.55;
+	opacity: 0.85;
+}
+
+.eap-vm__meta {
+	font-size: 0.85em;
+	opacity: 0.7;
+}
+
+/* --- Pause -------------------------------------------------------------- */
+
+.eap-vm__pause {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	z-index: 3;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(17, 17, 17, 0.65);
+	color: #fff;
+	cursor: pointer;
+}
+
+.eap-vm__pause svg {
+	width: 16px;
+	height: 16px;
+}
+
+.eap-vm__pause:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.eap-vm__play-icon,
+.eap-vm__pause[aria-pressed="true"] .eap-vm__pause-icon {
+	display: none;
+}
+
+.eap-vm__pause[aria-pressed="true"] .eap-vm__play-icon {
+	display: block;
+}
+
+.eap-vm--empty {
+	padding: 20px;
+	border: 1px dashed rgba(127, 127, 127, 0.5);
+	text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-vm__track {
+		animation: none !important;
+	}
+
+	.eap-vm__column {
+		overflow-y: auto;
+	}
+}

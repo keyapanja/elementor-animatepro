@@ -152,6 +152,20 @@ it**.
   our modules and Elementor's handlers over each clone. Autoplay has a **pause
   button** (moving content needs one under WCAG 2.2.2), holds still while focus
   is inside a slide, and is off for visitors who ask for reduced motion.
+- **Vertical Marquee** — columns of cards, images or text that scroll
+  continuously, up, down, or alternating column by column: the "wall of
+  testimonials" effect. Speed is in **pixels per second** — each column is
+  measured and timed from its own height, so a column with more in it moves at
+  the same pace instead of faster. The loop is **seamless**: each column is its
+  list plus an identical copy, animated by exactly one list height, and a short
+  column is topped up first so the seam never shows as a gap. Columns are dealt
+  out in the browser, because how many there are is a responsive setting the
+  server cannot resolve per device; items are shared out across the columns, or
+  every column shows them all. Screen readers get **each item once** — the loop
+  copies are hidden from them and taken out of the tab order. Hover and
+  keyboard focus pause it, there is a **pause button** (moving content needs
+  one under WCAG 2.2.2), reduced motion turns it into columns you scroll
+  yourself, and without the script it is a plain scrollable list.
 
 ### Text & UI
 - **Animated Text**, **Advanced Animated Text**, **Advanced Button**,
@@ -609,4 +623,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.83
+**Current version:** 1.20.84
