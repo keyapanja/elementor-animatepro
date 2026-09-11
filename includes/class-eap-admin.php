@@ -1151,8 +1151,6 @@ class EAP_Admin {
 					'Advanced Accordion',
 					'Nested Slider',
 					'Stacked Cards',
-					'Scrollmotion Cards',
-					'Nested Motion Card',
 					'Vertical Marquee',
 				),
 			),
