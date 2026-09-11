@@ -1,0 +1,99 @@
+/*
+ * Breadcrumbs.
+ *
+ * One flex row: optional prefix, then an <ol> whose items each carry their
+ * own separator BEFORE the label (inside the <li>, so the list stays a valid
+ * list for assistive tech — a separator <li> would be announced as an item).
+ */
+
+.eap-bc .screen-reader-text {
+	position: absolute !important;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.eap-bc {
+	--eap-bc-gap: 0.5em;
+	--eap-bc-ul: none;
+	--eap-bc-ul-hover: underline;
+
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-start;
+	line-height: 1.4;
+}
+
+.eap-bc__list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.eap-bc__item {
+	display: inline-flex;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+}
+
+.eap-bc__sep {
+	display: inline-flex;
+	align-items: center;
+	margin: 0 var(--eap-bc-gap);
+	opacity: 0.6;
+	user-select: none;
+}
+
+.eap-bc__sep svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-bc__link {
+	color: inherit;
+	text-decoration: var(--eap-bc-ul);
+	text-underline-offset: 0.15em;
+	transition: color 0.2s ease;
+}
+
+.eap-bc__link:hover,
+.eap-bc__link:focus-visible {
+	text-decoration: var(--eap-bc-ul-hover);
+}
+
+/* The current crumb reads as the page you are on, not another link. */
+:where(.eap-bc__current) {
+	opacity: 0.75;
+}
+
+.eap-bc__prefix {
+	display: inline-flex;
+	align-items: center;
+	margin-inline-end: var(--eap-bc-gap);
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-bc__prefix svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+/* A long title must wrap inside its own crumb, never push the row sideways. */
+.eap-bc__current {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}

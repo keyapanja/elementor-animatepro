@@ -98,6 +98,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-advanced-pricing-table.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-scroll-elements.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-filterable-gallery.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-breadcrumbs.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
@@ -168,6 +169,7 @@ class EAP_Elementor {
 		$adv_pricing_table_on      = ! array_key_exists( 'advanced-pricing-table', $widget_states ) || ! empty( $widget_states['advanced-pricing-table'] );
 		$scroll_elements_on        = ! array_key_exists( 'scroll-elements', $widget_states ) || ! empty( $widget_states['scroll-elements'] );
 		$filterable_gallery_on     = ! array_key_exists( 'filterable-gallery', $widget_states ) || ! empty( $widget_states['filterable-gallery'] );
+		$breadcrumbs_on            = ! array_key_exists( 'breadcrumbs', $widget_states ) || ! empty( $widget_states['breadcrumbs'] );
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
 		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
@@ -402,6 +404,10 @@ class EAP_Elementor {
 
 		if ( $filterable_gallery_on ) {
 			$widgets_manager->register( new EAP_Widget_Filterable_Gallery() );
+		}
+
+		if ( $breadcrumbs_on ) {
+			$widgets_manager->register( new EAP_Widget_Breadcrumbs() );
 		}
 
 		if ( $posts_timeline_on ) {

@@ -153,6 +153,7 @@ class EAP_Assets {
 			'advanced-pricing-table',
 			'scroll-elements',
 			'filterable-gallery',
+			'breadcrumbs',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',

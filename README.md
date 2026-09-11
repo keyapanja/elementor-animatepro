@@ -120,6 +120,24 @@ it**.
   and there is nothing to keep in sync. Use One Page Nav for sections built
   elsewhere on the page; use this for a self-contained document like terms, a
   privacy policy or a spec.
+- **Breadcrumbs** — a Home → current-page trail for every context WordPress
+  has: page hierarchies, posts through their category ancestors, custom post
+  types through their archive and hierarchical taxonomy, attachments, term
+  archives with ancestors, post type archives, author, day/month/year, search
+  and 404. Rendered as a real `<nav><ol>` with `aria-current="page"` on the last
+  crumb, plus optional **Schema.org BreadcrumbList JSON-LD** (off by default when
+  Yoast or Rank Math is active, since they emit their own). Prefix as a home
+  icon or text, text or icon separator, editable archive labels, optional
+  quoting, and trimming of long current titles. The **archive crumb** can be
+  switched off or pointed at a **custom link and label** — a landing page rather
+  than the raw archive, or one for a post type that has no archive at all.
+  Deliberate departures from the usual snippet: the post type archive comes
+  from `get_post_type_archive_link()` (right under plain permalinks, honours
+  `has_archive`), products get the Shop page, the category shown for a post is
+  the SEO plugin's **primary term** when set and otherwise the **deepest** one,
+  and hierarchical custom taxonomies get the same ancestor walk as categories.
+  The trail is built as data first and rendered second, which is what lets one
+  trail feed both the list and the JSON-LD.
 - **Social Share** — an inline row and/or a floating bar; share to Facebook, X,
   LinkedIn, WhatsApp, Telegram, Pinterest, Reddit, Tumblr, VK and email, plus
   **copy-link**, **print** and **native** (Web Share API) actions. Official
@@ -504,4 +522,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.76
+**Current version:** 1.20.77
