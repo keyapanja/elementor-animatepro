@@ -1,0 +1,162 @@
+/*
+ * Advanced Accordion.
+ *
+ * Native <details>/<summary>: open state is the [open] attribute, so the
+ * icon swap, the open-state colours and the no-JS behaviour are all plain
+ * CSS. The script only animates; while an item is animating shut it carries
+ * .is-closing, which flips the icon back immediately rather than at the end.
+ */
+
+.eap-acc {
+	--eap-acc-gap: 10px;
+	--eap-acc-head-gap: 12px;
+	--eap-acc-icon: 14px;
+	--eap-acc-title-icon: 18px;
+	--eap-acc-divider: rgba(127, 127, 127, 0.2);
+	--eap-acc-divider-width: 1px;
+
+	display: flex;
+	flex-direction: column;
+	gap: var(--eap-acc-gap);
+}
+
+.eap-acc__item {
+	margin: 0;
+	border: 1px solid rgba(127, 127, 127, 0.25);
+	border-radius: 10px;
+	overflow: hidden;
+}
+
+/* --- Heading ------------------------------------------------------------ */
+
+.eap-acc__head {
+	display: flex;
+	align-items: center;
+	gap: var(--eap-acc-head-gap);
+	padding: 16px 20px;
+	cursor: pointer;
+	list-style: none;
+	user-select: none;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* The browser's own disclosure triangle. */
+.eap-acc__head::-webkit-details-marker {
+	display: none;
+}
+
+.eap-acc__head::marker {
+	content: "";
+}
+
+.eap-acc__head:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -3px;
+}
+
+.eap-acc__title {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	color: inherit;
+	font-size: 1.05em;
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+.eap-acc__title-icon {
+	flex: 0 0 auto;
+	display: inline-flex;
+	font-size: var(--eap-acc-title-icon);
+}
+
+.eap-acc__title-icon svg,
+.eap-acc__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-acc__icon {
+	flex: 0 0 auto;
+	display: inline-flex;
+	font-size: var(--eap-acc-icon);
+}
+
+.eap-acc--icon-left .eap-acc__icon {
+	order: -1;
+}
+
+.eap-acc__icon-closed,
+.eap-acc__icon-open {
+	display: inline-flex;
+}
+
+.eap-acc__icon-open {
+	display: none;
+}
+
+.eap-acc__item[open]:not(.is-closing) > .eap-acc__head .eap-acc__icon-open {
+	display: inline-flex;
+}
+
+.eap-acc__item[open]:not(.is-closing) > .eap-acc__head .eap-acc__icon-closed {
+	display: none;
+}
+
+/* --- Content ------------------------------------------------------------ */
+
+.eap-acc__panel {
+	overflow: hidden;
+	border-top: var(--eap-acc-divider-width) solid var(--eap-acc-divider);
+}
+
+.eap-acc__content {
+	padding: 16px 20px 18px;
+	line-height: 1.6;
+}
+
+.eap-acc__content > :first-child {
+	margin-top: 0;
+}
+
+.eap-acc__content > :last-child {
+	margin-bottom: 0;
+}
+
+.eap-acc__notice {
+	margin: 0;
+	opacity: 0.8;
+}
+
+/* --- Expand / collapse all --------------------------------------------- */
+
+.eap-acc__tools {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.eap-acc__tool {
+	padding: 6px 14px;
+	border: 1px solid rgba(127, 127, 127, 0.4);
+	border-radius: 999px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	font-size: 0.9em;
+	cursor: pointer;
+}
+
+.eap-acc--empty {
+	padding: 20px;
+	border: 1px dashed rgba(127, 127, 127, 0.5);
+	text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-acc__head {
+		transition: none;
+	}
+}

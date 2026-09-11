@@ -101,39 +101,6 @@ body.eap-offcanvas-open {
 	will-change: transform;
 }
 
-.eap-accordion {
-	border: 1px solid var(--eap-border);
-	border-radius: 20px;
-	overflow: hidden;
-	background: #fff;
-}
-
-.eap-accordion-item + .eap-accordion-item {
-	border-top: 1px solid var(--eap-border);
-}
-
-.eap-accordion-trigger {
-	width: 100%;
-	padding: 18px 20px;
-	border: 0;
-	background: #fff;
-	text-align: left;
-	font-weight: 700;
-	cursor: pointer;
-}
-
-.eap-accordion-panel {
-	display: none;
-}
-
-.eap-accordion-item.is-open .eap-accordion-panel {
-	display: block;
-}
-
-.eap-accordion-panel-inner {
-	padding: 0 20px 20px;
-}
-
 .eap-motion {
 	opacity: 0;
 	transform: translate3d(0, 30px, 0);

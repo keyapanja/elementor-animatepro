@@ -438,6 +438,13 @@ class EAP_Admin {
 			update_option( 'eap_widget_migrations', $done, false );
 		}
 
+		if ( empty( $done['advanced-accordion-built'] ) ) {
+			$states['advanced-accordion'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['advanced-accordion-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
 		if ( empty( $done['posts-timeline-built'] ) ) {
 			$states['posts-timeline'] = 1;
 			update_option( self::WIDGETS_OPTION, $states, false );
@@ -1299,6 +1306,7 @@ class EAP_Admin {
 			'table-of-content',
 			'author-box',
 			'flip-box',
+			'advanced-accordion',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',

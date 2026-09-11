@@ -61,6 +61,22 @@ it**.
   side in a row. Reduced motion gets a short crossfade instead of a rotation,
   and a template that contains the flip box it sits in is refused rather than
   rendered recursively.
+- **Advanced Accordion** — text or saved-template items, one open at a time
+  (**Accordion**) or many (**Toggle**), with open/closed icons on either side,
+  per-item title icons and default-open state, **linkable item IDs**
+  (`/page/#shipping` opens that item and scrolls it clear of a fixed header),
+  keep-in-view, URL updates, expand/collapse-all, and optional **FAQPage
+  structured data** built from the text items. **Built on native
+  `<details>` / `<summary>`**, so it works with no JavaScript at all (accordion
+  mode puts the items in one `name` group, which the browser keeps exclusive),
+  Chrome's find-in-page can open a closed item holding the match, and keyboard
+  and screen-reader behaviour come from the platform rather than hand-built
+  ARIA. The script adds height animation, and takes the `name` group over so
+  the item closing animates instead of snapping shut; its `toggle` listener
+  still keeps the accordion exclusive when something else opens an item.
+  *Where this differs from Elementor's own Accordion:* that one makes every
+  item a droppable container — use it to build items out of widgets, and this
+  one for text, FAQs and reused templates.
 - **Price Box** — a pricing card (header + icon, price with discount/period,
   feature list with tooltips, corner/circular ribbon, CTA + footer note).
 - **Advanced Pricing Table** — a multi-plan **comparison**, where every plan is
@@ -576,4 +592,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.80
+**Current version:** 1.20.81

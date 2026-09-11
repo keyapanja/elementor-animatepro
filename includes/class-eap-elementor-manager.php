@@ -60,8 +60,8 @@ class EAP_Elementor_Manager {
 			'class' => 'EAP_Widget_Brand_Marquee',
 		),
 		'widgets_accordion'         => array(
-			'file'  => 'class-eap-widget-accordion.php',
-			'class' => 'EAP_Widget_Accordion',
+			'file'  => 'class-eap-widget-advanced-accordion.php',
+			'class' => 'EAP_Widget_Advanced_Accordion',
 		),
 		'widgets_table_of_contents' => array(
 			'file'  => 'class-eap-widget-table-of-contents.php',
