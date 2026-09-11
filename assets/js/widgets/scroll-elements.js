@@ -1,10 +1,9 @@
 /*
  * Scroll Elements — scroll-spy and click-to-scroll.
  *
- * NOTE: One Page Nav also does scroll-spy, but against sections it does not own
- * and with its own scope/selector handling. The two are not shared today; if a
- * third widget needs it, the primitive should move to core.js the way
- * flipFilter did.
+ * The scroll-spy is EAPFrontend.scrollSpy() from core.js, shared with Table
+ * of Contents. (One Page Nav keeps its own: it decides on a percent-of-viewport
+ * line with a straddle test, which is a different contract.)
  */
 (() => {
 	const api = window.EAPFrontend;
@@ -45,69 +44,15 @@
 			});
 		};
 
-		/*
-		 * Scroll-spy: IntersectionObserver TRIGGERS the check, measurement MAKES
-		 * the decision.
-		 *
-		 * Why not decide from the observer's own entries: it reports WHICH
-		 * sections intersect, not which one the reader is on. With several short
-		 * sections on screen at once several entries fire, and the "active" one
-		 * would depend on callback order. Measuring "the last section whose top
-		 * has passed the offset line" is unambiguous.
-		 *
-		 * Why not trigger from scroll alone: the observer is computed by the
-		 * engine and fires without depending on scroll events or animation
-		 * frames. Relying on both of those gave this two ways to silently stop —
-		 * which is exactly what happened while verifying it, in an environment
-		 * where neither fired even though the page had genuinely scrolled.
-		 * Scroll and resize are kept as secondary triggers.
-		 */
-		let last = 0;
-
-		const update = () => {
-			last = Date.now();
-
-			const line = offset + 1;
-			let current = sections[0];
-
-			sections.forEach((section) => {
-				if (section.getBoundingClientRect().top <= line) {
-					current = section;
-				}
-			});
-
-			// At the very bottom, the last section is the one being read even if
-			// its top never crossed the line.
-			const atBottom = (window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 2);
-			if (atBottom) {
-				current = sections[sections.length - 1];
-			}
-
-			setActive(current.getAttribute('data-eap-se-section'));
-		};
-
-		// A light time throttle rather than an animation frame, so a throttled or
-		// non-painting frame loop cannot stall it.
-		const queue = () => {
-			if (Date.now() - last < 60) {
-				return;
-			}
-			update();
-		};
-
-		if (typeof window.IntersectionObserver === 'function') {
-			// The negative top margin puts the observer's boundary exactly on the
-			// offset line, so it fires as each section crosses the same point the
-			// measurement uses.
-			const observer = new window.IntersectionObserver(
-				() => update(),
-				{ rootMargin: `-${offset}px 0px 0px 0px`, threshold: [0, 1] }
+		if (api && typeof api.scrollSpy === 'function') {
+			root.eapSeSpy = api.scrollSpy(
+				sections,
+				(section) => setActive(section.getAttribute('data-eap-se-section')),
+				{ offset }
 			);
-			sections.forEach((section) => observer.observe(section));
+		} else {
+			setActive(sections[0].getAttribute('data-eap-se-section'));
 		}
-
-		window.addEventListener('scroll', queue, { passive: true });
-		window.addEventListener('resize', queue);
 
 		links.forEach((link) => {
 			link.addEventListener('click', (event) => {
@@ -134,8 +79,6 @@
 				}
 			});
 		});
-
-		update();
 	};
 
 	const run = (root) => {

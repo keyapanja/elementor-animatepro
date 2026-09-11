@@ -380,6 +380,74 @@
 		}, leaving.length ? duration : 0);
 	};
 
+	/*
+	 * Scroll-spy: which of an ordered list of elements is the reader "on".
+	 *
+	 * Shared by Scroll Elements and Table of Contents. The DECISION is a
+	 * measurement — the last element whose top has passed the offset line, or
+	 * the final one once the page is scrolled to the bottom (its top may never
+	 * reach the line) — so it is unambiguous however many are on screen. The
+	 * TRIGGERS are an IntersectionObserver whose boundary sits on that same
+	 * line, plus a time-throttled scroll/resize fallback: two independent ways
+	 * to fire, so a stalled frame loop cannot silently stop it.
+	 *
+	 * `onChange(element)` is called only when the answer changes. Returns
+	 * { update, destroy }.
+	 */
+	const scrollSpy = (elements, onChange, options = {}) => {
+		const items = Array.from(elements || []).filter(Boolean);
+		const offset = Math.max(0, parseInt(options.offset, 10) || 0);
+		const throttle = typeof options.throttle === 'number' ? options.throttle : 60;
+
+		let current = null;
+		let last = 0;
+		let observer = null;
+
+		const update = () => {
+			last = Date.now();
+			if (!items.length) { return; }
+
+			const line = offset + 1;
+			let next = items[0];
+			items.forEach((el) => {
+				if (el.getBoundingClientRect().top <= line) { next = el; }
+			});
+
+			const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 2);
+			if (atBottom) { next = items[items.length - 1]; }
+
+			if (next !== current) {
+				current = next;
+				if (typeof onChange === 'function') { onChange(next); }
+			}
+		};
+
+		const queue = () => {
+			if (Date.now() - last < throttle) { return; }
+			update();
+		};
+
+		if (typeof window.IntersectionObserver === 'function') {
+			observer = new window.IntersectionObserver(() => update(), {
+				rootMargin: `-${offset}px 0px 0px 0px`,
+				threshold: [0, 1]
+			});
+			items.forEach((el) => observer.observe(el));
+		}
+
+		window.addEventListener('scroll', queue, { passive: true });
+		window.addEventListener('resize', queue);
+
+		const destroy = () => {
+			if (observer) { observer.disconnect(); }
+			window.removeEventListener('scroll', queue);
+			window.removeEventListener('resize', queue);
+		};
+
+		update();
+		return { update, destroy };
+	};
+
 	window.EAPFrontend = {
 		register(name, init) {
 			modules.set(name, init);
@@ -392,6 +460,7 @@
 		decodeHtml,
 		getNodes,
 		flipFilter,
+		scrollSpy,
 		ensureFloatingLayers,
 		hasScrollTrigger,
 		ensureScrollTrigger,

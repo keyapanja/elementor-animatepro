@@ -134,23 +134,6 @@ body.eap-offcanvas-open {
 	padding: 0 20px 20px;
 }
 
-.eap-toc {
-	padding: 22px;
-	border: 1px solid var(--eap-border);
-	border-radius: 20px;
-	background: #fff;
-}
-
-.eap-toc-list {
-	margin: 14px 0 0;
-	padding-left: 18px;
-}
-
-.eap-toc-list a {
-	color: inherit;
-	text-decoration: none;
-}
-
 .eap-motion {
 	opacity: 0;
 	transform: translate3d(0, 30px, 0);

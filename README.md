@@ -138,6 +138,23 @@ it**.
   and hierarchical custom taxonomies get the same ancestor walk as categories.
   The trail is built as data first and rendered second, which is what lets one
   trail feed both the list and the JSON-LD.
+- **Table of Contents** — discovers the H1–H6 already on the page and lists
+  them, nested by level, with smooth scrolling, the current heading highlighted
+  as the reader moves, a minimise button, and an optional **floating box**
+  pinned to either side behind a tab. Choose the levels, scope the scan to a
+  container selector, exclude selectors, pick numbers (1, 1.1, 1.2 — pure CSS
+  counters), bullets or no markers, flat or nested view, and **collapse
+  sub-items** so a heading's children show only while the reader is inside
+  it. Headings get ids generated from their text (existing ids are kept,
+  duplicates de-duplicated) plus a `scroll-margin-top` matching the scroll
+  offset, so a hard reload onto `#heading` also clears a fixed header. Hides
+  itself on the front end below a minimum heading count; in the editor it shows
+  a placeholder instead so it stays configurable.
+  *Where this differs from One Page Nav and Scroll Elements:* One Page Nav
+  points at sections you name by typing a selector per item; Scroll Elements
+  owns its sections. This widget authors nothing — it reads what is there and
+  follows it. Its scroll-spy is `EAPFrontend.scrollSpy()` in `core.js`, now
+  shared with Scroll Elements.
 - **Social Share** — an inline row and/or a floating bar; share to Facebook, X,
   LinkedIn, WhatsApp, Telegram, Pinterest, Reddit, Tumblr, VK and email, plus
   **copy-link**, **print** and **native** (Web Share API) actions. Official
@@ -522,4 +539,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.77
+**Current version:** 1.20.78

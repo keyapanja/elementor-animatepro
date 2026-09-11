@@ -1,0 +1,273 @@
+/*
+ * Table of Contents.
+ *
+ * Nesting and numbering are pure CSS: the list is an <ol> of <ol>s and the
+ * numbers come from counters(), so "1.2.3" is right at any depth without the
+ * script computing labels. Flat view simply drops the indent.
+ */
+
+.eap-toc [hidden] {
+	display: none !important;
+}
+
+.eap-toc {
+	--eap-toc-width: auto;
+	--eap-toc-sticky: 24px;
+	--eap-toc-title-gap: 12px;
+	--eap-toc-item-gap: 6px;
+	--eap-toc-indent: 18px;
+	--eap-toc-marker: currentColor;
+	--eap-toc-active-weight: 600;
+	--eap-toc-tab: 48px;
+	--eap-toc-float-top: 50%;
+
+	position: relative;
+	box-sizing: border-box;
+	width: var(--eap-toc-width);
+	padding: 20px 22px;
+	border: 1px solid rgba(127, 127, 127, 0.25);
+	border-radius: 12px;
+	background: rgba(127, 127, 127, 0.06);
+	line-height: 1.5;
+}
+
+.eap-toc--sticky {
+	position: sticky;
+	top: var(--eap-toc-sticky);
+}
+
+/* --- Head --------------------------------------------------------------- */
+
+.eap-toc__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: var(--eap-toc-title-gap);
+}
+
+.eap-toc__title {
+	margin: 0;
+	font-weight: 600;
+	font-size: 1.05em;
+}
+
+.eap-toc__toggle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: inherit;
+	cursor: pointer;
+}
+
+.eap-toc__toggle svg {
+	width: 18px;
+	height: 18px;
+	transition: transform 0.25s ease;
+}
+
+.eap-toc.is-minimized .eap-toc__toggle svg {
+	transform: rotate(-90deg);
+}
+
+.eap-toc.is-minimized .eap-toc__head {
+	margin-bottom: 0;
+}
+
+/* --- List --------------------------------------------------------------- */
+
+.eap-toc__list,
+.eap-toc__sub {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: eap-toc;
+}
+
+.eap-toc__item {
+	margin: 0;
+	padding: 0;
+	counter-increment: eap-toc;
+}
+
+.eap-toc__item + .eap-toc__item {
+	margin-top: var(--eap-toc-item-gap);
+}
+
+.eap-toc__sub {
+	margin-top: var(--eap-toc-item-gap);
+}
+
+.eap-toc--nested .eap-toc__sub {
+	padding-inline-start: var(--eap-toc-indent);
+}
+
+.eap-toc__link {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5em;
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.eap-toc__link:hover,
+.eap-toc__link:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.eap-toc__item.is-active > .eap-toc__link {
+	font-weight: var(--eap-toc-active-weight);
+}
+
+/* Markers */
+.eap-toc__link::before {
+	flex: 0 0 auto;
+	color: var(--eap-toc-marker);
+	opacity: 0.8;
+}
+
+.eap-toc--marker-numbers .eap-toc__link::before {
+	content: counters(eap-toc, ".") ".";
+	font-variant-numeric: tabular-nums;
+}
+
+.eap-toc--marker-bullets .eap-toc__link::before {
+	content: "";
+	align-self: center;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--eap-toc-marker);
+}
+
+.eap-toc--marker-none .eap-toc__link::before {
+	content: none;
+}
+
+/* Collapsed children: hidden until the parent (or a child) is active. */
+.eap-toc--collapse .eap-toc__item:not(.is-active):not(.is-open) > .eap-toc__sub {
+	display: none;
+}
+
+.eap-toc__empty {
+	margin: 0;
+	opacity: 0.7;
+	font-size: 0.9em;
+}
+
+/* --- Floating ----------------------------------------------------------- */
+
+.eap-toc--floating {
+	position: fixed;
+	top: var(--eap-toc-float-top);
+	z-index: 9000;
+	width: auto;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	transform: translateY(-50%);
+}
+
+.eap-toc--floating.eap-toc--right {
+	right: 0;
+}
+
+.eap-toc--floating.eap-toc--left {
+	left: 0;
+}
+
+.eap-toc__tab {
+	position: absolute;
+	top: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-toc-tab);
+	height: var(--eap-toc-tab);
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: #111;
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.eap-toc--right .eap-toc__tab {
+	right: 0;
+	border-radius: 10px 0 0 10px;
+}
+
+.eap-toc--left .eap-toc__tab {
+	left: 0;
+	border-radius: 0 10px 10px 0;
+}
+
+.eap-toc__tab svg,
+.eap-toc__tab i {
+	font-size: calc(var(--eap-toc-tab) * 0.42);
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-toc--floating .eap-toc__box {
+	box-sizing: border-box;
+	width: var(--eap-toc-width);
+	min-width: 260px;
+	max-width: min(360px, 90vw);
+	padding: 18px 20px;
+	border: 1px solid rgba(127, 127, 127, 0.25);
+	background: #fff;
+	color: #111;
+	box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+	transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.eap-toc--floating.eap-toc--right .eap-toc__box {
+	margin-right: var(--eap-toc-tab);
+	border-radius: 12px 0 0 12px;
+}
+
+.eap-toc--floating.eap-toc--left .eap-toc__box {
+	margin-left: var(--eap-toc-tab);
+	border-radius: 0 12px 12px 0;
+}
+
+/* Closed: slide the box off its edge; the tab stays. */
+.eap-toc--floating.is-closed .eap-toc__box {
+	opacity: 0;
+	pointer-events: none;
+	visibility: hidden;
+}
+
+.eap-toc--floating.eap-toc--right.is-closed .eap-toc__box {
+	transform: translateX(100%);
+}
+
+.eap-toc--floating.eap-toc--left.is-closed .eap-toc__box {
+	transform: translateX(-100%);
+}
+
+/* The floating box never shows a hidden-by-count widget's tab either. */
+.eap-toc.is-empty {
+	display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-toc__link,
+	.eap-toc__toggle svg,
+	.eap-toc--floating .eap-toc__box {
+		transition: none;
+	}
+}
