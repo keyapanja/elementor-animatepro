@@ -158,6 +158,7 @@ class EAP_Assets {
 			'author-box',
 			'flip-box',
 			'advanced-accordion',
+			'nested-slider',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
@@ -233,6 +234,7 @@ class EAP_Assets {
 			'table-of-content',
 			'flip-box',
 			'advanced-accordion',
+			'nested-slider',
 			'read-later',
 			'video-story',
 			'posts-slider',
@@ -294,6 +296,14 @@ class EAP_Assets {
 			EAP_VERSION,
 			true
 		);
+
+		wp_register_script(
+			'eap-nested-slider-editor',
+			EAP_URL . 'assets/js/widgets/nested-slider-editor.js',
+			array( 'elementor-editor' ),
+			EAP_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -306,6 +316,7 @@ class EAP_Assets {
 		wp_enqueue_script( 'eap-editor' );
 		wp_enqueue_script( 'eap-content-toggle-editor' );
 		wp_enqueue_script( 'eap-animated-off-canvas-editor' );
+		wp_enqueue_script( 'eap-nested-slider-editor' );
 	}
 
 	/**

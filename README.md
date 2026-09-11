@@ -135,6 +135,23 @@ it**.
 ### Sliders & testimonials
 - **Advanced Slider**, **Advanced Testimonial Slider**, **Testimonial Slider**,
   **Testimonial Box**, **Brand Slider**.
+- **Nested Slider** — a slider whose slides are **Elementor containers**, so
+  a slide holds anything you can build: a hero, a card grid, a form, another
+  widget. Slides per view, slides per step and gap per breakpoint (taken from
+  the site's active Elementor breakpoints), slide or fade, centred slides, auto
+  height, loop, autoplay with pause-on-hover and stop-after-interaction,
+  arrows over or beside the slides, and dots, a fraction or a progress bar.
+  Runs on Elementor's bundled Swiper on the page; **in the editor Swiper does
+  not run** — its transforms and loop clones would sit inside Elementor's
+  editor views and duplicate droppable containers — so the slides sit side by
+  side in a scroll-snap strip, each one visible and droppable. That strip is
+  also what a visitor gets if the script never loads, so no slide is ever
+  unreachable. **Loop clones are started again**: Swiper copies slides with
+  `cloneNode()`, which copies our "already set up" flags too, so a widget of
+  ours inside a copy would stay dead; the script clears those flags and runs
+  our modules and Elementor's handlers over each clone. Autoplay has a **pause
+  button** (moving content needs one under WCAG 2.2.2), holds still while focus
+  is inside a slide, and is off for visitors who ask for reduced motion.
 
 ### Text & UI
 - **Animated Text**, **Advanced Animated Text**, **Advanced Button**,
@@ -592,4 +609,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.81
+**Current version:** 1.20.82

@@ -478,15 +478,17 @@ class EAP_Elementor {
 			$widgets_manager->register( new EAP_Widget_Loop_Carousel() );
 		}
 
-		// Content Toggle and Animated Off-Canvas are nested widgets — only load
+		// Content Toggle, Animated Off-Canvas and Nested Slider are nested widgets — only load
 		// them when Elementor's Nested Elements base class is available,
 		// otherwise the classes would fatal on extend.
 		if ( class_exists( '\Elementor\Modules\NestedElements\Base\Widget_Nested_Base' ) ) {
 			require_once EAP_PATH . 'includes/widgets/class-eap-widget-content-toggle.php';
 			require_once EAP_PATH . 'includes/widgets/class-eap-widget-animated-off-canvas.php';
+			require_once EAP_PATH . 'includes/widgets/class-eap-widget-nested-slider.php';
 
 			$content_toggle_on = ! array_key_exists( 'content-toggle', $widget_states ) || ! empty( $widget_states['content-toggle'] );
 			$off_canvas_on     = ! array_key_exists( 'animated-off-canvas', $widget_states ) || ! empty( $widget_states['animated-off-canvas'] );
+			$nested_slider_on  = ! array_key_exists( 'nested-slider', $widget_states ) || ! empty( $widget_states['nested-slider'] );
 
 			if ( $content_toggle_on ) {
 				$widgets_manager->register( new EAP_Widget_Content_Toggle() );
@@ -494,6 +496,10 @@ class EAP_Elementor {
 
 			if ( $off_canvas_on ) {
 				$widgets_manager->register( new EAP_Widget_Animated_Off_Canvas() );
+			}
+
+			if ( $nested_slider_on ) {
+				$widgets_manager->register( new EAP_Widget_Nested_Slider() );
 			}
 		}
 	}

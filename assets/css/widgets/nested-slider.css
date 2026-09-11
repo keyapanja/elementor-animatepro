@@ -1,0 +1,233 @@
+/*
+ * Nested Slider.
+ *
+ * The slides are Elementor containers. Swiper's own stylesheet (e-swiper)
+ * lays them out once it has initialised. Until then — and always in the
+ * editor, where Swiper never runs — the track is a scroll-snap strip, sized by
+ * the same Slides Per View and Gap values, so every slide stays reachable.
+ */
+
+.eap-ns [hidden] {
+	display: none !important;
+}
+
+.eap-ns {
+	--eap-ns-per-view: 1;
+	--eap-ns-gap: 20px;
+	--eap-ns-arrow-size: 44px;
+	--eap-ns-arrow-icon: 18px;
+	--eap-ns-arrow-offset: 12px;
+	--eap-ns-pagination-gap: 16px;
+	--eap-ns-bullet: 10px;
+	--eap-ns-bullet-gap: 8px;
+	--eap-ns-dot: rgba(127, 127, 127, 0.45);
+	--eap-ns-dot-active: currentColor;
+	--eap-ns-progress: 4px;
+
+	/* Swiper 8 reads these for its pagination. */
+	--swiper-pagination-bullet-width: var(--eap-ns-bullet);
+	--swiper-pagination-bullet-height: var(--eap-ns-bullet);
+	--swiper-pagination-bullet-horizontal-gap: calc(var(--eap-ns-bullet-gap) / 2);
+	--swiper-pagination-bullet-inactive-color: var(--eap-ns-dot);
+	--swiper-pagination-bullet-inactive-opacity: 1;
+	--swiper-pagination-color: var(--eap-ns-dot-active);
+
+	position: relative;
+	min-width: 0;
+}
+
+.eap-ns__stage {
+	position: relative;
+}
+
+.eap-ns--arrows-outside .eap-ns__stage {
+	padding-inline: calc(var(--eap-ns-arrow-size) + var(--eap-ns-arrow-offset));
+}
+
+.eap-ns__viewport {
+	position: relative;
+	overflow: hidden;
+}
+
+/* Containers are slides: they must not shrink, and keep no outer margin. */
+.eap-ns__track > .elementor-element {
+	flex-shrink: 0;
+	min-width: 0;
+	margin: 0;
+}
+
+/* --- The strip: editor, and the page before / without Swiper ----------- */
+
+.eap-ns__viewport:not(.swiper-initialized) > .eap-ns__track {
+	display: flex;
+	gap: var(--eap-ns-gap);
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: thin;
+}
+
+.eap-ns__viewport:not(.swiper-initialized) > .eap-ns__track > .elementor-element {
+	flex: 0 0 calc((100% - (var(--eap-ns-per-view) - 1) * var(--eap-ns-gap)) / var(--eap-ns-per-view));
+	scroll-snap-align: start;
+}
+
+.eap-ns__editor-hint {
+	margin: 8px 0 0;
+	font-size: 12px;
+	opacity: 0.65;
+}
+
+/* --- Arrows ------------------------------------------------------------- */
+
+.eap-ns__arrow {
+	position: absolute;
+	top: 50%;
+	z-index: 5;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: var(--eap-ns-arrow-size);
+	height: var(--eap-ns-arrow-size);
+	margin: calc(var(--eap-ns-arrow-size) / -2) 0 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(17, 17, 17, 0.6);
+	color: #fff;
+	font-size: var(--eap-ns-arrow-icon);
+	line-height: 1;
+	cursor: pointer;
+	transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+.eap-ns__arrow--prev {
+	left: var(--eap-ns-arrow-offset);
+}
+
+.eap-ns__arrow--next {
+	right: var(--eap-ns-arrow-offset);
+}
+
+.eap-ns--arrows-outside .eap-ns__arrow--prev {
+	left: 0;
+}
+
+.eap-ns--arrows-outside .eap-ns__arrow--next {
+	right: 0;
+}
+
+.eap-ns__arrow svg,
+.eap-ns__arrow i {
+	width: 1em;
+	height: 1em;
+	font-size: inherit;
+}
+
+.eap-ns__arrow svg {
+	fill: currentColor;
+}
+
+.eap-ns__arrow:focus-visible,
+.eap-ns__pause:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* Swiper marks the arrow at an end of a non-looping slider. */
+.eap-ns__arrow.swiper-button-disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+/* Nothing to slide: Swiper locks the arrows, but its stylesheet only hides
+ * them by its own class names, not ours. */
+.eap-ns__arrow.swiper-button-lock {
+	display: none;
+}
+
+/* Without Swiper the arrows would do nothing, so they are not offered. */
+.eap-ns:not(.is-ready) .eap-ns__arrow,
+.eap-ns:not(.is-ready) .eap-ns__pagination {
+	display: none;
+}
+
+/* --- Pause -------------------------------------------------------------- */
+
+.eap-ns__pause {
+	position: absolute;
+	right: 12px;
+	bottom: 12px;
+	z-index: 6;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(17, 17, 17, 0.6);
+	color: #fff;
+	cursor: pointer;
+}
+
+.eap-ns__pause svg {
+	width: 16px;
+	height: 16px;
+}
+
+.eap-ns__play-icon,
+.eap-ns__pause[aria-pressed="true"] .eap-ns__pause-icon {
+	display: none;
+}
+
+.eap-ns__pause[aria-pressed="true"] .eap-ns__play-icon {
+	display: block;
+}
+
+/* --- Pagination --------------------------------------------------------- */
+
+/*
+ * Static, not Swiper's absolute: Swiper's rules place its pagination with
+ * bottom/top offsets, which on this element would pull it over the slides.
+ */
+.eap-ns__pagination {
+	position: static;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: var(--eap-ns-pagination-gap);
+	min-height: var(--eap-ns-bullet);
+	text-align: center;
+}
+
+.eap-ns__pagination .swiper-pagination-bullet {
+	margin: 0 var(--swiper-pagination-bullet-horizontal-gap);
+	cursor: pointer;
+}
+
+.eap-ns__pagination.swiper-pagination-progressbar {
+	position: relative;
+	display: block;
+	width: 100%;
+	height: var(--eap-ns-progress);
+	min-height: 0;
+	background: var(--eap-ns-dot);
+}
+
+.eap-ns__pagination.swiper-pagination-progressbar .swiper-pagination-progressbar-fill {
+	background: var(--eap-ns-dot-active);
+}
+
+/* Nothing to page through: Swiper locks the pagination when every slide
+ * already fits, but only hides it by its own class name, not ours. */
+.eap-ns__pagination.swiper-pagination-lock {
+	display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-ns__arrow {
+		transition: none;
+	}
+}

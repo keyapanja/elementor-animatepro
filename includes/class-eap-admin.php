@@ -445,6 +445,13 @@ class EAP_Admin {
 			update_option( 'eap_widget_migrations', $done, false );
 		}
 
+		if ( empty( $done['nested-slider-built'] ) ) {
+			$states['nested-slider'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['nested-slider-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
 		if ( empty( $done['posts-timeline-built'] ) ) {
 			$states['posts-timeline'] = 1;
 			update_option( self::WIDGETS_OPTION, $states, false );
@@ -1307,6 +1314,7 @@ class EAP_Admin {
 			'author-box',
 			'flip-box',
 			'advanced-accordion',
+			'nested-slider',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
