@@ -1,0 +1,350 @@
+/*
+ * Flip Box.
+ *
+ * Both faces sit in ONE grid cell (grid-area 1 / 1), so the box is as tall as
+ * its taller face without anything measuring. The script owns the flipped
+ * state (.is-flipped) for every input; this file only draws it. Until the
+ * script marks the box .is-ready, plain :hover flips it, so it still works
+ * without JavaScript.
+ *
+ * `F` below stands for "showing the back": .is-flipped, or the no-JS hover.
+ */
+
+.eap-fb .screen-reader-text {
+	position: absolute !important;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.eap-fb {
+	--eap-fb-speed: 650ms;
+	--eap-fb-ease: cubic-bezier(0.4, 0.2, 0.2, 1);
+	--eap-fb-perspective: 1200px;
+	--eap-fb-min: 260px;
+	--eap-fb-height: 320px;
+	--eap-fb-items: center;
+	--eap-fb-icon-size: 44px;
+	--eap-fb-media-gap: 18px;
+	--eap-fb-title-gap: 10px;
+	--eap-fb-button-gap: 20px;
+
+	position: relative;
+	perspective: var(--eap-fb-perspective);
+	border-radius: 14px;
+}
+
+.eap-fb:focus-visible {
+	outline: 2px solid #4338ca;
+	outline-offset: 4px;
+}
+
+.eap-fb__inner {
+	position: relative;
+	display: grid;
+	min-height: var(--eap-fb-min);
+	transition: transform var(--eap-fb-speed) var(--eap-fb-ease), height var(--eap-fb-speed) var(--eap-fb-ease);
+}
+
+.eap-fb__face {
+	grid-area: 1 / 1;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-width: 0;
+	box-sizing: border-box;
+	padding: 36px 30px;
+	border-radius: 14px;
+	text-align: center;
+}
+
+/* Low specificity so the Background controls always win. */
+.eap-fb__face--front {
+	background-color: #1e293b;
+	color: #fff;
+}
+
+.eap-fb__face--back {
+	background-color: #4338ca;
+	color: #fff;
+}
+
+/* Overlay tint for background images (the Overlay control colours it). */
+.eap-fb__face::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	border-radius: inherit;
+	background-color: transparent;
+	pointer-events: none;
+}
+
+.eap-fb__body {
+	position: relative;
+	z-index: 1;
+}
+
+/* --- Content ------------------------------------------------------------ */
+
+.eap-fb__media {
+	display: flex;
+	justify-content: var(--eap-fb-items);
+	margin-bottom: var(--eap-fb-media-gap);
+}
+
+.eap-fb__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--eap-fb-icon-size);
+	line-height: 1;
+}
+
+.eap-fb__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-fb__media img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.eap-fb__title {
+	margin: 0 0 var(--eap-fb-title-gap);
+	color: inherit;
+	font-size: 1.35em;
+	line-height: 1.25;
+}
+
+.eap-fb__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.eap-fb__title a:hover,
+.eap-fb__title a:focus-visible {
+	text-decoration: underline;
+	text-underline-offset: 0.15em;
+}
+
+.eap-fb__text {
+	line-height: 1.6;
+}
+
+.eap-fb__text p {
+	margin: 0 0 0.75em;
+}
+
+.eap-fb__text > :last-child {
+	margin-bottom: 0;
+}
+
+.eap-fb__actions {
+	position: relative;
+	z-index: 3;
+	display: flex;
+	justify-content: var(--eap-fb-items);
+	margin-top: var(--eap-fb-button-gap);
+}
+
+.eap-fb__button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	padding: 10px 22px;
+	border: 1px solid currentColor;
+	border-radius: 999px;
+	color: inherit;
+	text-decoration: none;
+	transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.eap-fb__button:hover,
+.eap-fb__button:focus-visible {
+	background-color: rgba(255, 255, 255, 0.16);
+}
+
+.eap-fb__button-icon {
+	display: inline-flex;
+}
+
+.eap-fb__button-icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+/* "Whole back side" link: one real link stretched over the face. */
+.eap-fb__box-link {
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	border-radius: inherit;
+}
+
+.eap-fb__box-link:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -6px;
+}
+
+.eap-fb__notice {
+	margin: 0;
+	opacity: 0.8;
+}
+
+/* --- Height modes ------------------------------------------------------- */
+
+.eap-fb--h-fixed .eap-fb__inner {
+	height: var(--eap-fb-height);
+	min-height: 0;
+}
+
+.eap-fb--h-fixed .eap-fb__face,
+.eap-fb--h-visible .eap-fb__face {
+	overflow: hidden;
+}
+
+/* Same height as the neighbours in a row (Elementor containers stretch
+ * their children; this carries the stretch down to the faces). */
+.eap-fb-stretch-yes > .elementor-widget-container,
+.eap-fb-stretch-yes .eap-fb,
+.eap-fb-stretch-yes .eap-fb__inner {
+	height: 100%;
+}
+
+/* --- Rotating types ----------------------------------------------------- */
+
+.eap-fb--rotate .eap-fb__inner {
+	transform-style: preserve-3d;
+}
+
+.eap-fb--rotate .eap-fb__face {
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+.eap-fb--flip-left .eap-fb__face--back,
+.eap-fb--flip-right .eap-fb__face--back {
+	transform: rotateY(180deg);
+}
+
+.eap-fb--flip-up .eap-fb__face--back,
+.eap-fb--flip-down .eap-fb__face--back {
+	transform: rotateX(180deg);
+}
+
+.eap-fb--flip-left:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__inner {
+	transform: rotateY(-180deg);
+}
+
+.eap-fb--flip-right:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__inner {
+	transform: rotateY(180deg);
+}
+
+.eap-fb--flip-up:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__inner {
+	transform: rotateX(180deg);
+}
+
+.eap-fb--flip-down:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__inner {
+	transform: rotateX(-180deg);
+}
+
+/*
+ * 3D depth: the content floats in front of its face. A face with overflow
+ * other than visible flattens its 3D children, so depth needs overflow
+ * visible — and each lifted body needs its own backface-visibility, because
+ * a preserve-3d parent's setting does not hide children that are in 3D.
+ */
+.eap-fb--depth .eap-fb__face {
+	overflow: visible;
+	transform-style: preserve-3d;
+}
+
+.eap-fb--depth .eap-fb__body {
+	transform: translateZ(60px) scale(0.92);
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+/* --- Swapping types (zoom / fade) --------------------------------------- */
+
+.eap-fb--swap .eap-fb__face {
+	transition: opacity var(--eap-fb-speed) var(--eap-fb-ease), transform var(--eap-fb-speed) var(--eap-fb-ease);
+}
+
+/* The back sits on top in the shared cell; while hidden it must not catch
+ * the clicks meant for the front. */
+.eap-fb--swap .eap-fb__face--back {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.eap-fb--swap:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__face--back {
+	opacity: 1;
+	transform: none;
+	pointer-events: auto;
+}
+
+.eap-fb--swap:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__face--front {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.eap-fb--zoom-in .eap-fb__face--back {
+	transform: scale(0.72);
+}
+
+.eap-fb--zoom-in:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__face--front {
+	transform: scale(1.12);
+}
+
+.eap-fb--zoom-out .eap-fb__face--back {
+	transform: scale(1.28);
+}
+
+.eap-fb--zoom-out:is(.is-flipped, .eap-fb--hover:not(.is-ready):hover) .eap-fb__face--front {
+	transform: scale(0.82);
+}
+
+/* --- Reduced motion: a short crossfade, no rotation --------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-fb .eap-fb__inner {
+		transform: none !important;
+		transition: height 0.2s ease;
+	}
+
+	.eap-fb .eap-fb__face {
+		transform: none !important;
+		transition: opacity 0.2s ease;
+	}
+
+	.eap-fb--depth .eap-fb__body {
+		transform: none;
+	}
+
+	.eap-fb:not(.is-flipped) .eap-fb__face--back,
+	.eap-fb.is-flipped .eap-fb__face--front {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.eap-fb.is-flipped .eap-fb__face--back {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.eap-fb__button {
+		transition: none;
+	}
+}

@@ -43,6 +43,24 @@ it**.
   content at all. The control is a real `<button role="switch">`, so it is
   focusable, operable with Space/Enter and announced correctly.
 - **Image Accordion** — horizontal or vertical, hover or click.
+- **Flip Box** — two faces, each built from an icon or image, title and text
+  (with a button, title link or whole-side link on the back) or a **saved
+  template**, that flip left / right / up / down, zoom in or out, or fade — on
+  hover or click, with optional 3D depth, speed, easing and perspective.
+  Deliberate differences from the usual flip box: **height by construction** —
+  both faces share one CSS grid cell, so the box is always as tall as its
+  taller side with nothing measuring (the usual absolute stacking clips long
+  content and needs JavaScript plus a resize handler); a "fit the side
+  showing" mode resizes to the visible face, and a fixed height is there when a
+  layout needs one. **One state for every input** — mouse hover, a tap on touch
+  screens (where hover does not exist), and the keyboard: the box is
+  focusable, Enter or Space flips, Escape flips back. The face that is not
+  showing is made `inert`, so focus never lands on an invisible back-side
+  button. With Click, a click on the front flips and a click on the back
+  follows its link. **Stretch to column height** lines up flip boxes side by
+  side in a row. Reduced motion gets a short crossfade instead of a rotation,
+  and a template that contains the flip box it sits in is refused rather than
+  rendered recursively.
 - **Price Box** — a pricing card (header + icon, price with discount/period,
   feature list with tooltips, corner/circular ribbon, CTA + footer note).
 - **Advanced Pricing Table** — a multi-plan **comparison**, where every plan is
@@ -558,4 +576,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.79
+**Current version:** 1.20.80

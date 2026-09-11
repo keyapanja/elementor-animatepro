@@ -101,6 +101,7 @@ class EAP_Elementor {
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-breadcrumbs.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-table-of-contents.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-author-box.php';
+		require_once EAP_PATH . 'includes/widgets/class-eap-widget-flip-box.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-timeline.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-posts-read-later.php';
 		require_once EAP_PATH . 'includes/widgets/class-eap-widget-video-story.php';
@@ -174,6 +175,7 @@ class EAP_Elementor {
 		$breadcrumbs_on            = ! array_key_exists( 'breadcrumbs', $widget_states ) || ! empty( $widget_states['breadcrumbs'] );
 		$table_of_content_on       = ! array_key_exists( 'table-of-content', $widget_states ) || ! empty( $widget_states['table-of-content'] );
 		$author_box_on             = ! array_key_exists( 'author-box', $widget_states ) || ! empty( $widget_states['author-box'] );
+		$flip_box_on               = ! array_key_exists( 'flip-box', $widget_states ) || ! empty( $widget_states['flip-box'] );
 		$posts_timeline_on         = ! array_key_exists( 'posts-timeline', $widget_states ) || ! empty( $widget_states['posts-timeline'] );
 		$posts_read_later_on       = ! array_key_exists( 'posts-read-later', $widget_states ) || ! empty( $widget_states['posts-read-later'] );
 		$video_story_on            = ! array_key_exists( 'video-story', $widget_states ) || ! empty( $widget_states['video-story'] );
@@ -420,6 +422,10 @@ class EAP_Elementor {
 
 		if ( $author_box_on ) {
 			$widgets_manager->register( new EAP_Widget_Author_Box() );
+		}
+
+		if ( $flip_box_on ) {
+			$widgets_manager->register( new EAP_Widget_Flip_Box() );
 		}
 
 		if ( $posts_timeline_on ) {
