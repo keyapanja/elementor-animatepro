@@ -155,6 +155,7 @@ class EAP_Assets {
 			'filterable-gallery',
 			'breadcrumbs',
 			'table-of-content',
+			'author-box',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',

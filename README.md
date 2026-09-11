@@ -203,6 +203,25 @@ blank on the canvas.
   block **Read More** link.
 - **Post Content** — the full post content run through the `the_content` filters.
   Guards against infinite recursion when the post is itself built with Elementor.
+- **Author Box** — the current post's author as a full profile card: avatar,
+  name (linked to their archive or website), an optional tagline read from a
+  user-meta key you name (WordPress profiles have no job-title field), the bio
+  from their profile, post count, social links and a button. Or pin it to a
+  chosen user for an "About the editor" block; on an author archive it shows
+  that author. Avatar left, right or on top per breakpoint, in circle, rounded
+  or square. **Social links come from the user's profile, not the widget** —
+  the contact fields SEO and profile plugins add, plus the Website — matched to
+  brand icons by field name, so X, LinkedIn, GitHub, Mastodon, YouTube and the
+  like light up without setup, and an unrecognised network still gets a
+  generic link icon instead of vanishing. A field may hold a full URL or a
+  bare domain (`x.com/you` gets `https://`); an `@handle` is skipped rather
+  than turned into a dead link, and any scheme other than `http(s)` / `mailto`
+  — `javascript:` included — never reaches the page. Icons go through
+  Elementor's own renderer, so they work with its inline-SVG icon mode on or
+  off.
+  *Where this differs from Post Meta Info and Team:* Post Meta Info shows the
+  author as one inline item in a meta row; Team is people you type in. This
+  resolves the author from the post.
 - **Post Meta Info** — a configurable inline row (or stack) of meta: author (with
   avatar), published / modified date, categories, tags, comment count and
   reading time, each with an optional prefix and icon, joined by a chosen
@@ -539,4 +558,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.78
+**Current version:** 1.20.79

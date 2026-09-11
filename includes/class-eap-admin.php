@@ -424,6 +424,13 @@ class EAP_Admin {
 			update_option( 'eap_widget_migrations', $done, false );
 		}
 
+		if ( empty( $done['author-box-built'] ) ) {
+			$states['author-box'] = 1;
+			update_option( self::WIDGETS_OPTION, $states, false );
+			$done['author-box-built'] = 1;
+			update_option( 'eap_widget_migrations', $done, false );
+		}
+
 		if ( empty( $done['posts-timeline-built'] ) ) {
 			$states['posts-timeline'] = 1;
 			update_option( self::WIDGETS_OPTION, $states, false );
@@ -1283,6 +1290,7 @@ class EAP_Admin {
 			'filterable-gallery',
 			'breadcrumbs',
 			'table-of-content',
+			'author-box',
 			'posts-timeline',
 			'posts-read-later',
 			'video-story',
