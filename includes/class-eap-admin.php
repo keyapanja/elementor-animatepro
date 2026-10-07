@@ -828,7 +828,6 @@ class EAP_Admin {
 										<span class="eap-widget-card__icon dashicons <?php echo esc_attr( $this->get_widget_icon_class( $widget ) ); ?>" aria-hidden="true"></span>
 										<span class="eap-widget-card__content">
 											<strong><span><?php echo esc_html( $widget ); ?></span><?php if ( ! $is_built ) : ?><span class="eap-widget-card__tag"><?php esc_html_e( 'Coming Soon', 'elementor-animatepro' ); ?></span><?php endif; ?></strong>
-											<small><?php esc_html_e( 'Documentation • Preview', 'elementor-animatepro' ); ?></small>
 										</span>
 										<span class="eap-switch">
 											<input type="checkbox" name="<?php echo esc_attr( self::WIDGETS_OPTION . '[' . $widget_key . ']' ); ?>" value="1" data-eap-toggle-input data-eap-group="<?php echo esc_attr( $slug ); ?>" <?php checked( $is_built && ! empty( $states[ $widget_key ] ) ); ?> <?php disabled( ! $is_built ); ?> />
