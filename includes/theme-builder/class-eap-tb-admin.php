@@ -104,11 +104,30 @@ class EAP_TB_Admin {
 				$payload[]     = $rule;
 			}
 
+			$type    = EAP_TB_Post_Type::get_type( $template->ID );
+			$preview = EAP_TB_Preview::get( $template->ID );
+			$kinds   = EAP_TB_Preview::kinds_for( $type );
+
+			if ( '' !== $preview['kind'] && isset( $kinds[ $preview['kind'] ] ) ) {
+				$preview['label'] = EAP_TB_Conditions::value_label( $kinds[ $preview['kind'] ]['value'], $preview['value'] );
+			} else {
+				$preview['label'] = '';
+			}
+
 			$templates[ (string) $template->ID ] = array(
-				'name'  => $template->post_title,
-				'type'  => EAP_TB_Post_Type::get_type( $template->ID ),
-				'rules' => $payload,
+				'name'    => $template->post_title,
+				'type'    => $type,
+				'rules'   => $payload,
+				'preview' => $preview,
 			);
+		}
+
+		$preview_kinds = array();
+
+		foreach ( array_keys( EAP_TB_Types::available() ) as $slug ) {
+			if ( EAP_TB_Preview::supports( $slug ) ) {
+				$preview_kinds[ $slug ] = EAP_TB_Preview::kinds_for( $slug );
+			}
 		}
 
 		$type_labels = array();
@@ -125,6 +144,7 @@ class EAP_TB_Admin {
 			'taxonomies' => $this->get_taxonomy_options(),
 			'templates'  => $templates,
 			'types'      => $type_labels,
+			'previews'   => $preview_kinds,
 			'i18n'       => array(
 				'include'     => __( 'Show on', 'elementor-animatepro' ),
 				'exclude'     => __( 'Hide on', 'elementor-animatepro' ),
@@ -138,6 +158,7 @@ class EAP_TB_Admin {
 				'renameTitle' => __( 'Rename template', 'elementor-animatepro' ),
 				'createCta'   => __( 'Create and Edit', 'elementor-animatepro' ),
 				'saveCta'     => __( 'Save Name', 'elementor-animatepro' ),
+				'previewNone' => __( 'Nothing chosen', 'elementor-animatepro' ),
 			),
 		);
 	}
@@ -308,6 +329,17 @@ class EAP_TB_Admin {
 			case 'delete':
 				wp_delete_post( $template_id, true );
 				$this->redirect_back( 'deleted' );
+				break;
+
+			case 'save_preview':
+				EAP_TB_Preview::save(
+					$template_id,
+					array(
+						'kind'  => isset( $_POST['preview_kind'] ) ? sanitize_key( wp_unslash( $_POST['preview_kind'] ) ) : '',
+						'value' => isset( $_POST['preview_value'] ) ? sanitize_text_field( wp_unslash( $_POST['preview_value'] ) ) : '',
+					)
+				);
+				$this->redirect_back( 'preview' );
 				break;
 
 			case 'save_conditions':
@@ -521,11 +553,30 @@ class EAP_TB_Admin {
 					<?php echo esc_html( '' !== $template->post_title ? $template->post_title : __( '(no title)', 'elementor-animatepro' ) ); ?>
 				</a>
 				<small class="eap-tb-row__conditions<?php echo $orphan ? ' is-warning' : ''; ?>"><?php echo esc_html( $summary ); ?></small>
+				<?php $preview = EAP_TB_Preview::summarize( $template->ID ); ?>
+				<?php if ( '' !== $preview ) : ?>
+					<small class="eap-tb-row__preview">
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %s: the post, term or author a template previews against. */
+								__( 'Previews against %s', 'elementor-animatepro' ),
+								$preview
+							)
+						);
+						?>
+					</small>
+				<?php endif; ?>
 			</div>
 			<div class="eap-tb-row__actions">
 				<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-conditions="<?php echo esc_attr( $template->ID ); ?>">
 					<?php esc_html_e( 'Conditions', 'elementor-animatepro' ); ?>
 				</button>
+				<?php if ( EAP_TB_Preview::supports( EAP_TB_Post_Type::get_type( $template->ID ) ) ) : ?>
+					<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-preview="<?php echo esc_attr( $template->ID ); ?>">
+						<?php esc_html_e( 'Preview', 'elementor-animatepro' ); ?>
+					</button>
+				<?php endif; ?>
 				<a class="eap-btn eap-btn--ghost" href="<?php echo esc_url( EAP_TB_Post_Type::edit_url( $template->ID ) ); ?>">
 					<?php esc_html_e( 'Edit', 'elementor-animatepro' ); ?>
 				</a>
@@ -584,6 +635,34 @@ class EAP_TB_Admin {
 			</div>
 		</div>
 
+		<div class="eap-tb-modal" data-eap-tb-modal="preview" hidden>
+			<div class="eap-tb-modal__box" role="dialog" aria-modal="true" aria-labelledby="eap-tb-preview-title">
+				<h2 id="eap-tb-preview-title"><?php esc_html_e( 'Preview Settings', 'elementor-animatepro' ); ?></h2>
+				<p class="eap-tb-modal__subtitle" data-eap-tb-preview-name></p>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<?php wp_nonce_field( self::NONCE ); ?>
+					<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION ); ?>" />
+					<input type="hidden" name="eap_tb_task" value="save_preview" />
+					<input type="hidden" name="template_id" value="" data-eap-tb-preview-id />
+					<p class="eap-tb-hint">
+						<?php esc_html_e( 'Elementor has no post or archive to work from while you edit a template, so the dynamic widgets fall back to the newest post. Pick what this template should stand in for instead. It changes the editor only — never the live site.', 'elementor-animatepro' ); ?>
+					</p>
+					<label class="eap-tb-field">
+						<span><?php esc_html_e( 'Preview against', 'elementor-animatepro' ); ?></span>
+						<select name="preview_kind" data-eap-tb-preview-kind></select>
+					</label>
+					<div class="eap-tb-field">
+						<span><?php esc_html_e( 'Which one', 'elementor-animatepro' ); ?></span>
+						<div class="eap-tb-rule__value eap-tb-rule__value--search" data-eap-tb-preview-value></div>
+					</div>
+					<div class="eap-tb-modal__actions">
+						<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-close><?php esc_html_e( 'Cancel', 'elementor-animatepro' ); ?></button>
+						<button type="submit" class="eap-btn eap-btn--primary"><?php esc_html_e( 'Save Preview', 'elementor-animatepro' ); ?></button>
+					</div>
+				</form>
+			</div>
+		</div>
+
 		<div class="eap-tb-modal" data-eap-tb-modal="conditions" hidden>
 			<div class="eap-tb-modal__box eap-tb-modal__box--wide" role="dialog" aria-modal="true" aria-labelledby="eap-tb-conditions-title">
 				<h2 id="eap-tb-conditions-title"><?php esc_html_e( 'Display Conditions', 'elementor-animatepro' ); ?></h2>
@@ -629,6 +708,7 @@ class EAP_TB_Admin {
 			'enabled'    => __( 'Template switched on.', 'elementor-animatepro' ),
 			'disabled'   => __( 'Template switched off.', 'elementor-animatepro' ),
 			'conditions' => __( 'Display conditions saved.', 'elementor-animatepro' ),
+			'preview'    => __( 'Preview settings saved.', 'elementor-animatepro' ),
 			'missing'    => __( 'That template no longer exists.', 'elementor-animatepro' ),
 			'error'      => __( 'That did not work. Please try again.', 'elementor-animatepro' ),
 		);

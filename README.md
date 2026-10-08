@@ -587,9 +587,11 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
 
 ## Theme Builder
 
-Build a header or footer in Elementor and put it on the pages you choose. The
-Theme Builder screen lists every template type, with Header and Footer live
-today and the rest marked as coming.
+Build a header, footer, single-content layout or archive layout in Elementor and
+put it on the pages you choose. The Theme Builder screen lists every template
+type, with Header, Footer, Single and Archive live today and the rest marked as
+coming. The page has two tabs: **Add New** for the type cards and **My
+Templates** for what you have built.
 
 - **Templates** live in their own `eap_template` post type, not Elementor's
   library, so the library stays your own saved blocks. Each one records its type
@@ -607,6 +609,24 @@ today and the rest marked as coming.
   and the theme's header never reaches the page. Footers work the same way. The
   theme's content area is left completely alone. On block themes the header and
   footer template-part blocks are swapped as they render instead.
+- **Single and Archive templates replace the content area** through
+  `template_include`. The page template still calls `get_header()` and
+  `get_footer()`, so the theme's own header and footer run unless a Theme
+  Builder header or footer has matched as well. A Single template sets up the
+  loop first, so the dynamic widgets read the real post; an Archive template
+  deliberately does not, because its listing widget runs the main query itself.
+  Search and 404 are not taken over yet.
+- **Listings can follow the main query.** The `Posts` and `Loop Grid` widgets
+  have a Source of Latest Posts or Current Query. Current Query borrows the
+  archive the visitor is already on — category, tag, author, date or the blog
+  page — with its own pagination, which is what an Archive template needs.
+- **Preview Settings** decide what a Single or Archive template stands in for
+  while you edit it. Elementor renders widgets over AJAX, where no main query
+  exists, so without a target a Post Title shows whichever post is newest. A
+  template can nominate an entry (Single) or a term, author or post type
+  (Archive). It reaches the widgets through two filters,
+  `eap_editor_preview_post_id` and `eap_posts_query_args`, and affects the
+  editor only — a live request always has a real query.
 - **Templates render early.** Each document's HTML is built during
   `wp_enqueue_scripts`, so the stylesheets its widgets ask for still reach the
   `<head>`.
@@ -617,8 +637,9 @@ today and the rest marked as coming.
   preview on Elementor's blank canvas.
 
 The parts live in `includes/theme-builder/`: `class-eap-tb-types.php` (the
-catalogue), `-post-type`, `-conditions`, `-resolver`, `-render`, `-documents`
-and `-admin`. `includes/class-eap-theme-builder.php` wires them together.
+catalogue), `-post-type`, `-conditions`, `-resolver`, `-render`, `-documents`,
+`-preview` and `-admin`. `includes/class-eap-theme-builder.php` wires them
+together.
 
 ## Admin
 
@@ -658,4 +679,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.87
+**Current version:** 1.20.88

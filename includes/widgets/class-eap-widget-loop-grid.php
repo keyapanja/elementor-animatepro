@@ -110,12 +110,27 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 		);
 
 		$this->add_control(
+			'query_source',
+			array(
+				'label'       => __( 'Source', 'elementor-animatepro' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => 'latest',
+				'options'     => array(
+					'latest'  => __( 'Latest Posts', 'elementor-animatepro' ),
+					'current' => __( 'Current Query (Archive)', 'elementor-animatepro' ),
+				),
+				'description' => __( 'Current Query follows whatever the page is already listing — the category, tag, author or search the visitor is on. Use it inside an Archive template.', 'elementor-animatepro' ),
+			)
+		);
+
+		$this->add_control(
 			'post_type',
 			array(
 				'label'   => __( 'Post Type', 'elementor-animatepro' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'post',
 				'options' => EAP_Posts_Query::get_post_type_options(),
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -127,6 +142,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'min'     => 1,
 				'max'     => 48,
 				'default' => 6,
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -144,6 +160,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 					'comment_count' => __( 'Comment Count', 'elementor-animatepro' ),
 					'rand'          => __( 'Random', 'elementor-animatepro' ),
 				),
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -157,6 +174,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 					'DESC' => __( 'Descending', 'elementor-animatepro' ),
 					'ASC'  => __( 'Ascending', 'elementor-animatepro' ),
 				),
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -167,6 +185,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'type'    => Controls_Manager::NUMBER,
 				'min'     => 0,
 				'default' => 0,
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -178,6 +197,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'multiple'    => true,
 				'label_block' => true,
 				'options'     => EAP_Posts_Query::get_term_options(),
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -189,6 +209,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'multiple'    => true,
 				'label_block' => true,
 				'options'     => EAP_Posts_Query::get_term_options(),
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -201,6 +222,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'label_off'    => __( 'No', 'elementor-animatepro' ),
 				'return_value' => 'yes',
 				'default'      => '',
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -213,6 +235,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'label_off'    => __( 'No', 'elementor-animatepro' ),
 				'return_value' => 'yes',
 				'default'      => 'yes',
+				'condition'   => array( 'query_source' => 'latest' ),
 			)
 		);
 
@@ -549,6 +572,23 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 			$paged = 1;
 		}
 
+		// Current Query means "whatever this page is already listing" — the
+		// category, tag, author or date the visitor is on. The widget borrows
+		// the main query rather than running one of its own. There is no main
+		// query to borrow in the editor, so it falls back there.
+		$use_current = 'current' === ( $settings['query_source'] ?? 'latest' ) && ! $editor;
+
+		if ( $use_current ) {
+			global $wp_query;
+
+			if ( $wp_query instanceof WP_Query && ! empty( $wp_query->posts ) ) {
+				$query = $wp_query;
+				$paged = max( 1, (int) $query->get( 'paged' ) );
+			} else {
+				$use_current = false;
+			}
+		}
+
 		$spec = array(
 			'source'          => 'latest',
 			'post_type'       => ! empty( $settings['post_type'] ) ? $settings['post_type'] : 'post',
@@ -563,8 +603,10 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 			'ignore_sticky'   => 'yes' === ( $settings['ignore_sticky'] ?? 'yes' ),
 		);
 
-		$args  = EAP_Posts_Query::build_query_args( $spec, $paged );
-		$query = new WP_Query( $args );
+		if ( ! $use_current ) {
+			$args  = EAP_Posts_Query::build_query_args( $spec, $paged );
+			$query = new WP_Query( $args );
+		}
 
 		if ( ! $query->have_posts() ) {
 			printf(

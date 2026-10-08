@@ -179,7 +179,17 @@ class EAP_Posts_Query {
 			$args['post__not_in'] = array( $spec['current_id'] );
 		}
 
-		return $args;
+		/**
+		 * Final query arguments for every widget built on this engine.
+		 *
+		 * The Theme Builder uses this to point a listing at the archive a
+		 * template is being previewed against, where no main query exists.
+		 *
+		 * @param array $args  Query arguments.
+		 * @param array $spec  Sanitized query spec.
+		 * @param int   $paged Current page.
+		 */
+		return apply_filters( 'eap_posts_query_args', $args, $spec, $paged );
 	}
 
 	/**

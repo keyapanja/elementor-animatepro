@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const taskForm = document.querySelector('[data-eap-tb-task-form]');
 	const nameModal = document.querySelector('[data-eap-tb-modal="name"]');
 	const conditionsModal = document.querySelector('[data-eap-tb-modal="conditions"]');
+	const previewModal = document.querySelector('[data-eap-tb-modal="preview"]');
 	const rulesHost = conditionsModal ? conditionsModal.querySelector('[data-eap-tb-rules]') : null;
 
 	let ruleIndex = 0;
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	/* Modals ------------------------------------------------------------- */
 
 	const closeModals = () => {
-		[nameModal, conditionsModal].forEach((modal) => {
+		[nameModal, conditionsModal, previewModal].forEach((modal) => {
 			if (modal) {
 				modal.hidden = true;
 			}
@@ -192,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	};
 
-	const buildValueControl = (host, index, kind, value, label) => {
+	const buildValueControl = (host, fieldName, kind, value, label) => {
 		host.innerHTML = '';
 		host.classList.remove('eap-tb-rule__value--search');
 
@@ -205,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		if (kind === 'post_type' || kind === 'taxonomy') {
 			const options = kind === 'post_type' ? data.postTypes || {} : data.taxonomies || {};
-			host.appendChild(makeSelect(`rules[${index}][value]`, options, value));
+			host.appendChild(makeSelect(fieldName, options, value));
 			return;
 		}
 
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		search.type = 'search';
 		search.placeholder = i18n.search || '';
 
-		const picker = makeSelect(`rules[${index}][value]`, {}, '');
+		const picker = makeSelect(fieldName, {}, '');
 
 		if (value) {
 			const option = el('option');
@@ -320,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const fillValue = (value, label) => {
 			const subs = (schema[scope.value] && schema[scope.value].subs) || {};
 			const definition = subs[sub.value];
-			buildValueControl(valueHost, index, definition ? definition.value : 'none', value, label);
+			buildValueControl(valueHost, `rules[${index}][value]`, definition ? definition.value : 'none', value, label);
 		};
 
 		scope.addEventListener('change', () => {
@@ -371,6 +372,53 @@ document.addEventListener('DOMContentLoaded', () => {
 		openModal(conditionsModal);
 	};
 
+	/* Preview settings --------------------------------------------------- */
+
+	const openPreview = (id) => {
+		if (!previewModal) {
+			return;
+		}
+
+		const template = templates[String(id)] || {};
+		const kinds = (data.previews || {})[template.type] || {};
+		const current = template.preview || {};
+		const kindSelect = previewModal.querySelector('[data-eap-tb-preview-kind]');
+		const valueHost = previewModal.querySelector('[data-eap-tb-preview-value]');
+		const nameNode = previewModal.querySelector('[data-eap-tb-preview-name]');
+
+		previewModal.querySelector('[data-eap-tb-preview-id]').value = id;
+
+		if (nameNode) {
+			nameNode.textContent = template.name || '';
+		}
+
+		const options = {};
+		Object.keys(kinds).forEach((key) => {
+			options[key] = kinds[key].label;
+		});
+
+		kindSelect.innerHTML = '';
+		Object.keys(options).forEach((key) => {
+			const option = el('option');
+			option.value = key;
+			option.textContent = options[key];
+			if (key === current.kind) {
+				option.selected = true;
+			}
+			kindSelect.appendChild(option);
+		});
+
+		const sync = (value, label) => {
+			const kind = kinds[kindSelect.value];
+			buildValueControl(valueHost, 'preview_value', kind ? kind.value : 'none', value, label);
+		};
+
+		kindSelect.onchange = () => sync('', '');
+		sync(current.value || '', current.label || '');
+
+		openModal(previewModal);
+	};
+
 	/* Wiring ------------------------------------------------------------- */
 
 	document.addEventListener('click', (event) => {
@@ -418,6 +466,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (conditions) {
 			event.preventDefault();
 			openConditions(conditions.dataset.eapTbConditions);
+			return;
+		}
+
+		const preview = target.closest('[data-eap-tb-preview]');
+		if (preview) {
+			event.preventDefault();
+			openPreview(preview.dataset.eapTbPreview);
 			return;
 		}
 

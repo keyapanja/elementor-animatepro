@@ -19,6 +19,8 @@ class EAP_TB_Documents {
 	private static $classes = array(
 		EAP_TB_Types::HEADER => 'EAP_TB_Document_Header',
 		EAP_TB_Types::FOOTER => 'EAP_TB_Document_Footer',
+		'single'             => 'EAP_TB_Document_Single',
+		'archive'            => 'EAP_TB_Document_Archive',
 	);
 
 	/**

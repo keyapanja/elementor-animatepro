@@ -40,7 +40,15 @@ class EAP_TB_Render {
 	private $parts = array(
 		'header' => 0,
 		'footer' => 0,
+		'body'   => 0,
 	);
+
+	/**
+	 * Which template type is supplying the body, if any.
+	 *
+	 * @var string
+	 */
+	private $body_type = '';
 
 	/**
 	 * Pre-rendered HTML per part.
@@ -75,7 +83,7 @@ class EAP_TB_Render {
 			return;
 		}
 
-		foreach ( array_keys( $this->parts ) as $part ) {
+		foreach ( array( 'header', 'footer' ) as $part ) {
 			if ( $this->is_taken_by_other_plugin( $part ) ) {
 				continue;
 			}
@@ -83,12 +91,24 @@ class EAP_TB_Render {
 			$this->parts[ $part ] = EAP_TB_Resolver::get_template_id( $part );
 		}
 
-		if ( ! $this->parts['header'] && ! $this->parts['footer'] ) {
+		// The body is whichever of Single or Archive fits this request; only
+		// one of them ever can.
+		$this->body_type = $this->get_body_type();
+
+		if ( '' !== $this->body_type ) {
+			$this->parts['body'] = EAP_TB_Resolver::get_template_id( $this->body_type );
+		}
+
+		if ( ! array_filter( $this->parts ) ) {
 			return;
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'prepare' ), 5 );
 		add_filter( 'body_class', array( $this, 'body_class' ) );
+
+		if ( $this->parts['body'] ) {
+			add_filter( 'template_include', array( $this, 'body_template' ), 999 );
+		}
 
 		if ( function_exists( 'wp_is_block_theme' ) && wp_is_block_theme() ) {
 			add_filter( 'render_block_core/template-part', array( $this, 'swap_block_part' ), 10, 2 );
@@ -102,6 +122,65 @@ class EAP_TB_Render {
 		if ( $this->parts['footer'] ) {
 			add_action( 'get_footer', array( $this, 'override_footer' ) );
 		}
+	}
+
+	/**
+	 * Which template type may supply the body on this request.
+	 *
+	 * @return string Type slug, or '' when the body is the theme's business.
+	 */
+	private function get_body_type() {
+		if ( is_singular() ) {
+			return 'single';
+		}
+
+		// is_home() is the blog page, where is_archive() is false but a listing
+		// is exactly what is being shown.
+		if ( is_archive() || is_home() ) {
+			return 'archive';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Hand WordPress our own page template when a body template matched.
+	 *
+	 * @param string $template Template path.
+	 * @return string
+	 */
+	public function body_template( $template ) {
+		$ours = EAP_PATH . 'includes/theme-builder/templates/body.php';
+
+		return file_exists( $ours ) ? $ours : $template;
+	}
+
+	/**
+	 * Print the body template, with the loop set up for single content.
+	 *
+	 * A Single template reads the current post through the usual loop globals,
+	 * so the post has to be set up first. An Archive template must NOT consume
+	 * the loop — its listing widget runs the main query itself.
+	 *
+	 * @return void
+	 */
+	public static function the_body() {
+		if ( ! self::$instance ) {
+			return;
+		}
+
+		self::$instance->print_body();
+	}
+
+	/**
+	 * @return void
+	 */
+	private function print_body() {
+		if ( 'single' === $this->body_type && have_posts() ) {
+			the_post();
+		}
+
+		$this->print_part( 'body' );
 	}
 
 	/**
@@ -221,9 +300,19 @@ class EAP_TB_Render {
 			return;
 		}
 
-		$tag = 'header' === $part ? 'header' : 'footer';
+		$tags = array(
+			'header' => 'header',
+			'footer' => 'footer',
+			'body'   => 'main',
+		);
 
-		printf( '<%1$s class="eap-theme-part eap-theme-%2$s">', esc_html( $tag ), esc_attr( $part ) );
+		$tag = isset( $tags[ $part ] ) ? $tags[ $part ] : 'div';
+
+		// The body carries #content because the theme's own content area — the
+		// usual target of the header's skip link — never runs.
+		$id = 'body' === $part ? ' id="content"' : '';
+
+		printf( '<%1$s%2$s class="eap-theme-part eap-theme-%3$s">', esc_html( $tag ), $id, esc_attr( $part ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- literal.
 		echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Elementor document output.
 		printf( '</%s>', esc_html( $tag ) );
 	}
@@ -354,9 +443,13 @@ class EAP_TB_Render {
 	 */
 	public function body_class( $classes ) {
 		foreach ( $this->parts as $part => $template_id ) {
-			if ( $template_id ) {
-				$classes[] = 'eap-has-' . $part;
+			if ( ! $template_id ) {
+				continue;
 			}
+
+			// The body says which kind it is, since Single and Archive style
+			// very differently.
+			$classes[] = 'body' === $part ? 'eap-has-' . $this->body_type : 'eap-has-' . $part;
 		}
 
 		return $classes;

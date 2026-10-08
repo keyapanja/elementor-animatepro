@@ -24,6 +24,7 @@ require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-types.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-conditions.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-post-type.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-resolver.php';
+require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-preview.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-render.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-documents.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-admin.php';
@@ -37,6 +38,7 @@ class EAP_Theme_Builder {
 		new EAP_TB_Post_Type();
 		new EAP_TB_Documents();
 		new EAP_TB_Render();
+		new EAP_TB_Preview();
 
 		if ( is_admin() ) {
 			$admin = new EAP_TB_Admin();

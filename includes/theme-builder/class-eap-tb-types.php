@@ -67,7 +67,7 @@ class EAP_TB_Types {
 				'description' => __( 'The layout of one piece of content — a post, a page or any custom post type.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-media-text',
 				'location'    => 'body',
-				'available'   => false,
+				'available'   => true,
 			),
 			'archive'         => array(
 				'label'       => __( 'Archive', 'elementor-animatepro' ),
@@ -75,7 +75,7 @@ class EAP_TB_Types {
 				'description' => __( 'Category, tag, taxonomy, author, date and post type listings.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-grid-view',
 				'location'    => 'body',
-				'available'   => false,
+				'available'   => true,
 			),
 			'search'          => array(
 				'label'       => __( 'Search Results', 'elementor-animatepro' ),

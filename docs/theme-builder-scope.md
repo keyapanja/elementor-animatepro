@@ -1,7 +1,13 @@
 # Theme Builder — Scope Draft
 
-Status: **approved 2026-10-07**. Phase 1 is being built now. The decisions that
-were open are recorded in section 7.
+Status: **approved 2026-10-07**. Phases 1 and 2 are built (v1.20.88). The
+decisions that were open are recorded in section 7.
+
+- **Phase 1** (v1.20.86–87): post type, document types, conditions and resolver,
+  admin screen, Header and Footer end to end.
+- **Phase 2** (v1.20.88): Single and Archive templates, Preview Settings, and
+  Current Query on Loop Grid.
+- **Phase 3 is next**: Search, 404, Loop Item, and the small missing widgets.
 
 ---
 
@@ -136,10 +142,11 @@ like the Widgets and Extensions pages.
 
 Most of what Single and Archive templates need already exists. The real holes:
 
-- **Archive loop on the main query.** Only the `Posts` widget can run the current
-  archive query today. `Loop Grid`, `Loop Carousel`, `Advanced Posts` and
-  `Filterable Posts` cannot — they all run their own query. An Archive template
-  needs at least Loop Grid able to render the main query with its pagination.
+- ~~**Archive loop on the main query.**~~ **Done in phase 2.** `Loop Grid` now
+  has the same Latest / Current Query source as `Posts`, including pagination
+  off the main query. `Loop Carousel`, `Advanced Posts` and `Filterable Posts`
+  still run their own query — a carousel of "this category" is a reasonable
+  later addition, but an Archive template no longer needs one.
 - **Archive Description** (the term description) — no widget today.
 - **Post Navigation** (previous / next post). Post Pagination covers numbered
   archive pages and in-post page splits, not post-to-post links.

@@ -71,6 +71,66 @@ class EAP_TB_Document_Header extends EAP_TB_Document_Base {
 	}
 }
 
+class EAP_TB_Document_Single extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-single';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( 'Single', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( 'Singles', 'elementor-animatepro' );
+	}
+}
+
+class EAP_TB_Document_Archive extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-archive';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( 'Archive', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( 'Archives', 'elementor-animatepro' );
+	}
+}
+
 class EAP_TB_Document_Footer extends EAP_TB_Document_Base {
 
 	/**

@@ -239,6 +239,19 @@ abstract class EAP_Widget_Base extends Widget_Base {
 		}
 
 		if ( ! $post_id && $this->eap_is_editor() ) {
+			/**
+			 * The post a dynamic widget should stand in for while editing.
+			 *
+			 * There is no main query during an editor render, so the Theme
+			 * Builder answers this with whatever the template being edited is
+			 * set to preview against. Falls through to the most recent post.
+			 *
+			 * @param int $post_id Resolved post ID, 0 when nothing is set.
+			 */
+			$post_id = (int) apply_filters( 'eap_editor_preview_post_id', 0 );
+		}
+
+		if ( ! $post_id && $this->eap_is_editor() ) {
 			$recent = get_posts(
 				array(
 					'numberposts'      => 1,
