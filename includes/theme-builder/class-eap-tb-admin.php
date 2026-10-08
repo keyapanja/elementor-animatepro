@@ -404,6 +404,10 @@ class EAP_TB_Admin {
 			$templates[ $slug ] = empty( $type['available'] ) ? array() : EAP_TB_Post_Type::get_templates( $slug );
 			$total             += count( $templates[ $slug ] );
 		}
+
+		// Every action that comes back here acted on a template, so land on the
+		// list rather than making the user find the tab again.
+		$active = '' !== $this->get_message_key() ? 'templates' : 'create';
 		?>
 		<div class="eap-widgets-shell eap-tb">
 			<div class="eap-widgets-head">
@@ -426,6 +430,17 @@ class EAP_TB_Admin {
 			<?php $this->render_message(); ?>
 			<?php $this->render_environment_notices(); ?>
 
+			<div class="eap-tb-tabs" role="tablist" aria-label="<?php esc_attr_e( 'Theme Builder sections', 'elementor-animatepro' ); ?>">
+				<button type="button" id="eap-tb-tab-create" class="eap-tb-tab<?php echo 'create' === $active ? ' is-active' : ''; ?>" role="tab" aria-controls="eap-tb-panel-create" aria-selected="<?php echo 'create' === $active ? 'true' : 'false'; ?>" data-eap-tb-panel="create">
+					<?php esc_html_e( 'Add New', 'elementor-animatepro' ); ?>
+				</button>
+				<button type="button" id="eap-tb-tab-templates" class="eap-tb-tab<?php echo 'templates' === $active ? ' is-active' : ''; ?>" role="tab" aria-controls="eap-tb-panel-templates" aria-selected="<?php echo 'templates' === $active ? 'true' : 'false'; ?>" data-eap-tb-panel="templates">
+					<?php esc_html_e( 'My Templates', 'elementor-animatepro' ); ?>
+					<span class="eap-tb-tab__count"><?php echo esc_html( number_format_i18n( $total ) ); ?></span>
+				</button>
+			</div>
+
+			<div class="eap-tb-panel" id="eap-tb-panel-create" role="tabpanel" aria-labelledby="eap-tb-tab-create" data-eap-tb-panel-body="create" <?php echo 'create' === $active ? '' : 'hidden'; ?>>
 			<div class="eap-tb-types">
 				<?php foreach ( $types as $slug => $type ) : ?>
 					<?php $available = ! empty( $type['available'] ); ?>
@@ -448,26 +463,40 @@ class EAP_TB_Admin {
 					</div>
 				<?php endforeach; ?>
 			</div>
+			</div>
 
-			<?php foreach ( EAP_TB_Types::available() as $slug => $type ) : ?>
-				<section class="eap-tb-group">
-					<div class="eap-tb-group__header">
-						<h2><?php echo esc_html( $type['plural'] ); ?></h2>
-						<button type="button" class="eap-btn eap-btn--primary" data-eap-tb-create="<?php echo esc_attr( $slug ); ?>">
-							<?php esc_html_e( 'Add New', 'elementor-animatepro' ); ?>
-						</button>
-					</div>
-					<?php if ( empty( $templates[ $slug ] ) ) : ?>
-						<p class="eap-tb-empty"><?php echo esc_html( $type['description'] ); ?></p>
-					<?php else : ?>
-						<div class="eap-tb-rows">
-							<?php foreach ( $templates[ $slug ] as $template ) : ?>
-								<?php $this->render_row( $template ); ?>
-							<?php endforeach; ?>
+			<div class="eap-tb-panel" id="eap-tb-panel-templates" role="tabpanel" aria-labelledby="eap-tb-tab-templates" data-eap-tb-panel-body="templates" <?php echo 'templates' === $active ? '' : 'hidden'; ?>>
+				<?php foreach ( EAP_TB_Types::available() as $slug => $type ) : ?>
+					<section class="eap-tb-group">
+						<div class="eap-tb-group__header">
+							<h2><?php echo esc_html( $type['plural'] ); ?></h2>
+							<button type="button" class="eap-btn eap-btn--primary" data-eap-tb-create="<?php echo esc_attr( $slug ); ?>">
+								<?php esc_html_e( 'Add New', 'elementor-animatepro' ); ?>
+							</button>
 						</div>
-					<?php endif; ?>
-				</section>
-			<?php endforeach; ?>
+						<?php if ( empty( $templates[ $slug ] ) ) : ?>
+							<p class="eap-tb-empty">
+								<?php
+								echo esc_html(
+									sprintf(
+										/* translators: %s: plural template type, lowercase, e.g. headers. */
+										__( 'No %s yet.', 'elementor-animatepro' ),
+										strtolower( $type['plural'] )
+									)
+								);
+								?>
+							</p>
+						<?php else : ?>
+							<div class="eap-tb-rows">
+								<?php foreach ( $templates[ $slug ] as $template ) : ?>
+									<?php $this->render_row( $template ); ?>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+					</section>
+				<?php endforeach; ?>
+				<p class="eap-tb-no-match" data-eap-tb-no-match hidden><?php esc_html_e( 'No templates match your search.', 'elementor-animatepro' ); ?></p>
+			</div>
 
 			<?php $this->render_forms(); ?>
 		</div>
@@ -577,12 +606,21 @@ class EAP_TB_Admin {
 	}
 
 	/**
+	 * The message key the last action redirected back with.
+	 *
+	 * @return string
+	 */
+	private function get_message_key() {
+		return isset( $_GET['eap-tb-msg'] ) ? sanitize_key( wp_unslash( $_GET['eap-tb-msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	}
+
+	/**
 	 * Show the result of the last action.
 	 *
 	 * @return void
 	 */
 	private function render_message() {
-		$key = isset( $_GET['eap-tb-msg'] ) ? sanitize_key( wp_unslash( $_GET['eap-tb-msg'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$key = $this->get_message_key();
 
 		$messages = array(
 			'duplicated' => __( 'Template duplicated. The copy is switched off until you turn it on.', 'elementor-animatepro' ),

@@ -56,6 +56,23 @@ document.addEventListener('DOMContentLoaded', () => {
 		return select;
 	};
 
+	/* Section tabs ------------------------------------------------------- */
+
+	const tabs = Array.from(document.querySelectorAll('[data-eap-tb-panel]'));
+	const panels = Array.from(document.querySelectorAll('[data-eap-tb-panel-body]'));
+
+	const showPanel = (name) => {
+		tabs.forEach((tab) => {
+			const active = tab.dataset.eapTbPanel === name;
+			tab.classList.toggle('is-active', active);
+			tab.setAttribute('aria-selected', active ? 'true' : 'false');
+		});
+
+		panels.forEach((panel) => {
+			panel.hidden = panel.dataset.eapTbPanelBody !== name;
+		});
+	};
+
 	/* Modals ------------------------------------------------------------- */
 
 	const closeModals = () => {
@@ -64,6 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				modal.hidden = true;
 			}
 		});
+
+		document.body.classList.remove('eap-tb-modal-open');
 	};
 
 	const openModal = (modal) => {
@@ -72,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 		closeModals();
 		modal.hidden = false;
+		modal.scrollTop = 0;
+		document.body.classList.add('eap-tb-modal-open');
 	};
 
 	/* Row actions -------------------------------------------------------- */
@@ -173,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const buildValueControl = (host, index, kind, value, label) => {
 		host.innerHTML = '';
+		host.classList.remove('eap-tb-rule__value--search');
 
 		if (!kind || kind === 'none') {
 			host.hidden = true;
@@ -186,6 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			host.appendChild(makeSelect(`rules[${index}][value]`, options, value));
 			return;
 		}
+
+		// Entries, terms and authors carry names long enough to need the width
+		// of the whole row, so this pair drops onto its own line.
+		host.classList.add('eap-tb-rule__value--search');
 
 		const search = el('input');
 		search.type = 'search';
@@ -354,6 +380,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			return;
 		}
 
+		const tab = target.closest('[data-eap-tb-panel]');
+		if (tab) {
+			event.preventDefault();
+			showPanel(tab.dataset.eapTbPanel);
+			return;
+		}
+
 		const close = target.closest('[data-eap-tb-close]');
 		if (close) {
 			event.preventDefault();
@@ -427,9 +460,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	if (globalSearch) {
 		const groups = Array.from(document.querySelectorAll('.eap-tb-group'));
+		const noMatch = document.querySelector('[data-eap-tb-no-match]');
 
 		globalSearch.addEventListener('input', () => {
 			const query = globalSearch.value.trim().toLowerCase();
+			let found = 0;
+
+			// Templates are the only thing worth searching, so searching takes
+			// you to them rather than filtering a panel you cannot see.
+			if (query) {
+				showPanel('templates');
+			}
 
 			groups.forEach((group) => {
 				let visible = 0;
@@ -447,7 +488,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				});
 
 				group.hidden = '' !== query && 0 === visible;
+				found += visible;
 			});
+
+			if (noMatch) {
+				noMatch.hidden = '' === query || found > 0;
+			}
 		});
 	}
 });
