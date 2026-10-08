@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const nameModal = document.querySelector('[data-eap-tb-modal="name"]');
 	const conditionsModal = document.querySelector('[data-eap-tb-modal="conditions"]');
 	const previewModal = document.querySelector('[data-eap-tb-modal="preview"]');
+	const importModal = document.querySelector('[data-eap-tb-modal="import"]');
 	const rulesHost = conditionsModal ? conditionsModal.querySelector('[data-eap-tb-rules]') : null;
 
 	let ruleIndex = 0;
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	/* Modals ------------------------------------------------------------- */
 
 	const closeModals = () => {
-		[nameModal, conditionsModal, previewModal].forEach((modal) => {
+		[nameModal, conditionsModal, previewModal, importModal].forEach((modal) => {
 			if (modal) {
 				modal.hidden = true;
 			}
@@ -483,6 +484,12 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (preview) {
 			event.preventDefault();
 			openPreview(preview.dataset.eapTbPreview);
+			return;
+		}
+
+		if (target.closest('[data-eap-tb-import]')) {
+			event.preventDefault();
+			openModal(importModal);
 			return;
 		}
 

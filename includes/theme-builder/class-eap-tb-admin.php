@@ -30,6 +30,7 @@ class EAP_TB_Admin {
 	 */
 	public function init() {
 		add_action( 'admin_post_' . self::ACTION, array( $this, 'handle_action' ) );
+		add_action( 'admin_post_eap_tb_export', array( $this, 'handle_export' ) );
 		add_action( 'wp_ajax_eap_tb_search', array( $this, 'ajax_search' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ), 20 );
 	}
@@ -289,6 +290,33 @@ class EAP_TB_Admin {
 	}
 
 	/**
+	 * Send a template back as a JSON download.
+	 *
+	 * @return void
+	 */
+	public function handle_export() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_die( esc_html__( 'You are not allowed to manage templates.', 'elementor-animatepro' ), 403 );
+		}
+
+		check_admin_referer( 'eap_tb_export' );
+
+		$template_id = isset( $_GET['template_id'] ) ? absint( wp_unslash( $_GET['template_id'] ) ) : 0;
+		$payload     = EAP_TB_Transfer::export( $template_id );
+
+		if ( is_wp_error( $payload ) ) {
+			$this->redirect_back( 'missing' );
+		}
+
+		nocache_headers();
+		header( 'Content-Type: application/json; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . EAP_TB_Transfer::filename( $template_id ) . '"' );
+
+		echo wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+		exit;
+	}
+
+	/**
 	 * Handle a template action posted from the Theme Builder page.
 	 *
 	 * @return void
@@ -330,6 +358,19 @@ class EAP_TB_Admin {
 			case 'delete':
 				wp_delete_post( $template_id, true );
 				$this->redirect_back( 'deleted' );
+				break;
+
+			case 'import':
+				$file = isset( $_FILES['eap_tb_file'] ) ? $_FILES['eap_tb_file'] : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+				$raw  = EAP_TB_Transfer::read_upload( $file );
+
+				if ( is_wp_error( $raw ) ) {
+					$this->redirect_back( 'import_failed' );
+				}
+
+				$result = EAP_TB_Transfer::import( $raw );
+
+				$this->redirect_back( is_wp_error( $result ) ? 'import_failed' : 'imported' );
 				break;
 
 			case 'save_preview':
@@ -457,6 +498,11 @@ class EAP_TB_Admin {
 						);
 						?>
 					</p>
+				</div>
+				<div class="eap-widgets-actions">
+					<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-import>
+						<?php esc_html_e( 'Import Template', 'elementor-animatepro' ); ?>
+					</button>
 				</div>
 			</div>
 
@@ -597,6 +643,9 @@ class EAP_TB_Admin {
 				<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-task="duplicate" data-eap-tb-id="<?php echo esc_attr( $template->ID ); ?>">
 					<?php esc_html_e( 'Duplicate', 'elementor-animatepro' ); ?>
 				</button>
+				<a class="eap-btn eap-btn--ghost" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=eap_tb_export&template_id=' . (int) $template->ID ), 'eap_tb_export' ) ); ?>">
+					<?php esc_html_e( 'Export', 'elementor-animatepro' ); ?>
+				</a>
 				<button type="button" class="eap-btn eap-btn--ghost is-danger" data-eap-tb-task="delete" data-eap-tb-id="<?php echo esc_attr( $template->ID ); ?>" data-eap-tb-confirm="1">
 					<?php esc_html_e( 'Delete', 'elementor-animatepro' ); ?>
 				</button>
@@ -643,6 +692,28 @@ class EAP_TB_Admin {
 					<div class="eap-tb-modal__actions">
 						<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-close><?php esc_html_e( 'Cancel', 'elementor-animatepro' ); ?></button>
 						<button type="submit" class="eap-btn eap-btn--primary" data-eap-tb-name-submit><?php esc_html_e( 'Create and Edit', 'elementor-animatepro' ); ?></button>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="eap-tb-modal" data-eap-tb-modal="import" hidden>
+			<div class="eap-tb-modal__box" role="dialog" aria-modal="true" aria-labelledby="eap-tb-import-title">
+				<h2 id="eap-tb-import-title"><?php esc_html_e( 'Import a Template', 'elementor-animatepro' ); ?></h2>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+					<?php wp_nonce_field( self::NONCE ); ?>
+					<input type="hidden" name="action" value="<?php echo esc_attr( self::ACTION ); ?>" />
+					<input type="hidden" name="eap_tb_task" value="import" />
+					<p class="eap-tb-hint">
+						<?php esc_html_e( 'Choose a .json file exported from AnimatePro. It arrives switched off, with its conditions and preview target intact, so you can check it before it goes live.', 'elementor-animatepro' ); ?>
+					</p>
+					<label class="eap-tb-field">
+						<span><?php esc_html_e( 'Template file', 'elementor-animatepro' ); ?></span>
+						<input type="file" name="eap_tb_file" accept="application/json,.json" required />
+					</label>
+					<div class="eap-tb-modal__actions">
+						<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-close><?php esc_html_e( 'Cancel', 'elementor-animatepro' ); ?></button>
+						<button type="submit" class="eap-btn eap-btn--primary"><?php esc_html_e( 'Import', 'elementor-animatepro' ); ?></button>
 					</div>
 				</form>
 			</div>
@@ -722,6 +793,8 @@ class EAP_TB_Admin {
 			'disabled'   => __( 'Template switched off.', 'elementor-animatepro' ),
 			'conditions' => __( 'Display conditions saved.', 'elementor-animatepro' ),
 			'preview'    => __( 'Preview settings saved.', 'elementor-animatepro' ),
+			'imported'   => __( 'Template imported. It is switched off until you turn it on.', 'elementor-animatepro' ),
+			'import_failed' => __( 'That file could not be imported. It needs to be a template exported from AnimatePro.', 'elementor-animatepro' ),
 			'missing'    => __( 'That template no longer exists.', 'elementor-animatepro' ),
 			'error'      => __( 'That did not work. Please try again.', 'elementor-animatepro' ),
 		);

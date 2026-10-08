@@ -25,6 +25,7 @@ require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-conditions.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-post-type.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-resolver.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-preview.php';
+require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-transfer.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-render.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-popups.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-documents.php';
