@@ -31,7 +31,12 @@
 
 		var manager = window.elementor.elementsManager;
 
-		if ( ! types || ! types.NestedElementBase || ! manager || typeof manager.registerElementType !== 'function' ) {
+		// Elementor assigns a dynamic-import PROMISE here first and swaps in
+		// the real class when it resolves. A promise is truthy, so testing
+		// only for existence would subclass Promise.prototype and register
+		// an element type that is not a nested element at all. Requiring a
+		// constructor makes the poll wait for the real thing.
+		if ( ! types || typeof types.NestedElementBase !== 'function' || ! manager || typeof manager.registerElementType !== 'function' ) {
 			return false;
 		}
 
