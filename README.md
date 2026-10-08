@@ -674,10 +674,25 @@ have built.
 - Template URLs are 404 for anyone who cannot edit them, carry `noindex`, and
   preview on Elementor's blank canvas.
 
+- **Dynamic tags** let live data fill an ordinary control, so a plain Heading
+  can show the post title and a Button can take its URL from a custom field.
+  Thirteen tags under an **AnimatePro** group: post title, excerpt, date
+  (published or modified, with a format), author name, custom field, archive
+  title and description, site title, tagline, post URL, author archive URL,
+  site URL and the featured image. They resolve the current post the same way
+  the dynamic widgets do, including a template's preview target, so they work
+  while editing a template as well as on the page. A custom field holding an
+  array falls through to the tag's fallback rather than printing "Array".
+- **Export and import.** An export carries the type, conditions, preview target
+  and document settings alongside the content; an import pushes all of it back
+  through the same sanitisers the admin screen uses, so a hand-edited file
+  cannot store a rule a type does not support. An imported template arrives
+  switched off.
+
 The parts live in `includes/theme-builder/`: `class-eap-tb-types.php` (the
-catalogue), `-post-type`, `-conditions`, `-resolver`, `-render`, `-documents`,
-`-preview` and `-admin`. `includes/class-eap-theme-builder.php` wires them
-together.
+catalogue), `-post-type`, `-conditions`, `-resolver`, `-render`, `-popups`,
+`-documents`, `-tags`, `-preview`, `-transfer` and `-admin`.
+`includes/class-eap-theme-builder.php` wires them together.
 
 ## Admin
 
@@ -717,4 +732,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.92
+**Current version:** 1.20.93

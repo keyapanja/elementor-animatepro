@@ -29,6 +29,7 @@ require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-transfer.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-render.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-popups.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-documents.php';
+require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-tags.php';
 require_once EAP_PATH . 'includes/theme-builder/class-eap-tb-admin.php';
 
 class EAP_Theme_Builder {
@@ -39,6 +40,7 @@ class EAP_Theme_Builder {
 	public function __construct() {
 		new EAP_TB_Post_Type();
 		new EAP_TB_Documents();
+		new EAP_TB_Tags();
 		new EAP_TB_Render();
 		new EAP_TB_Popups();
 		new EAP_TB_Preview();
