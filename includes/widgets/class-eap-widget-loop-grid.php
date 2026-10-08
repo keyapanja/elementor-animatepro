@@ -79,7 +79,7 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 				'label'       => __( 'Item Template', 'elementor-animatepro' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => '',
-				'options'     => $this->eap_get_template_options(),
+				'options'     => $this->eap_get_template_options( true ),
 				'label_block' => true,
 				'description' => __( 'A saved Elementor template rendered once per post. Build it from the Dynamic widgets (Post Title, Post Featured Image, …) so each item shows its own post.', 'elementor-animatepro' ),
 			)
@@ -581,7 +581,12 @@ class EAP_Widget_Loop_Grid extends EAP_Widget_Base {
 		if ( $use_current ) {
 			global $wp_query;
 
-			if ( $wp_query instanceof WP_Query && ! empty( $wp_query->posts ) ) {
+			// An archive or search that found nothing must stay empty rather
+			// than quietly falling back to Latest Posts; the fallback is only
+			// for places with no listing to borrow.
+			$is_listing = is_archive() || is_home() || is_search();
+
+			if ( $wp_query instanceof WP_Query && ( ! empty( $wp_query->posts ) || $is_listing ) ) {
 				$query = $wp_query;
 				$paged = max( 1, (int) $query->get( 'paged' ) );
 			} else {

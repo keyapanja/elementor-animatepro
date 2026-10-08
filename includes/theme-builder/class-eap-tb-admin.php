@@ -159,6 +159,7 @@ class EAP_TB_Admin {
 				'createCta'   => __( 'Create and Edit', 'elementor-animatepro' ),
 				'saveCta'     => __( 'Save Name', 'elementor-animatepro' ),
 				'previewNone' => __( 'Nothing chosen', 'elementor-animatepro' ),
+				'searchTerm'  => __( 'e.g. leadership', 'elementor-animatepro' ),
 			),
 		);
 	}
@@ -542,10 +543,18 @@ class EAP_TB_Admin {
 	 * @return void
 	 */
 	private function render_row( $template ) {
+		$type       = EAP_TB_Post_Type::get_type( $template->ID );
+		$definition = EAP_TB_Types::get( $type );
+
+		// A Loop Item is picked inside a widget rather than placed by
+		// conditions, so it has neither a condition list nor an on/off switch.
+		$placed  = ! $definition || 'part' !== $definition['location'];
 		$rules   = EAP_TB_Conditions::get( $template->ID );
 		$enabled = EAP_TB_Post_Type::is_enabled( $template->ID );
-		$summary = EAP_TB_Conditions::summarize( $rules );
-		$orphan  = empty( $rules );
+		$summary = $placed
+			? EAP_TB_Conditions::summarize( $rules )
+			: __( 'Chosen inside Loop Grid and Loop Carousel', 'elementor-animatepro' );
+		$orphan  = $placed && empty( $rules );
 		?>
 		<div class="eap-tb-row<?php echo $enabled ? '' : ' is-off'; ?>" data-eap-tb-template="<?php echo esc_attr( $template->ID ); ?>">
 			<div class="eap-tb-row__main">
@@ -569,10 +578,12 @@ class EAP_TB_Admin {
 				<?php endif; ?>
 			</div>
 			<div class="eap-tb-row__actions">
-				<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-conditions="<?php echo esc_attr( $template->ID ); ?>">
-					<?php esc_html_e( 'Conditions', 'elementor-animatepro' ); ?>
-				</button>
-				<?php if ( EAP_TB_Preview::supports( EAP_TB_Post_Type::get_type( $template->ID ) ) ) : ?>
+				<?php if ( $placed ) : ?>
+					<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-conditions="<?php echo esc_attr( $template->ID ); ?>">
+						<?php esc_html_e( 'Conditions', 'elementor-animatepro' ); ?>
+					</button>
+				<?php endif; ?>
+				<?php if ( EAP_TB_Preview::supports( $type ) ) : ?>
 					<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-preview="<?php echo esc_attr( $template->ID ); ?>">
 						<?php esc_html_e( 'Preview', 'elementor-animatepro' ); ?>
 					</button>
@@ -589,11 +600,13 @@ class EAP_TB_Admin {
 				<button type="button" class="eap-btn eap-btn--ghost is-danger" data-eap-tb-task="delete" data-eap-tb-id="<?php echo esc_attr( $template->ID ); ?>" data-eap-tb-confirm="1">
 					<?php esc_html_e( 'Delete', 'elementor-animatepro' ); ?>
 				</button>
-				<label class="eap-switch eap-tb-row__switch">
-					<input type="checkbox" data-eap-tb-task="toggle" data-eap-tb-id="<?php echo esc_attr( $template->ID ); ?>" <?php checked( $enabled ); ?> />
-					<span class="eap-switch__slider" aria-hidden="true"></span>
-					<span class="screen-reader-text"><?php esc_html_e( 'Enable template', 'elementor-animatepro' ); ?></span>
-				</label>
+				<?php if ( $placed ) : ?>
+					<label class="eap-switch eap-tb-row__switch">
+						<input type="checkbox" data-eap-tb-task="toggle" data-eap-tb-id="<?php echo esc_attr( $template->ID ); ?>" <?php checked( $enabled ); ?> />
+						<span class="eap-switch__slider" aria-hidden="true"></span>
+						<span class="screen-reader-text"><?php esc_html_e( 'Enable template', 'elementor-animatepro' ); ?></span>
+					</label>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php

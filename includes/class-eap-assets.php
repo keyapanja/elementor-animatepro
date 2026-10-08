@@ -131,6 +131,7 @@ class EAP_Assets {
 			'site-logo',
 			'nav-menu',
 			'mega-menu',
+			'search-form',
 			'animated-off-canvas',
 			'post-title',
 			'post-featured-image',

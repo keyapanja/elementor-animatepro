@@ -21,6 +21,9 @@ class EAP_TB_Documents {
 		EAP_TB_Types::FOOTER => 'EAP_TB_Document_Footer',
 		'single'             => 'EAP_TB_Document_Single',
 		'archive'            => 'EAP_TB_Document_Archive',
+		'search'             => 'EAP_TB_Document_Search',
+		'404'                => 'EAP_TB_Document_404',
+		'loop-item'          => 'EAP_TB_Document_Loop_Item',
 	);
 
 	/**

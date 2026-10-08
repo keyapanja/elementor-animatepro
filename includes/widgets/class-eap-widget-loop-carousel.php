@@ -85,7 +85,7 @@ class EAP_Widget_Loop_Carousel extends EAP_Widget_Base {
 				'label'       => __( 'Item Template', 'elementor-animatepro' ),
 				'type'        => Controls_Manager::SELECT,
 				'default'     => '',
-				'options'     => $this->eap_get_template_options(),
+				'options'     => $this->eap_get_template_options( true ),
 				'label_block' => true,
 				'description' => __( 'A saved Elementor template rendered once per post. Build it from the Dynamic widgets (Post Title, Post Featured Image, …) so each slide shows its own post.', 'elementor-animatepro' ),
 			)

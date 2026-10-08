@@ -204,6 +204,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		host.hidden = false;
 
+		if (kind === 'text') {
+			const input = el('input');
+			input.type = 'text';
+			input.name = fieldName;
+			input.value = value || '';
+			input.placeholder = i18n.searchTerm || '';
+			host.appendChild(input);
+			return;
+		}
+
 		if (kind === 'post_type' || kind === 'taxonomy') {
 			const options = kind === 'post_type' ? data.postTypes || {} : data.taxonomies || {};
 			host.appendChild(makeSelect(fieldName, options, value));

@@ -131,6 +131,96 @@ class EAP_TB_Document_Archive extends EAP_TB_Document_Base {
 	}
 }
 
+class EAP_TB_Document_Loop_Item extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-loop-item';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( 'Loop Item', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( 'Loop Items', 'elementor-animatepro' );
+	}
+}
+
+class EAP_TB_Document_Search extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-search';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( 'Search Results', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( 'Search Results', 'elementor-animatepro' );
+	}
+}
+
+class EAP_TB_Document_404 extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-404';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( '404 Page', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( '404 Pages', 'elementor-animatepro' );
+	}
+}
+
 class EAP_TB_Document_Footer extends EAP_TB_Document_Base {
 
 	/**

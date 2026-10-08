@@ -47,6 +47,15 @@ class EAP_TB_Preview {
 	 * @return array<string, array<string, string>>
 	 */
 	public static function kinds_for( $type ) {
+		if ( 'search' === $type ) {
+			return array(
+				'search_term' => array(
+					'label' => __( 'A Search Term', 'elementor-animatepro' ),
+					'value' => 'text',
+				),
+			);
+		}
+
 		if ( 'archive' === $type ) {
 			return array(
 				'term'      => array(
@@ -82,7 +91,7 @@ class EAP_TB_Preview {
 	 * @return bool
 	 */
 	public static function supports( $type ) {
-		return in_array( $type, array( 'single', 'archive' ), true );
+		return in_array( $type, array( 'single', 'archive', 'search', 'loop-item' ), true );
 	}
 
 	/**
@@ -139,15 +148,28 @@ class EAP_TB_Preview {
 
 		$value = isset( $raw['value'] ) ? (string) $raw['value'] : '';
 
-		if ( 'post_type' === $kind ) {
-			$value = sanitize_key( $value );
-		} elseif ( 'term' === $kind ) {
-			$parts = explode( ':', $value );
-			$value = ( 2 === count( $parts ) && sanitize_key( $parts[0] ) && absint( $parts[1] ) )
-				? sanitize_key( $parts[0] ) . ':' . absint( $parts[1] )
-				: '';
-		} else {
-			$value = absint( $value ) ? (string) absint( $value ) : '';
+		// Sanitise by the kind of thing the value points at, not by the rule
+		// name, so a new kind only has to declare which control it uses.
+		switch ( $kinds[ $kind ]['value'] ) {
+			case 'post_type':
+			case 'taxonomy':
+				$value = sanitize_key( $value );
+				break;
+
+			case 'term':
+				$parts = explode( ':', $value );
+				$value = ( 2 === count( $parts ) && sanitize_key( $parts[0] ) && absint( $parts[1] ) )
+					? sanitize_key( $parts[0] ) . ':' . absint( $parts[1] )
+					: '';
+				break;
+
+			case 'text':
+				$value = sanitize_text_field( $value );
+				break;
+
+			default:
+				$value = absint( $value ) ? (string) absint( $value ) : '';
+				break;
 		}
 
 		if ( '' === $value ) {
@@ -174,9 +196,12 @@ class EAP_TB_Preview {
 		}
 
 		$kinds = self::kinds_for( EAP_TB_Post_Type::get_type( $template_id ) );
-		$label = EAP_TB_Conditions::value_label( $kinds[ $target['kind'] ]['value'], $target['value'] );
 
-		return '' !== $label ? $label : '';
+		if ( 'text' === $kinds[ $target['kind'] ]['value'] ) {
+			return '"' . $target['value'] . '"';
+		}
+
+		return EAP_TB_Conditions::value_label( $kinds[ $target['kind'] ]['value'], $target['value'] );
 	}
 
 	/**
@@ -251,7 +276,9 @@ class EAP_TB_Preview {
 			'suppress_filters' => false,
 		);
 
-		if ( 'author' === $target['kind'] ) {
+		if ( 'search_term' === $target['kind'] ) {
+			$args['s'] = $target['value'];
+		} elseif ( 'author' === $target['kind'] ) {
 			$args['author'] = (int) $target['value'];
 		} elseif ( 'post_type' === $target['kind'] ) {
 			$args['post_type'] = $target['value'];
@@ -285,7 +312,11 @@ class EAP_TB_Preview {
 
 		$template_id = $this->editing_template_id();
 
-		if ( ! $template_id || 'archive' !== EAP_TB_Post_Type::get_type( $template_id ) ) {
+		if ( ! $template_id ) {
+			return $args;
+		}
+
+		if ( ! in_array( EAP_TB_Post_Type::get_type( $template_id ), array( 'archive', 'search' ), true ) ) {
 			return $args;
 		}
 
@@ -295,7 +326,9 @@ class EAP_TB_Preview {
 			return $args;
 		}
 
-		if ( 'author' === $target['kind'] ) {
+		if ( 'search_term' === $target['kind'] ) {
+			$args['s'] = $target['value'];
+		} elseif ( 'author' === $target['kind'] ) {
 			$args['author'] = (int) $target['value'];
 		} elseif ( 'post_type' === $target['kind'] ) {
 			$args['post_type'] = $target['value'];

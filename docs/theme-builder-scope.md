@@ -7,7 +7,21 @@ decisions that were open are recorded in section 7.
   admin screen, Header and Footer end to end.
 - **Phase 2** (v1.20.88): Single and Archive templates, Preview Settings, and
   Current Query on Loop Grid.
-- **Phase 3 is next**: Search, 404, Loop Item, and the small missing widgets.
+- **Phase 3** (v1.20.89): Search Results, 404 and Loop Item templates, plus the
+  Search Form widget.
+- **Phase 4 is next**: Popup, Import/Export, starter layouts, Dynamic Tags.
+
+**Correction to section 6.** Three of the four "missing widgets" listed there
+already existed, so phase 3 did not build them:
+
+- *Archive Description* and the *results count* are both options on the
+  **Archive Title** widget (`show_description`, `show_count`).
+- *Post Navigation* is a mode of the **Post Pagination** widget (`post_nav`),
+  with optional titles and a same-category restriction.
+
+Only the **Search Form** was genuinely missing. Building duplicates of the other
+three would have left two widgets doing the same job, which is exactly what the
+catalogue has avoided so far.
 
 ---
 

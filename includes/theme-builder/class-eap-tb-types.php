@@ -83,7 +83,7 @@ class EAP_TB_Types {
 				'description' => __( 'The page visitors land on after using search.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-search',
 				'location'    => 'body',
-				'available'   => false,
+				'available'   => true,
 			),
 			'404'             => array(
 				'label'       => __( '404 Page', 'elementor-animatepro' ),
@@ -91,7 +91,7 @@ class EAP_TB_Types {
 				'description' => __( 'Shown when a URL matches nothing on the site.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-warning',
 				'location'    => 'body',
-				'available'   => false,
+				'available'   => true,
 			),
 			'loop-item'       => array(
 				'label'       => __( 'Loop Item', 'elementor-animatepro' ),
@@ -99,7 +99,7 @@ class EAP_TB_Types {
 				'description' => __( 'The repeating card used by Loop Grid and Loop Carousel.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-screenoptions',
 				'location'    => 'part',
-				'available'   => false,
+				'available'   => true,
 			),
 			'popup'           => array(
 				'label'       => __( 'Popup', 'elementor-animatepro' ),

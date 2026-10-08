@@ -425,7 +425,8 @@ body.eap-tb-modal-open {
 }
 
 .eap-tb-rule select,
-.eap-tb-rule input[type="search"] {
+.eap-tb-rule input[type="search"],
+.eap-tb-rule__value input[type="text"] {
 	min-height: 38px;
 	max-width: 100%;
 	padding: 0 10px;
@@ -443,7 +444,8 @@ body.eap-tb-modal-open {
 }
 
 .eap-tb-rule__value select,
-.eap-tb-rule__value input[type="search"] {
+.eap-tb-rule__value input[type="search"],
+.eap-tb-rule__value input[type="text"] {
 	flex: 1 1 0;
 	min-width: 0;
 }

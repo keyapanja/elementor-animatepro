@@ -130,6 +130,17 @@ class EAP_TB_Render {
 	 * @return string Type slug, or '' when the body is the theme's business.
 	 */
 	private function get_body_type() {
+		// Order matters: a 404 and a search are neither singular nor archives
+		// as far as WordPress is concerned, and a search that found nothing is
+		// still a search rather than a 404.
+		if ( is_404() ) {
+			return '404';
+		}
+
+		if ( is_search() ) {
+			return 'search';
+		}
+
 		if ( is_singular() ) {
 			return 'single';
 		}

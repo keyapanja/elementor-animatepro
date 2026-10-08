@@ -249,6 +249,14 @@ it**.
   **saved template**. Slide or fade animation, configurable width/height,
   overlay colour + click-to-close, a styleable close button, plus open-on-load
   and open-via-`#hash`. Esc-to-close, scroll-lock and focus handling included.
+- **Search Form** — a real WordPress search form (a GET form to the site root
+  carrying `s`), not a box that only looks like one. Button as icon, text, both
+  or none, placed **beside** the field, **inside** its trailing edge, or
+  **below** it; the search can be scoped to one post type. Carries a proper
+  `<label>`, hidden off-screen by default through its own CSS rather than the
+  theme's `.screen-reader-text`, and each instance gets its own field id so two
+  forms on a page keep their labels straight. CSS only — it works with
+  JavaScript off.
 
 ### Dynamic (theme building)
 These widgets output the **current post's** data, for use on single post / page
@@ -589,9 +597,10 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
 
 Build a header, footer, single-content layout or archive layout in Elementor and
 put it on the pages you choose. The Theme Builder screen lists every template
-type, with Header, Footer, Single and Archive live today and the rest marked as
-coming. The page has two tabs: **Add New** for the type cards and **My
-Templates** for what you have built.
+type, with Header, Footer, Single, Archive, Search Results, 404 and Loop Item
+live today and Popup plus the two WooCommerce types marked as coming. The page
+has two tabs: **Add New** for the type cards and **My Templates** for what you
+have built.
 
 - **Templates** live in their own `eap_template` post type, not Elementor's
   library, so the library stays your own saved blocks. Each one records its type
@@ -609,17 +618,25 @@ Templates** for what you have built.
   and the theme's header never reaches the page. Footers work the same way. The
   theme's content area is left completely alone. On block themes the header and
   footer template-part blocks are swapped as they render instead.
-- **Single and Archive templates replace the content area** through
-  `template_include`. The page template still calls `get_header()` and
+- **Single, Archive, Search Results and 404 templates replace the content area**
+  through `template_include`. The page template still calls `get_header()` and
   `get_footer()`, so the theme's own header and footer run unless a Theme
   Builder header or footer has matched as well. A Single template sets up the
-  loop first, so the dynamic widgets read the real post; an Archive template
-  deliberately does not, because its listing widget runs the main query itself.
-  Search and 404 are not taken over yet.
+  loop first, so the dynamic widgets read the real post; the listing types
+  deliberately do not, because their listing widget runs the main query itself.
+  A search that finds nothing is still a search, not a 404.
+- **Loop Item templates** are the repeating card for Loop Grid and Loop
+  Carousel, which now offer them alongside saved Elementor templates. A Loop
+  Item is chosen inside a widget rather than placed by conditions, so its row
+  has no condition list and no on/off switch.
 - **Listings can follow the main query.** The `Posts` and `Loop Grid` widgets
   have a Source of Latest Posts or Current Query. Current Query borrows the
-  archive the visitor is already on — category, tag, author, date or the blog
-  page — with its own pagination, which is what an Archive template needs.
+  archive the visitor is already on — category, tag, author, date, search or
+  the blog page — with its own pagination, which is what an Archive or Search
+  template needs. On a listing page that genuinely found nothing, both widgets
+  stay empty and say so rather than falling back to Latest Posts: answering a
+  search for something that does not exist with a list of unrelated posts is
+  worse than answering it honestly.
 - **Preview Settings** decide what a Single or Archive template stands in for
   while you edit it. Elementor renders widgets over AJAX, where no main query
   exists, so without a target a Post Title shows whichever post is newest. A
@@ -679,4 +696,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.88
+**Current version:** 1.20.89

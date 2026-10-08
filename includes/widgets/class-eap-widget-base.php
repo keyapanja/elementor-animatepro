@@ -158,8 +158,19 @@ abstract class EAP_Widget_Base extends Widget_Base {
 	 *
 	 * @return array<string, string>
 	 */
-	protected function eap_get_template_options() {
+	protected function eap_get_template_options( $include_loop_items = false ) {
 		$options = array( '' => __( '— Select a template —', 'elementor-animatepro' ) );
+
+		// Theme Builder Loop Item templates are purpose-built for this, so they
+		// come first — but only for the widgets that repeat a template per post.
+		if ( $include_loop_items && class_exists( 'EAP_TB_Post_Type' ) && post_type_exists( EAP_TB_Post_Type::POST_TYPE ) ) {
+			foreach ( EAP_TB_Post_Type::get_templates( 'loop-item' ) as $template ) {
+				$title = '' !== $template->post_title ? $template->post_title : sprintf( '#%d', $template->ID );
+
+				/* translators: %s: template name. */
+				$options[ $template->ID ] = sprintf( __( '%s (Loop Item)', 'elementor-animatepro' ), $title );
+			}
+		}
 
 		if ( ! post_type_exists( 'elementor_library' ) ) {
 			return $options;

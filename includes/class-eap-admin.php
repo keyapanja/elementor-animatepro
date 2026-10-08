@@ -1101,6 +1101,7 @@ class EAP_Admin {
 					'Site Logo',
 					'Nav Menu',
 					'Mega Menu',
+					'Search Form',
 				),
 			),
 			'slider'        => array(
@@ -1292,6 +1293,7 @@ class EAP_Admin {
 			'social-share',
 			'site-logo',
 			'nav-menu',
+			'search-form',
 			'mega-menu',
 			'animated-off-canvas',
 			'post-title',

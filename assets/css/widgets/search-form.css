@@ -1,0 +1,137 @@
+/**
+ * Search Form widget.
+ *
+ * Three layouts off one markup tree: the button beside the field, below it, or
+ * inset at the field's trailing edge.
+ */
+
+.eap-search-form {
+	display: flex;
+	flex-direction: column;
+}
+
+.eap-sf {
+	--eap-sf-gap: 8px;
+	width: 100%;
+	max-width: 100%;
+}
+
+.eap-sf__row {
+	display: flex;
+	gap: var(--eap-sf-gap);
+	align-items: stretch;
+	width: 100%;
+}
+
+.eap-sf__input {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: 100%;
+	margin: 0;
+	padding: 10px 14px;
+	border: 1px solid currentColor;
+	border-radius: 8px;
+	background: #fff;
+	color: inherit;
+	font: inherit;
+	line-height: 1.4;
+	appearance: none;
+}
+
+.eap-sf__button {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	margin: 0;
+	padding: 10px 16px;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	background: #1d2327;
+	color: #fff;
+	font: inherit;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.eap-sf__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 0;
+}
+
+.eap-sf__icon svg {
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.eap-sf__label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+/*
+ * Self-contained, because `.screen-reader-text` is a theme convention rather
+ * than something WordPress guarantees — on a theme that does not define it the
+ * label would otherwise simply show.
+ */
+.eap-sf__label--hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	border: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* Button below the field ------------------------------------------------- */
+
+.eap-sf--stacked .eap-sf__row {
+	flex-direction: column;
+}
+
+.eap-sf--stacked .eap-sf__button {
+	align-self: flex-start;
+}
+
+/* Button inside the field ------------------------------------------------ */
+
+.eap-sf--inset .eap-sf__row {
+	position: relative;
+	gap: 0;
+}
+
+.eap-sf--inset .eap-sf__input {
+	padding-inline-end: 52px;
+}
+
+.eap-sf--inset .eap-sf__button {
+	position: absolute;
+	inset-inline-end: 4px;
+	top: 4px;
+	bottom: 4px;
+	padding: 0 12px;
+}
+
+/* A search field with no button needs none of the inset spacing. */
+.eap-sf--button-none .eap-sf__input {
+	padding-inline-end: 14px;
+}
+
+@media (max-width: 480px) {
+	.eap-sf--inline .eap-sf__row {
+		flex-wrap: wrap;
+	}
+
+	.eap-sf--inline .eap-sf__button {
+		flex: 1 1 auto;
+	}
+}

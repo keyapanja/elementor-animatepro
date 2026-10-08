@@ -87,10 +87,20 @@ class EAP_Widget_Posts extends EAP_Widget_Base {
 		);
 
 		$this->add_control(
+			'empty_text',
+			array(
+				'label'       => __( 'Empty Message', 'elementor-animatepro' ),
+				'type'        => Controls_Manager::TEXT,
+				'default'     => '',
+				'description' => __( 'Shown when the query finds nothing. Left blank, a listing that follows the page says "Nothing found" and any other listing stays silent.', 'elementor-animatepro' ),
+			)
+		);
+
+		$this->add_control(
 			'current_note',
 			array(
 				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => __( 'Shows the posts of the current archive / search / blog page. In the editor a latest-posts preview is shown.', 'elementor-animatepro' ),
+				'raw'             => __( 'Shows the posts of the current archive / search / blog page, and reports when it finds nothing. In the editor a latest-posts preview is shown unless the template has a preview target.', 'elementor-animatepro' ),
 				'content_classes' => 'elementor-descriptor',
 				'condition'       => array( 'query_source' => 'current' ),
 			)
@@ -1139,8 +1149,16 @@ class EAP_Widget_Posts extends EAP_Widget_Base {
 		$use_current = ( 'current' === $spec['source'] && ! $editor );
 		if ( $use_current ) {
 			global $wp_query;
-			$query = $wp_query;
-			if ( ! ( $query instanceof WP_Query ) || empty( $query->posts ) ) {
+
+			// An archive or search that legitimately found nothing must stay
+			// empty. Falling back to Latest Posts there would answer a search
+			// for something that does not exist with a list of unrelated
+			// posts. The fallback is only for places with no listing to
+			// borrow at all.
+			$is_listing = is_archive() || is_home() || is_search();
+			$query      = $wp_query;
+
+			if ( ! ( $query instanceof WP_Query ) || ( empty( $query->posts ) && ! $is_listing ) ) {
 				$use_current = false;
 			}
 		}
@@ -1153,9 +1171,25 @@ class EAP_Widget_Posts extends EAP_Widget_Base {
 		}
 
 		if ( ! $query->have_posts() ) {
-			if ( $editor ) {
-				echo '<div class="eap-widget eap-posts eap-posts--empty">' . esc_html__( 'No posts found for this query.', 'elementor-animatepro' ) . '</div>';
+			$message = trim( (string) ( $settings['empty_text'] ?? '' ) );
+
+			// A listing that follows the page says so by default: a search
+			// results page has to be able to report that it found nothing.
+			if ( '' === $message && $use_current ) {
+				$message = __( 'Nothing found.', 'elementor-animatepro' );
 			}
+
+			if ( '' === $message && $editor ) {
+				$message = __( 'No posts found for this query.', 'elementor-animatepro' );
+			}
+
+			if ( '' !== $message ) {
+				printf(
+					'<div class="eap-widget eap-posts eap-posts--empty">%s</div>',
+					esc_html( $message )
+				);
+			}
+
 			return;
 		}
 
