@@ -598,7 +598,7 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
 Build a header, footer, single-content layout or archive layout in Elementor and
 put it on the pages you choose. The Theme Builder screen lists every template
 type, with Header, Footer, Single, Archive, Search Results, 404 and Loop Item
-live today, along with Popup, and the WooCommerce types marked as coming. The page
+live today, along with Popup, and the two WooCommerce types, which appear when WooCommerce is running. The page
 has two tabs: **Add New** for the type cards and **My Templates** for what you
 have built.
 
@@ -629,6 +629,17 @@ have built.
   Carousel, which now offer them alongside saved Elementor templates. A Loop
   Item is chosen inside a widget rather than placed by conditions, so its row
   has no condition list and no on/off switch.
+- **WooCommerce templates** appear only when WooCommerce is running, since a
+  Single Product template is meaningless without products and its conditions
+  would point at taxonomies that do not exist. **Single Product** covers a
+  product page; **Product Archive** covers the shop page and the product
+  category and tag listings, with conditions narrowing it to one category when
+  that is what is wanted. Both are checked before the ordinary Single and
+  Archive types, because a product is also singular and the shop is also an
+  archive, so the more specific type has to win. Cart, Checkout and My Account
+  are ordinary pages carrying WooCommerce shortcodes — a Single template with a
+  condition pointing at that page already covers them, and replacing them
+  wholesale would strip the forms the store depends on.
 - **Popups** are the one type where several can apply to a page, so every
   matching one is rendered into the footer and left inert until its trigger
   fires. A popup's behaviour lives in its own Elementor document settings, not
@@ -706,4 +717,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.91
+**Current version:** 1.20.92

@@ -25,6 +25,8 @@ class EAP_TB_Documents {
 		'404'                => 'EAP_TB_Document_404',
 		'loop-item'          => 'EAP_TB_Document_Loop_Item',
 		'popup'              => 'EAP_TB_Document_Popup',
+		'product'            => 'EAP_TB_Document_Product',
+		'product-archive'    => 'EAP_TB_Document_Product_Archive',
 	);
 
 	/**

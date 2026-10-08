@@ -56,7 +56,7 @@ class EAP_TB_Preview {
 			);
 		}
 
-		if ( 'archive' === $type ) {
+		if ( 'archive' === $type || 'product-archive' === $type ) {
 			return array(
 				'term'      => array(
 					'label' => __( 'A Term', 'elementor-animatepro' ),
@@ -91,7 +91,7 @@ class EAP_TB_Preview {
 	 * @return bool
 	 */
 	public static function supports( $type ) {
-		return in_array( $type, array( 'single', 'archive', 'search', 'loop-item' ), true );
+		return in_array( $type, array( 'single', 'archive', 'search', 'loop-item', 'product', 'product-archive' ), true );
 	}
 
 	/**
@@ -316,7 +316,7 @@ class EAP_TB_Preview {
 			return $args;
 		}
 
-		if ( ! in_array( EAP_TB_Post_Type::get_type( $template_id ), array( 'archive', 'search' ), true ) ) {
+		if ( ! in_array( EAP_TB_Post_Type::get_type( $template_id ), array( 'archive', 'search', 'product-archive' ), true ) ) {
 			return $args;
 		}
 

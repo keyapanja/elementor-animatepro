@@ -141,6 +141,24 @@ class EAP_TB_Render {
 			return 'search';
 		}
 
+		// WooCommerce first, because a product is also singular and the shop is
+		// also an archive — the more specific type has to win.
+		if ( EAP_TB_Types::has_woocommerce() ) {
+			if ( function_exists( 'is_product' ) && is_product() ) {
+				return 'product';
+			}
+
+			$is_shop = function_exists( 'is_shop' ) && is_shop();
+			$is_tax  = function_exists( 'is_product_taxonomy' ) && is_product_taxonomy();
+
+			// The shop page, a product category and a product tag are all one
+			// listing as far as a template is concerned; conditions narrow it
+			// to a particular category when that is what is wanted.
+			if ( $is_shop || $is_tax ) {
+				return 'product-archive';
+			}
+		}
+
 		if ( is_singular() ) {
 			return 'single';
 		}

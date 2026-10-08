@@ -115,19 +115,32 @@ class EAP_TB_Types {
 				'description' => __( 'The WooCommerce product page layout.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-cart',
 				'location'    => 'body',
-				'available'   => false,
+				'available'   => self::has_woocommerce(),
 			),
 			'product-archive' => array(
 				'label'       => __( 'Product Archive', 'elementor-animatepro' ),
 				'plural'      => __( 'Product Archives', 'elementor-animatepro' ),
-				'description' => __( 'The WooCommerce shop and product category listings.', 'elementor-animatepro' ),
+				'description' => __( 'The WooCommerce shop page and the product category and tag listings.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-cart',
 				'location'    => 'body',
-				'available'   => false,
+				'available'   => self::has_woocommerce(),
 			),
 		);
 
 		return self::$types;
+	}
+
+	/**
+	 * Whether WooCommerce is running.
+	 *
+	 * The product types are offered only then — a Single Product template is
+	 * meaningless on a site with no products, and its conditions would point at
+	 * taxonomies that do not exist.
+	 *
+	 * @return bool
+	 */
+	public static function has_woocommerce() {
+		return class_exists( 'WooCommerce' );
 	}
 
 	/**

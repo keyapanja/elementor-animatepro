@@ -131,6 +131,66 @@ class EAP_TB_Document_Archive extends EAP_TB_Document_Base {
 	}
 }
 
+class EAP_TB_Document_Product extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-product';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( 'Single Product', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( 'Single Products', 'elementor-animatepro' );
+	}
+}
+
+class EAP_TB_Document_Product_Archive extends EAP_TB_Document_Base {
+
+	/**
+	 * Document type name.
+	 *
+	 * @return string
+	 */
+	public static function get_type() {
+		return 'eap-product-archive';
+	}
+
+	/**
+	 * Document title.
+	 *
+	 * @return string
+	 */
+	public static function get_title() {
+		return esc_html__( 'Product Archive', 'elementor-animatepro' );
+	}
+
+	/**
+	 * Plural document title.
+	 *
+	 * @return string
+	 */
+	public static function get_plural_title() {
+		return esc_html__( 'Product Archives', 'elementor-animatepro' );
+	}
+}
+
 class EAP_TB_Document_Popup extends EAP_TB_Document_Base {
 
 	/**
