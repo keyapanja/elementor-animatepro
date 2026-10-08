@@ -913,12 +913,14 @@ class EAP_Admin {
 	public function render_theme_builder_page() {
 		?>
 		<div class="wrap eap-admin">
-			<?php $this->render_topbar( self::THEME_BUILDER_SLUG ); ?>
-			<?php $this->render_page_header( __( 'Theme Builder', 'elementor-animatepro' ), __( 'This page will manage headers, footers, display conditions, and template assignment.', 'elementor-animatepro' ) ); ?>
-			<div class="eap-admin-panel">
-				<h3><?php esc_html_e( 'Theme Builder', 'elementor-animatepro' ); ?></h3>
-				<p><?php esc_html_e( 'This section will be designed next using the same control-shell and AnimatePro admin system.', 'elementor-animatepro' ); ?></p>
-			</div>
+			<?php $this->render_topbar( self::THEME_BUILDER_SLUG, __( 'Search for Templates', 'elementor-animatepro' ) ); ?>
+			<?php
+			if ( class_exists( 'EAP_TB_Admin' ) ) {
+				EAP_TB_Admin::render_body();
+			} else {
+				$this->render_page_header( __( 'Theme Builder', 'elementor-animatepro' ), __( 'The Theme Builder could not load.', 'elementor-animatepro' ) );
+			}
+			?>
 		</div>
 		<?php
 	}

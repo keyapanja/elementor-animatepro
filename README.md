@@ -585,6 +585,41 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
 - **Video Story Post Type** — registers the bundled Video Story post type used by
   the Video Story widget (see above).
 
+## Theme Builder
+
+Build a header or footer in Elementor and put it on the pages you choose. The
+Theme Builder screen lists every template type, with Header and Footer live
+today and the rest marked as coming.
+
+- **Templates** live in their own `eap_template` post type, not Elementor's
+  library, so the library stays your own saved blocks. Each one records its type
+  (`_eap_template_type`), its display conditions and whether it is switched on.
+- **Display conditions** are include/exclude rules over the entire site, single
+  content (all, a post type, a term, an author, children of a page, one entry),
+  archives (all, a post type archive, a taxonomy, a term, an author, dates, the
+  blog page) and the special pages (front page, search, 404). When several
+  templates match a request, the most specific include wins; any matching
+  exclude takes a template out of the running.
+- **Rendering** replaces the theme's own header and footer rather than hiding
+  them. On `get_header` the plugin prints its own document head and header, then
+  loads the theme's `header.php` inside a discarded buffer; because WordPress
+  loads these with `require_once`, its own load right afterwards does nothing
+  and the theme's header never reaches the page. Footers work the same way. The
+  theme's content area is left completely alone. On block themes the header and
+  footer template-part blocks are swapped as they render instead.
+- **Templates render early.** Each document's HTML is built during
+  `wp_enqueue_scripts`, so the stylesheets its widgets ask for still reach the
+  `<head>`.
+- **Where it stands down:** when another plugin (Header Footer Elementor, for
+  instance) is already replacing a part, AnimatePro leaves that part alone so
+  two plugins cannot both take over the page. The Theme Builder screen says so.
+- Template URLs are 404 for anyone who cannot edit them, carry `noindex`, and
+  preview on Elementor's blank canvas.
+
+The parts live in `includes/theme-builder/`: `class-eap-tb-types.php` (the
+catalogue), `-post-type`, `-conditions`, `-resolver`, `-render`, `-documents`
+and `-admin`. `includes/class-eap-theme-builder.php` wires them together.
+
 ## Admin
 
 The plugin's admin page lets you enable or disable each widget individually
@@ -623,4 +658,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.85
+**Current version:** 1.20.86

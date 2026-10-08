@@ -1,0 +1,375 @@
+/**
+ * Theme Builder admin screen.
+ *
+ * Builds on admin.css: the shell, buttons, switches and group headers come from
+ * there, and this file adds the type cards, template rows and the two modals.
+ */
+
+.eap-admin [hidden] {
+	display: none !important;
+}
+
+/* Type cards ------------------------------------------------------------- */
+
+.eap-tb-types {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 14px;
+	margin: 18px 0 26px;
+}
+
+.eap-tb-type {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	gap: 14px;
+	align-items: center;
+	padding: 16px;
+	border: 1px solid var(--eap-border);
+	border-radius: 18px;
+	background: var(--eap-surface);
+}
+
+.eap-tb-type.is-coming-soon {
+	opacity: 0.56;
+	filter: saturate(0.72);
+}
+
+.eap-tb-type__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border: 1px solid var(--eap-border);
+	border-radius: 50%;
+	background: var(--eap-surface-soft);
+	color: var(--eap-accent-strong);
+	font-size: 18px;
+	line-height: 1;
+}
+
+.eap-tb-type__body {
+	display: grid;
+	gap: 4px;
+	min-width: 0;
+}
+
+.eap-tb-type__body strong {
+	display: inline-flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.eap-tb-type__body small {
+	color: var(--eap-muted);
+	font-size: 12px;
+	line-height: 1.45;
+}
+
+/* Template rows ---------------------------------------------------------- */
+
+/*
+ * The Theme Builder sections deliberately do NOT reuse .eap-widget-group:
+ * admin.js hides any element with that class once it holds no widget cards.
+ */
+.eap-tb-group {
+	margin-bottom: 20px;
+	border: 1px solid #e9eef5;
+	border-radius: 22px;
+	background: #fff;
+	overflow: hidden;
+}
+
+.eap-tb-group__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 18px 20px;
+	border-bottom: 1px solid #edf2f7;
+	background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+}
+
+.eap-tb-group__header h2 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 800;
+}
+
+.eap-tb-empty {
+	margin: 0;
+	padding: 20px 18px;
+	color: var(--eap-muted);
+	font-size: 13px;
+}
+
+.eap-tb-rows {
+	display: grid;
+}
+
+.eap-tb-row {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 16px;
+	align-items: center;
+	padding: 14px 18px;
+	border-top: 1px solid #edf2f7;
+	background: var(--eap-surface);
+}
+
+.eap-tb-row:first-child {
+	border-top: 0;
+}
+
+.eap-tb-row.is-off {
+	background: var(--eap-surface-soft);
+}
+
+.eap-tb-row.is-off .eap-tb-row__name {
+	color: var(--eap-muted);
+}
+
+.eap-tb-row__main {
+	display: grid;
+	gap: 4px;
+	min-width: 0;
+}
+
+.eap-tb-row__name {
+	color: var(--eap-ink);
+	font-size: 14px;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.eap-tb-row__name:hover,
+.eap-tb-row__name:focus {
+	color: var(--eap-accent-strong);
+}
+
+.eap-tb-row__conditions {
+	color: var(--eap-muted);
+	font-size: 12px;
+	line-height: 1.45;
+}
+
+.eap-tb-row__conditions.is-warning {
+	color: #b54708;
+}
+
+.eap-tb-row__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
+.eap-tb-row__actions .eap-btn {
+	min-height: 34px;
+	padding: 0 12px;
+	border-radius: 10px;
+	font-size: 12px;
+}
+
+/* The Edit action is an anchor; wp-admin underlines links by default. */
+.eap-tb-row__actions a.eap-btn,
+.eap-tb-row__actions a.eap-btn:hover,
+.eap-tb-row__actions a.eap-btn:focus {
+	text-decoration: none;
+}
+
+.eap-tb-row__actions .eap-btn.is-danger:hover,
+.eap-tb-row__actions .eap-btn.is-danger:focus {
+	border-color: #f0b4a8;
+	color: #b42318;
+}
+
+.eap-tb-row__switch {
+	margin-left: 4px;
+}
+
+/* Environment warnings --------------------------------------------------- */
+
+.eap-tb-warnings {
+	display: grid;
+	gap: 8px;
+	margin-bottom: 18px;
+}
+
+.eap-tb-warnings p {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 0;
+	padding: 12px 14px;
+	border: 1px solid #f3d9b5;
+	border-radius: 14px;
+	background: var(--eap-warm-soft);
+	color: #7a4a12;
+	font-size: 12.5px;
+	line-height: 1.5;
+}
+
+.eap-tb-warnings .dashicons {
+	flex: none;
+	color: var(--eap-warm);
+}
+
+/* Modals ----------------------------------------------------------------- */
+
+.eap-tb-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100100;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 60px 20px;
+	overflow: auto;
+	background: rgba(15, 23, 42, 0.45);
+}
+
+.eap-tb-modal__box {
+	width: min(100%, 520px);
+	padding: 24px;
+	border-radius: 20px;
+	background: var(--eap-surface);
+	box-shadow: var(--eap-shadow);
+}
+
+.eap-tb-modal__box--wide {
+	width: min(100%, 860px);
+}
+
+.eap-tb-modal__box h2 {
+	margin: 0 0 4px;
+	font-size: 18px;
+	font-weight: 800;
+}
+
+.eap-tb-modal__subtitle {
+	margin: 0 0 16px;
+	color: var(--eap-muted);
+	font-size: 13px;
+}
+
+.eap-tb-modal__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.eap-tb-field {
+	display: grid;
+	gap: 6px;
+	margin-top: 14px;
+}
+
+.eap-tb-field span {
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.eap-tb-field input[type="text"] {
+	width: 100%;
+	min-height: 42px;
+	padding: 0 12px;
+	border: 1px solid var(--eap-border);
+	border-radius: 12px;
+	font-size: 13px;
+}
+
+/* Condition rules -------------------------------------------------------- */
+
+.eap-tb-rules {
+	display: grid;
+	gap: 10px;
+	margin: 16px 0;
+}
+
+.eap-tb-rules:empty {
+	margin: 0;
+}
+
+.eap-tb-rules__empty {
+	margin: 0;
+	padding: 14px;
+	border: 1px dashed var(--eap-border);
+	border-radius: 14px;
+	color: var(--eap-muted);
+	font-size: 12.5px;
+	text-align: center;
+}
+
+.eap-tb-rule {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	padding: 12px;
+	border: 1px solid var(--eap-border);
+	border-radius: 14px;
+	background: var(--eap-surface-soft);
+}
+
+.eap-tb-rule select,
+.eap-tb-rule input[type="search"] {
+	min-height: 38px;
+	max-width: 100%;
+	padding: 0 10px;
+	border: 1px solid var(--eap-border);
+	border-radius: 10px;
+	background: #fff;
+	font-size: 13px;
+}
+
+.eap-tb-rule__value {
+	display: flex;
+	flex: 1 1 240px;
+	gap: 8px;
+	min-width: 0;
+}
+
+.eap-tb-rule__value select,
+.eap-tb-rule__value input[type="search"] {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+.eap-tb-rule__remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	margin-left: auto;
+	padding: 0;
+	border: 1px solid var(--eap-border);
+	border-radius: 10px;
+	background: #fff;
+	color: var(--eap-muted);
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.eap-tb-rule__remove:hover,
+.eap-tb-rule__remove:focus {
+	border-color: #f0b4a8;
+	color: #b42318;
+}
+
+@media (max-width: 782px) {
+	.eap-tb-row {
+		grid-template-columns: 1fr;
+	}
+
+	.eap-tb-row__actions {
+		justify-content: flex-start;
+	}
+}
