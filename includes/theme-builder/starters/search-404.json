@@ -1,0 +1,59 @@
+{
+    "format": 1,
+    "plugin": "elementor-animatepro",
+    "title": "Not Found with Search",
+    "type": "404",
+    "conditions": [],
+    "preview": { "kind": "", "value": "" },
+    "settings": [],
+    "content": [
+        {
+            "id": "eapnf01",
+            "elType": "container",
+            "settings": {
+                "flex_direction": "column",
+                "flex_align_items": "center",
+                "flex_justify_content": "center",
+                "content_width": "boxed",
+                "flex_gap": { "unit": "px", "size": 20, "column": "20", "row": "20" },
+                "min_height": { "unit": "vh", "size": 60 },
+                "padding": { "unit": "px", "top": "60", "right": "20", "bottom": "60", "left": "20", "isLinked": false }
+            },
+            "elements": [
+                {
+                    "id": "eapnf02",
+                    "elType": "widget",
+                    "widgetType": "eap-archive-title",
+                    "settings": {
+                        "not_found_text": "We could not find that page",
+                        "tag": "h1",
+                        "align": "center"
+                    },
+                    "elements": []
+                },
+                {
+                    "id": "eapnf03",
+                    "elType": "widget",
+                    "widgetType": "text-editor",
+                    "settings": {
+                        "editor": "<p>The page may have moved, or the address may have a typo in it. Try searching for what you were after.</p>",
+                        "align": "center"
+                    },
+                    "elements": []
+                },
+                {
+                    "id": "eapnf04",
+                    "elType": "widget",
+                    "widgetType": "eap-search-form",
+                    "settings": {
+                        "button_type": "text",
+                        "button_text": "Search",
+                        "placeholder": "What are you looking for?"
+                    },
+                    "elements": []
+                }
+            ],
+            "isInner": false
+        }
+    ]
+}

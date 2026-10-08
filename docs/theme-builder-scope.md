@@ -9,7 +9,16 @@ decisions that were open are recorded in section 7.
   Current Query on Loop Grid.
 - **Phase 3** (v1.20.89): Search Results, 404 and Loop Item templates, plus the
   Search Form widget.
-- **Phase 4 is next**: Popup, Import/Export, starter layouts, Dynamic Tags.
+- **Phase 4** (v1.20.90–94): Popup, Export/Import, Dynamic Tags, starter
+  layouts.
+- **Phase 5** (v1.20.92): Single Product and Product Archive, built early
+  because WooCommerce was installed while phase 4 was in progress.
+
+All ten template types are live. Cart, Checkout and My Account were considered
+and deliberately left out: they are ordinary pages carrying WooCommerce
+shortcodes, so a Single template with a condition pointing at that page already
+covers them, and replacing them wholesale would strip the forms the store
+depends on.
 
 **Correction to section 6.** Three of the four "missing widgets" listed there
 already existed, so phase 3 did not build them:

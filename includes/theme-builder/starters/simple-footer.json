@@ -1,0 +1,42 @@
+{
+    "format": 1,
+    "plugin": "elementor-animatepro",
+    "title": "Copyright and Social",
+    "type": "footer",
+    "conditions": [],
+    "preview": { "kind": "", "value": "" },
+    "settings": [],
+    "content": [
+        {
+            "id": "eapsf01",
+            "elType": "container",
+            "settings": {
+                "flex_direction": "row",
+                "flex_justify_content": "space-between",
+                "flex_align_items": "center",
+                "content_width": "boxed",
+                "flex_gap": { "unit": "px", "size": 24, "column": "24", "row": "24" },
+                "padding": { "unit": "px", "top": "32", "right": "0", "bottom": "32", "left": "0", "isLinked": false }
+            },
+            "elements": [
+                {
+                    "id": "eapsf02",
+                    "elType": "widget",
+                    "widgetType": "text-editor",
+                    "settings": {
+                        "editor": "<p>&copy; All rights reserved.</p>"
+                    },
+                    "elements": []
+                },
+                {
+                    "id": "eapsf03",
+                    "elType": "widget",
+                    "widgetType": "eap-social-icons",
+                    "settings": {},
+                    "elements": []
+                }
+            ],
+            "isInner": false
+        }
+    ]
+}

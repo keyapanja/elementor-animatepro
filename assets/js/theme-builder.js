@@ -120,6 +120,35 @@ document.addEventListener('DOMContentLoaded', () => {
 		const input = nameModal.querySelector('[data-eap-tb-name-input]');
 		const title = nameModal.querySelector('[data-eap-tb-name-title]');
 		const submit = nameModal.querySelector('[data-eap-tb-name-submit]');
+		const starterField = nameModal.querySelector('[data-eap-tb-starter-field]');
+		const starterSelect = nameModal.querySelector('[data-eap-tb-starter]');
+
+		// Starters only make sense when creating something, and only for the
+		// types that ship one.
+		const starters = options.type ? (data.starters || {})[options.type] || {} : {};
+		const names = Object.keys(starters);
+
+		if (starterField && starterSelect) {
+			starterSelect.innerHTML = '';
+
+			if (options.task === 'create' && names.length) {
+				const blank = el('option');
+				blank.value = '';
+				blank.textContent = i18n.starterBlank || '';
+				starterSelect.appendChild(blank);
+
+				names.forEach((slug) => {
+					const option = el('option');
+					option.value = slug;
+					option.textContent = starters[slug];
+					starterSelect.appendChild(option);
+				});
+
+				starterField.hidden = false;
+			} else {
+				starterField.hidden = true;
+			}
+		}
 
 		nameModal.querySelector('[data-eap-tb-name-task]').value = options.task;
 		nameModal.querySelector('[data-eap-tb-name-type]').value = options.type || '';

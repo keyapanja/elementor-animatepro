@@ -132,9 +132,16 @@ class EAP_TB_Admin {
 		}
 
 		$type_labels = array();
+		$starters    = array();
 
 		foreach ( EAP_TB_Types::available() as $slug => $type ) {
 			$type_labels[ $slug ] = $type['label'];
+
+			$for_type = EAP_TB_Starters::for_type( $slug );
+
+			if ( ! empty( $for_type ) ) {
+				$starters[ $slug ] = $for_type;
+			}
 		}
 
 		return array(
@@ -146,6 +153,7 @@ class EAP_TB_Admin {
 			'templates'  => $templates,
 			'types'      => $type_labels,
 			'previews'   => $preview_kinds,
+			'starters'   => $starters,
 			'i18n'       => array(
 				'include'     => __( 'Show on', 'elementor-animatepro' ),
 				'exclude'     => __( 'Hide on', 'elementor-animatepro' ),
@@ -161,6 +169,7 @@ class EAP_TB_Admin {
 				'saveCta'     => __( 'Save Name', 'elementor-animatepro' ),
 				'previewNone' => __( 'Nothing chosen', 'elementor-animatepro' ),
 				'searchTerm'  => __( 'e.g. leadership', 'elementor-animatepro' ),
+				'starterBlank' => __( 'An empty template', 'elementor-animatepro' ),
 			),
 		);
 	}
@@ -400,10 +409,13 @@ class EAP_TB_Admin {
 	 * @return void
 	 */
 	private function do_create() {
-		$type  = isset( $_POST['template_type'] ) ? sanitize_key( wp_unslash( $_POST['template_type'] ) ) : '';
-		$title = isset( $_POST['template_title'] ) ? sanitize_text_field( wp_unslash( $_POST['template_title'] ) ) : '';
+		$type    = isset( $_POST['template_type'] ) ? sanitize_key( wp_unslash( $_POST['template_type'] ) ) : '';
+		$title   = isset( $_POST['template_title'] ) ? sanitize_text_field( wp_unslash( $_POST['template_title'] ) ) : '';
+		$starter = isset( $_POST['template_starter'] ) ? sanitize_key( wp_unslash( $_POST['template_starter'] ) ) : '';
 
-		$template_id = EAP_TB_Post_Type::create( $type, $title );
+		$template_id = '' !== $starter
+			? EAP_TB_Starters::create( $starter, $type, $title )
+			: EAP_TB_Post_Type::create( $type, $title );
 
 		if ( is_wp_error( $template_id ) ) {
 			$this->redirect_back( 'error' );
@@ -688,6 +700,10 @@ class EAP_TB_Admin {
 					<label class="eap-tb-field">
 						<span><?php esc_html_e( 'Template name', 'elementor-animatepro' ); ?></span>
 						<input type="text" name="template_title" value="" required data-eap-tb-name-input />
+					</label>
+					<label class="eap-tb-field" data-eap-tb-starter-field hidden>
+						<span><?php esc_html_e( 'Start from', 'elementor-animatepro' ); ?></span>
+						<select name="template_starter" data-eap-tb-starter></select>
 					</label>
 					<div class="eap-tb-modal__actions">
 						<button type="button" class="eap-btn eap-btn--ghost" data-eap-tb-close><?php esc_html_e( 'Cancel', 'elementor-animatepro' ); ?></button>

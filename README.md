@@ -683,6 +683,12 @@ have built.
   the dynamic widgets do, including a template's preview target, so they work
   while editing a template as well as on the page. A custom field holding an
   array falls through to the tag's fallback rather than printing "Array".
+- **Starter layouts** ship as export files, so a starter travels the same import
+  path a user's own file does rather than needing a second format. Three today:
+  a logo-and-menu header, a copyright-and-social footer, and a 404 with a search
+  form. They carry no display conditions on purpose — where a header belongs is
+  the site's decision, not the layout's — and a starter cannot be used to create
+  a different type than the one it was written for.
 - **Export and import.** An export carries the type, conditions, preview target
   and document settings alongside the content; an import pushes all of it back
   through the same sanitisers the admin screen uses, so a hand-edited file
@@ -732,4 +738,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.93
+**Current version:** 1.20.94

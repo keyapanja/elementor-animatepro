@@ -1,0 +1,40 @@
+{
+    "format": 1,
+    "plugin": "elementor-animatepro",
+    "title": "Logo and Menu",
+    "type": "header",
+    "conditions": [],
+    "preview": { "kind": "", "value": "" },
+    "settings": [],
+    "content": [
+        {
+            "id": "eapsh01",
+            "elType": "container",
+            "settings": {
+                "flex_direction": "row",
+                "flex_justify_content": "space-between",
+                "flex_align_items": "center",
+                "content_width": "boxed",
+                "flex_gap": { "unit": "px", "size": 24, "column": "24", "row": "24" },
+                "padding": { "unit": "px", "top": "18", "right": "0", "bottom": "18", "left": "0", "isLinked": false }
+            },
+            "elements": [
+                {
+                    "id": "eapsh02",
+                    "elType": "widget",
+                    "widgetType": "eap-site-logo",
+                    "settings": {},
+                    "elements": []
+                },
+                {
+                    "id": "eapsh03",
+                    "elType": "widget",
+                    "widgetType": "eap-nav-menu",
+                    "settings": {},
+                    "elements": []
+                }
+            ],
+            "isInner": false
+        }
+    ]
+}
