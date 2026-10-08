@@ -84,6 +84,22 @@ class EAP_Assets {
 			true
 		);
 
+		// Theme Builder popups: not a widget, so registered on its own.
+		wp_register_style(
+			'eap-theme-builder-popup',
+			EAP_URL . 'assets/css/theme-builder-popup.css',
+			array( 'eap-core' ),
+			EAP_VERSION
+		);
+
+		wp_register_script(
+			'eap-theme-builder-popup',
+			EAP_URL . 'assets/js/theme-builder-popup.js',
+			array( 'eap-core-runtime' ),
+			EAP_VERSION,
+			true
+		);
+
 		$this->register_widget_styles();
 		$this->register_widget_scripts();
 	}

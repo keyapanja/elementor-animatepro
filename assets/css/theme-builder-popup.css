@@ -1,0 +1,153 @@
+/**
+ * Theme Builder popups.
+ *
+ * One markup tree, positioned by a modifier class. Hidden until the script
+ * opens it — with the !important that `hidden` needs, since it is only a user
+ * agent rule and the display here would outrank it.
+ */
+
+.eap-popup[hidden] {
+	display: none !important;
+}
+
+.eap-popup {
+	position: fixed;
+	inset: 0;
+	z-index: 99990;
+	display: flex;
+	padding: 20px;
+}
+
+/*
+ * A closing popup stays in the layout until its fade finishes. Without this it
+ * would go on covering the viewport at zero opacity and swallow clicks — and
+ * in a background tab, where timers are throttled, for far longer than the
+ * animation.
+ */
+.eap-popup:not(.is-open) {
+	pointer-events: none;
+}
+
+.eap-popup__overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.55);
+}
+
+.eap-popup__box {
+	--eap-popup-width: 640px;
+	position: relative;
+	width: min(100%, var(--eap-popup-width));
+	max-height: calc(100vh - 40px);
+	overflow: auto;
+	border-radius: 14px;
+	background: #fff;
+	box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+}
+
+.eap-popup__close {
+	position: absolute;
+	top: 8px;
+	inset-inline-end: 8px;
+	z-index: 2;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: rgba(15, 23, 42, 0.08);
+	color: #0f172a;
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.eap-popup__close:hover,
+.eap-popup__close:focus-visible {
+	background: rgba(15, 23, 42, 0.18);
+}
+
+/* Position --------------------------------------------------------------- */
+
+.eap-popup--center {
+	align-items: center;
+	justify-content: center;
+}
+
+.eap-popup--top {
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.eap-popup--bottom {
+	align-items: flex-end;
+	justify-content: center;
+}
+
+.eap-popup--left {
+	align-items: center;
+	justify-content: flex-start;
+}
+
+.eap-popup--right {
+	align-items: center;
+	justify-content: flex-end;
+}
+
+.eap-popup--bottom-right {
+	align-items: flex-end;
+	justify-content: flex-end;
+}
+
+.eap-popup--bottom-left {
+	align-items: flex-end;
+	justify-content: flex-start;
+}
+
+/* Animation -------------------------------------------------------------- */
+
+.eap-popup__box,
+.eap-popup__overlay {
+	transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.eap-popup--fade:not(.is-open) .eap-popup__box,
+.eap-popup--fade:not(.is-open) .eap-popup__overlay,
+.eap-popup--zoom:not(.is-open) .eap-popup__box,
+.eap-popup--zoom:not(.is-open) .eap-popup__overlay,
+.eap-popup--slide:not(.is-open) .eap-popup__box,
+.eap-popup--slide:not(.is-open) .eap-popup__overlay {
+	opacity: 0;
+}
+
+.eap-popup--zoom:not(.is-open) .eap-popup__box {
+	transform: scale(0.94);
+}
+
+.eap-popup--slide:not(.is-open) .eap-popup__box {
+	transform: translateY(24px);
+}
+
+.eap-popup--none .eap-popup__box,
+.eap-popup--none .eap-popup__overlay {
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.eap-popup__box,
+	.eap-popup__overlay {
+		transition: none;
+	}
+
+	.eap-popup:not(.is-open) .eap-popup__box {
+		transform: none;
+	}
+}
+
+/* The page must not scroll behind an open popup. */
+body.eap-popup-open {
+	overflow: hidden;
+}

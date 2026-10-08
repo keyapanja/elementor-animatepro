@@ -70,6 +70,49 @@ class EAP_TB_Resolver {
 	}
 
 	/**
+	 * Every template of a type that applies here, most specific first.
+	 *
+	 * Headers and bodies have exactly one winner; popups do not — a page can
+	 * legitimately carry several.
+	 *
+	 * @param string $type Template type slug.
+	 * @return int[]
+	 */
+	public static function get_all_matching( $type ) {
+		if ( is_singular( EAP_TB_Post_Type::POST_TYPE ) ) {
+			return array();
+		}
+
+		$matches = array();
+
+		foreach ( EAP_TB_Post_Type::get_templates( $type ) as $template ) {
+			if ( 'publish' !== $template->post_status || ! EAP_TB_Post_Type::is_enabled( $template->ID ) ) {
+				continue;
+			}
+
+			$weight = EAP_TB_Conditions::match( EAP_TB_Conditions::get( $template->ID ) );
+
+			if ( false === $weight ) {
+				continue;
+			}
+
+			$matches[] = array(
+				'id'     => (int) $template->ID,
+				'weight' => $weight,
+			);
+		}
+
+		usort(
+			$matches,
+			static function ( $a, $b ) {
+				return $b['weight'] <=> $a['weight'];
+			}
+		);
+
+		return wp_list_pluck( $matches, 'id' );
+	}
+
+	/**
 	 * Forget what was resolved. Used by tests and harnesses.
 	 *
 	 * @return void

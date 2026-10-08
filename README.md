@@ -598,7 +598,7 @@ ones. They're toggled on the plugin's **Extensions** page (stored in the
 Build a header, footer, single-content layout or archive layout in Elementor and
 put it on the pages you choose. The Theme Builder screen lists every template
 type, with Header, Footer, Single, Archive, Search Results, 404 and Loop Item
-live today and Popup plus the two WooCommerce types marked as coming. The page
+live today, along with Popup, and the WooCommerce types marked as coming. The page
 has two tabs: **Add New** for the type cards and **My Templates** for what you
 have built.
 
@@ -629,6 +629,16 @@ have built.
   Carousel, which now offer them alongside saved Elementor templates. A Loop
   Item is chosen inside a widget rather than placed by conditions, so its row
   has no condition list and no on/off switch.
+- **Popups** are the one type where several can apply to a page, so every
+  matching one is rendered into the footer and left inert until its trigger
+  fires. A popup's behaviour lives in its own Elementor document settings, not
+  on an admin screen: it opens immediately, after a delay, after scrolling a
+  percentage, on exit intent, after inactivity, or when anything matching a CSS
+  selector is clicked; it shows every time, once per visit, or once every few
+  days; and it closes by button, overlay click, Esc or a timer. Two settings
+  cannot be saved into a broken state — turning every close option off puts the
+  close button back rather than trapping the visitor, and a click trigger with
+  no selector falls back to a delay rather than never opening.
 - **Listings can follow the main query.** The `Posts` and `Loop Grid` widgets
   have a Source of Latest Posts or Current Query. Current Query borrows the
   archive the visitor is already on — category, tag, author, date, search or
@@ -696,4 +706,4 @@ registered with Elementor, so they add no overhead.
 
 ---
 
-**Current version:** 1.20.89
+**Current version:** 1.20.90

@@ -107,7 +107,7 @@ class EAP_TB_Types {
 				'description' => __( 'An overlay with its own triggers and close rules.', 'elementor-animatepro' ),
 				'icon'        => 'dashicons-external',
 				'location'    => 'overlay',
-				'available'   => false,
+				'available'   => true,
 			),
 			'product'         => array(
 				'label'       => __( 'Single Product', 'elementor-animatepro' ),
