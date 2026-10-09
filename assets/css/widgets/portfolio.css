@@ -1,4 +1,21 @@
 /*
+ * `.screen-reader-text` is a theme convention, not something WordPress
+ * guarantees. Defined here so these labels stay off-screen on a theme
+ * that does not define it, instead of rendering as visible text.
+ */
+.eap-portfolio .screen-reader-text {
+	position: absolute !important;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/*
  * Portfolio — image-led project tiles with an overlay, filter tabs and a
  * lightbox.
  *

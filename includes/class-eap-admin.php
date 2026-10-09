@@ -1089,7 +1089,6 @@ class EAP_Admin {
 					'Data Table',
 					'Feature List',
 					'Sticky Video',
-					'Stacked Cards',
 					'Social Share',
 				),
 			),
